@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dao.CreUserMapper">
+
+	<!-- 配置resultMap属性，进行表字段与实体类属性映射 -->  
+    <resultMap id="BaseResultMap" type="cn.entity.CreUser" >  
+       <result column="id" property="id"></result>  
+       <result column="cl_account_id" property="clAccountId"></result>  
+       <result column="company_id" property="companyId"></result>  
+       <result column="user_name" property="userName"></result>  
+       <result column="user_phone" property="userPhone"></result>  
+       <result column="user_password" property="userPassword"></result>  
+       <result column="user_email" property="userEmail"></result>  
+       <result column="user_qq" property="userQq"></result>  
+       <result column="user_department" property="userDepartment"></result>
+       <result column="user_position" property="userPosition"></result>  
+       <result column="user_thumbs" property="userThumbs"></result>  
+       <result column="wx_openid" property="wxOpenid"></result>
+       <result column="last_login_time" property="lastLoginTime"></result>  
+       <result column="last_login_ip" property="lastLoginIp"></result>  
+       <result column="delete_status" property="deleteStatus"></result>
+       <result column="version" property="version"></result>  
+       <result column="create_user" property="createUser"></result>  
+       <result column="create_time" property="createTime"></result>
+       <result column="update_time" property="updateTime"></result>  
+       <result column="agent_id" property="agentId"></result>  
+       <result column="nick_name" property="nickName"></result>
+       <result column="bit_onoff" property="bitOnoff"></result>
+    </resultMap> 
+
+	<select id="findCreUserByUserPhone" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT * FROM cre_user WHERE USER_PHONE = #{userPhone} AND DELETE_STATUS = '0'
+	</select>
+
+	<update id="updateCreUser" parameterType="cn.entity.CreUser">
+		UPDATE cre_user
+		<trim prefix="set" suffixOverrides=",">
+			<if test="clAccountId != null">
+				CL_ACCOUNT_ID = #{clAccountId},
+			</if>
+			<if test="companyId != null">
+				COMPANY_ID = #{companyId},
+			</if>
+			<if test="userName != null">
+				USER_NAME = #{userName},
+			</if>
+			<if test="userPhone != null">
+				USER_PHONE = #{userPhone},
+			</if>
+			<if test="userPassword != null">
+				USER_PASSWORD = #{userPassword},
+			</if>
+			<if test="userEmail != null">
+				USER_EMAIL = #{userEmail},
+			</if>
+			<if test="userQq != null">
+				USER_QQ = #{userQq},
+			</if>
+			<if test="userDepartment != null">
+				USER_DEPARTMENT = #{userDepartment},
+			</if>
+			<if test="userPosition != null">
+				USER_POSITION = #{userPosition},
+			</if>
+			<if test="userThumbs != null">
+				USER_THUMBS = #{userThumbs},
+			</if>
+			<if test="wxOpenid != null">
+				WX_OPENID = #{wxOpenid},
+			</if>
+			<if test="lastLoginTime != null">
+				LAST_LOGIN_TIME = #{lastLoginTime},
+			</if>
+			<if test="lastLoginIp != null">
+				LAST_LOGIN_IP = #{lastLoginIp},
+			</if>
+			<if test="deleteStatus != null">
+				DELETE_STATUS = #{deleteStatus},
+			</if>
+			<if test="createUser != null">
+				CREATE_USER = #{createUser},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime},
+			</if>
+			<if test="agentId != null">
+				AGENT_ID = #{agentId},
+			</if>
+			<if test="nickName != null">
+				NICK_NAME = #{nickName},
+			</if>
+			<if test="bitOnoff != null">
+				BIT_ONOFF = #{bitOnoff},
+			</if>
+			version = version + 1
+		</trim>
+		WHERE ID=#{id} and VERSION = #{version}
+	</update>
+	
+	 <insert id ="saveCreUser" parameterType="cn.entity.CreUser" >
+		INSERT INTO cre_user(
+			CL_ACCOUNT_ID,
+			COMPANY_ID,
+			USER_NAME,
+			USER_PHONE,
+			USER_PASSWORD,
+			USER_EMAIL,
+			USER_QQ,
+			USER_DEPARTMENT,
+			USER_POSITION,
+			USER_THUMBS,
+			WX_OPENID,
+			LAST_LOGIN_TIME,
+			LAST_LOGIN_IP,
+			DELETE_STATUS,
+			CREATE_USER,
+			CREATE_TIME,
+			UPDATE_TIME,
+			AGENT_ID,
+			NICK_NAME,
+			BIT_ONOFF)
+		VALUES (
+			#{clAccountId},
+			#{companyId},
+			#{userName},
+			#{userPhone},
+			#{userPassword},
+			#{userEmail},
+			#{userQq},
+			#{userDepartment},
+			#{userPosition},
+			#{userThumbs},
+			#{wxOpenid},
+			#{lastLoginTime},
+			#{lastLoginIp},
+			#{deleteStatus},
+			#{createUser},
+			#{createTime},
+			#{updateTime},
+			#{agentId},
+			#{nickName},
+			#{bitOnoff}
+		)
+	 </insert>
+
+
+</mapper>

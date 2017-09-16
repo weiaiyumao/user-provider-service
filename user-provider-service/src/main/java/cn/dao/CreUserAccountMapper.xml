@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dao.CreUserAccountMapper">
+
+	<!-- 配置resultMap属性，进行表字段与实体类属性映射 -->  
+    <resultMap id="BaseResultMap" type="cn.entity.CreUserAccount" >  
+       <result column="id" property="id"></result>  
+       <result column="cre_user_id" property="creUserId"></result>  
+       <result column="account" property="account"></result>  
+       <result column="delete_status" property="deleteStatus"></result>
+       <result column="version" property="version"></result>  
+       <result column="create_time" property="createTime"></result>
+       <result column="update_time" property="updateTime"></result>  
+    </resultMap> 
+
+	<select id="findCreUserByUserId" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT * FROM cre_user_account WHERE CRE_USER_ID = #{creUserId} AND DELETE_STATUS = '0'
+	</select>
+
+	<update id="updateCreUserAccount" parameterType="cn.entity.CreUserAccount">
+		UPDATE cre_user_account
+		<trim prefix="set" suffixOverrides=",">
+			<if test="creUserId != null">
+				CRE_USER_ID = #{creUserId},
+			</if>
+			<if test="account != null">
+				ACCOUNT = #{account},
+			</if>
+			<if test="deleteStatus != null">
+				DELETE_STATUS = #{deleteStatus},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime},
+			</if>
+			version = version + 1
+		</trim>
+		WHERE ID=#{id} and VERSION = #{version}
+	</update>
+	
+	 <insert id ="saveCreUserAccount" parameterType="cn.entity.CreUserAccount" >
+		INSERT INTO cre_user_account(
+			CRE_USER_ID,
+			ACCOUNT,
+			DELETE_STATUS,
+			VERSION,
+			CREATE_TIME,
+			UPDATE_TIME)
+		VALUES (
+			#{creUserId},
+			0,
+			'0',
+			0,
+			#{createTime},
+			#{updateTime}
+		)
+	 </insert>
+
+
+</mapper>
