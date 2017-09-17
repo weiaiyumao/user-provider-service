@@ -1,6 +1,7 @@
 package cn.service;
 
 import cn.entity.CreUserAccount;
+import main.java.cn.service.UserAccountBusService;
 
 /**
  * CreUserService
@@ -8,7 +9,7 @@ import cn.entity.CreUserAccount;
  * @author ChuangLan
  *
  */
-public interface CreUserAccountService {
+public interface CreUserAccountService extends UserAccountBusService{
 
 	CreUserAccount findCreUserAccountByUserId(Integer creUserId);
 
