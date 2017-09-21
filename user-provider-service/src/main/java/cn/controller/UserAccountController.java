@@ -1,15 +1,16 @@
 package cn.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.CreUserAccountService;
-import main.java.cn.domain.BackResult;
+import main.java.cn.common.BackResult;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 
-@RestController("/user")
+@RestController
+@RequestMapping("/userAccount")
 public class UserAccountController {
 
 	@Autowired
@@ -20,7 +21,7 @@ public class UserAccountController {
 	 * @param mobile
 	 * @return
 	 */
-	@GetMapping("/findbyMobile")
+	@RequestMapping("/findbyMobile")
 	public BackResult<UserAccountDomain> findbyMobile(String mobile) {
 		BackResult<UserAccountDomain> result = creUserAccountService.findByMobile(mobile);
 		return result;
@@ -31,7 +32,7 @@ public class UserAccountController {
 	 * @param trdOrderDomain
 	 * @return
 	 */
-	@GetMapping("/rechargeOrRefunds")
+	@RequestMapping("/rechargeOrRefunds")
 	public BackResult<Boolean> rechargeOrRefunds(TrdOrderDomain trdOrderDomain) {
 		BackResult<Boolean> result = creUserAccountService.rechargeOrRefunds(trdOrderDomain);
 		return result;

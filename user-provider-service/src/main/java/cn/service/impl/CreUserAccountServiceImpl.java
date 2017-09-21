@@ -1,6 +1,7 @@
 package cn.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +17,17 @@ import cn.entity.CreUser;
 import cn.entity.CreUserAccount;
 import cn.entity.TrdOrder;
 import cn.service.CreUserAccountService;
+import cn.utils.CommonUtils;
 import cn.utils.Constant;
+import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.BackResult;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 
 @Service
 public class CreUserAccountServiceImpl implements CreUserAccountService {
 
-	private final static Logger logger = LoggerFactory.getLogger(CreUserAccountService.class);
+	private final static Logger logger = LoggerFactory.getLogger(CreUserAccountServiceImpl.class);
 
 	@Autowired
 	private CreUserAccountMapper creUserAccountMapper;
@@ -38,7 +40,8 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 	@Override
 	public CreUserAccount findCreUserAccountByUserId(Integer creUserId) {
-		return creUserAccountMapper.findCreUserAccountByUserId(creUserId);
+		List<CreUserAccount> list = creUserAccountMapper.findCreUserAccountByUserId(creUserId);
+		return CommonUtils.isNotEmpty(list) ? null : list.get(0);
 	}
 
 	@Override
@@ -56,29 +59,34 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 		BackResult<UserAccountDomain> result = new BackResult<UserAccountDomain>();
 
-		CreUser user = creUserMapper.findCreUserByUserPhone(mobile);
+		try {
+			List<CreUser> user = creUserMapper.findCreUserByUserPhone(mobile);
 
-		if (null == user) {
-			result.setResultMsg("系统未查询到该用户");
-			result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
-			return result;
+			if (null == user) {
+				result.setResultMsg("系统未查询到该用户");
+				result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
+				return result;
+			}
+
+			CreUserAccount account = this.findCreUserAccountByUserId(user.get(0).getId());
+
+			if (null == account) {
+				result.setResultMsg("系统未查询到该用户账户信息");
+				result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
+				return result;
+			}
+
+			UserAccountDomain accountDomian = new UserAccountDomain();
+			accountDomian.setAccount(account.getAccount());
+			accountDomian.setCreUserId(user.get(0).getId());
+
+			result.setResultObj(accountDomian);
+		} catch (Exception e) {
+			logger.error("用户手机号：【" + mobile + "】执行获取账户信息发生系统异常：" + e.getMessage());
+			e.printStackTrace();
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
 		}
-
-		CreUserAccount account = this.findCreUserAccountByUserId(user.getId());
-
-		if (null == account) {
-			result.setResultMsg("系统未查询到该用户账户信息");
-			result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
-			return result;
-		}
-
-		UserAccountDomain accountDomian = new UserAccountDomain();
-		accountDomian.setAccount(account.getAccount());
-		accountDomian.setCreUserId(user.getId());
-
-		result.setResultObj(accountDomian);
-		result.setResultCode(ResultCode.RESULT_SUCCEED);
-		result.setResultMsg("成功");
 		return result;
 	}
 

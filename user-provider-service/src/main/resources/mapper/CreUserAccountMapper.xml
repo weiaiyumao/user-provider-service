@@ -15,7 +15,7 @@
        <result column="update_time" property="updateTime"></result>  
     </resultMap> 
 
-	<select id="findCreUserByUserId" resultMap="BaseResultMap" parameterType="HashMap">
+	<select id="findCreUserAccountByUserId" resultMap="BaseResultMap" parameterType="HashMap">
 		SELECT * FROM cre_user_account WHERE CRE_USER_ID = #{creUserId} AND DELETE_STATUS = '0'
 	</select>
 

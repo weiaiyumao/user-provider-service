@@ -29,7 +29,7 @@ public class CreUserAccountServiceTest {
 		System.out.println(row);
     } 
 	
-	@Test  
+//	@Test  
     public void findAllUsers()  {  
 		CreUserAccount creUserAccount = creUserAccountService.findCreUserAccountByUserId(1575);
 		creUserAccount.setAccount(10000);

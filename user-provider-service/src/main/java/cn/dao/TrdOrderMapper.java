@@ -2,8 +2,11 @@ package cn.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import cn.entity.TrdOrder;
 
+@Mapper
 public interface TrdOrderMapper {
 	
 	List<TrdOrder> findByOrderNo(String orderNo);
