@@ -16,5 +16,4 @@ public interface CreUserService extends UserBusService{
 	
 	int updateCreUser(CreUser creUser);
 	
-	
 }

@@ -35,4 +35,12 @@ public class UserController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/updateCreUser", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> updateCreUser(@RequestBody CreUserDomain creUserDomain) {
+		BackResult<CreUserDomain> result = creUserService.updateCreUser(creUserDomain);
+		return result;
+	}
+	
+	
+	
 }
