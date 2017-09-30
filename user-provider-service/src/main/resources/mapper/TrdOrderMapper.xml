@@ -9,7 +9,9 @@
        <result column="id" property="id"></result>  
        <result column="cre_user_id" property="creUserId"></result>  
        <result column="order_no" property="orderNo"></result>  
+       <result column="trade_no" property="tradeNo"></result>  
        <result column="cl_order_no" property="clOrderNo"></result>  
+       <result column="products_id" property="productsId"></result>  
        <result column="number" property="number"></result>  
        <result column="money" property="money"></result>  
        <result column="pay_type" property="payType"></result>  
@@ -29,7 +31,11 @@
 	<select id="findByClOrderNo" resultMap="BaseResultMap" parameterType="HashMap">
 		SELECT * FROM trd_order WHERE CL_ORDER_NO = #{clOrderNo} AND DELETE_STATUS = '0' 
 	</select>
-
+	
+	<select id="findByCreUserId" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT * FROM trd_order WHERE CRE_USER_ID = #{creUserId} AND DELETE_STATUS = '0' 
+	</select>
+	
 	<update id="updateTrdOrder" parameterType="cn.entity.TrdOrder">
 		UPDATE trd_order
 		<trim prefix="set" suffixOverrides=",">
@@ -39,8 +45,14 @@
 			<if test="orderNo != null">
 				ORDER_NO = #{orderNo},
 			</if>
+			<if test="tradeNo != null">
+				TRADE_NO = #{tradeNo},
+			</if>
 			<if test="clOrderNo != null">
 				CL_ORDER_NO = #{clOrderNo},
+			</if>
+			<if test="productsId != null">
+				PRODUCTS_ID = #{productsId},
 			</if>
 			<if test="number != null">
 				NUMBER = #{number},
@@ -75,7 +87,9 @@
 		INSERT INTO trd_order(
 			CRE_USER_ID,
 			ORDER_NO,
+			TRADE_NO,
 			CL_ORDER_NO,
+			PRODUCTS_ID,
 			NUMBER,
 			MONEY,
 			PAY_TYPE,
@@ -89,7 +103,9 @@
 		VALUES (
 			#{creUserId},
 			#{orderNo},
+			#{tradeNo},
 			#{clOrderNo},
+			#{productsId},
 			#{number},
 			#{money},
 			#{payType},

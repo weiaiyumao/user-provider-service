@@ -11,6 +11,8 @@ public interface CreUserMapper {
 
 	CreUser findByUserId(Integer clAccountId);
 	
+	CreUser findById(Integer id);
+	
 	List<CreUser> findCreUserByUserPhone(String userPhone);
 	
 	int saveCreUser(CreUser creUser);

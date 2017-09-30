@@ -49,7 +49,7 @@
 			UPDATE_TIME)
 		VALUES (
 			#{creUserId},
-			0,
+			#{account},
 			'0',
 			0,
 			#{createTime},

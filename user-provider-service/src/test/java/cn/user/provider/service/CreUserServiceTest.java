@@ -32,7 +32,7 @@ public class CreUserServiceTest {
 		System.out.println(row);
     } 
 	
-	@Test  
+//	@Test  
     public void findAllUsers()  {  
 		CreUser creUser = creUserService.findCreUserByUserPhone("15115367247");
 		creUser.setClAccountId(22233);

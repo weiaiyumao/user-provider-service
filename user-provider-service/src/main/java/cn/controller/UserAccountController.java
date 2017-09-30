@@ -1,5 +1,10 @@
 package cn.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +17,7 @@ import main.java.cn.domain.UserAccountDomain;
 @RestController
 @RequestMapping("/userAccount")
 public class UserAccountController {
-
+	
 	@Autowired
 	private CreUserAccountService creUserAccountService;
 
@@ -22,7 +27,7 @@ public class UserAccountController {
 	 * @return
 	 */
 	@RequestMapping("/findbyMobile")
-	public BackResult<UserAccountDomain> findbyMobile(String mobile) {
+	public BackResult<UserAccountDomain> findbyMobile(HttpServletRequest request, HttpServletResponse response,String mobile) {
 		BackResult<UserAccountDomain> result = creUserAccountService.findByMobile(mobile);
 		return result;
 	}
@@ -33,8 +38,36 @@ public class UserAccountController {
 	 * @return
 	 */
 	@RequestMapping("/rechargeOrRefunds")
-	public BackResult<Boolean> rechargeOrRefunds(TrdOrderDomain trdOrderDomain) {
+	public BackResult<Boolean> rechargeOrRefunds(HttpServletRequest request, HttpServletResponse response,TrdOrderDomain trdOrderDomain) {
 		BackResult<Boolean> result = creUserAccountService.rechargeOrRefunds(trdOrderDomain);
 		return result;
+	}
+	
+	/**
+	 * 查询消费记录
+	 * @param request
+	 * @param response
+	 * @param creUserId
+	 * @return
+	 */
+	@RequestMapping("/findTrdOrderByCreUserId")
+	public BackResult<List<TrdOrderDomain>> findTrdOrderByCreUserId(HttpServletRequest request, HttpServletResponse response,Integer creUserId){
+		BackResult<List<TrdOrderDomain>> result = creUserAccountService.findTrdOrderByCreUserId(creUserId);
+		return result;
+	}
+	
+	/**
+	 * 消费条数
+	 * @param trdOrderDomain
+	 * @return
+	 */
+	@RequestMapping("/consumeAccount")
+	public BackResult<Boolean> consumeAccount(String creUserId,String count) {
+		BackResult<Boolean> result = creUserAccountService.consumeAccount(creUserId, count);
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 }

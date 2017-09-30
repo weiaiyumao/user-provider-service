@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.CreUserAccountMapper;
 import cn.dao.CreUserMapper;
 import cn.entity.CreUser;
-import cn.redis.RedisLock;
+import cn.entity.CreUserAccount;
 import cn.service.CreUserService;
 import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
@@ -31,6 +31,9 @@ public class CreUserServiceImpl implements CreUserService {
 
 	@Autowired
 	private CreUserMapper creUserMapper;
+	
+	@Autowired
+	private CreUserAccountMapper creUserAccountMapper;
 
 	@Value("${api_host}")
 	private String apiHost;
@@ -41,8 +44,8 @@ public class CreUserServiceImpl implements CreUserService {
 	@Value("${activePlatformAccount}")
 	private String activePlatformAccount;
 
-	@Autowired
-	private RedisTemplate redisTemplate;
+//	@Autowired
+//	private RedisTemplate redisTemplate;
 
 	@Override
 	public CreUser findCreUserByUserPhone(String userPhone) {
@@ -55,27 +58,24 @@ public class CreUserServiceImpl implements CreUserService {
 
 		int row = 0;
 		
-		RedisLock lock = new RedisLock(redisTemplate, "userSave_" + creUser.getUserPhone(), 0, 0);
+//		RedisLock lock = new RedisLock(redisTemplate, "userSave_" + creUser.getUserPhone(), 0, 0);
 
 		try {
-			// 处理加锁业务
-			if (lock.lock()) {
-				CreUser user = this.findCreUserByUserPhone(creUser.getUserPhone());
+			CreUser user = this.findCreUserByUserPhone(creUser.getUserPhone());
 
-				if (null != user) {
-					logger.error("手机号为：" + creUser.getUserPhone() + "的账户已经注册成功");
-					return 1;
-				}
-
-				creUser.setCreateTime(new Date());
-				creUser.setUpdateTime(new Date());
-				creUserMapper.saveCreUser(creUser);
+			if (null != user) {
+				logger.error("手机号为：" + creUser.getUserPhone() + "的账户已经注册成功");
+				return 1;
 			}
+
+			creUser.setCreateTime(new Date());
+			creUser.setUpdateTime(new Date());
+			creUserMapper.saveCreUser(creUser);
 			
 		} catch (Exception e) {
 			logger.error("用户手机号码：【" + creUser.getUserPhone() + "】执行数据入库操作系统异常！" + e.getMessage());
 		} finally {
-			lock.unlock();
+//			lock.unlock();
 		}
 
 		return row;
@@ -156,11 +156,19 @@ public class CreUserServiceImpl implements CreUserService {
 			}
 
 			this.saveCreUser(creUser);
-
 			creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
-
-			
 			BeanUtils.copyProperties(creUser, creUserDomains);
+			
+			// 赠送5000 条
+			CreUserAccount creUserAccount = new CreUserAccount();
+			creUserAccount.setAccount(5000);
+			creUserAccount.setCreUserId(creUser.getId());
+			creUserAccount.setVersion(0);
+			creUserAccount.setCreateTime(new Date());
+			creUserAccount.setUpdateTime(new Date());
+			creUserAccount.setDeleteStatus("0");
+			creUserAccountMapper.saveCreUserAccount(creUserAccount);
+			
 			result.setResultObj(creUserDomains);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,7 +196,7 @@ public class CreUserServiceImpl implements CreUserService {
 				return result;
 			}
 			
-			BeanUtils.copyProperties(result.getResultObj(), user);
+			BeanUtils.copyProperties(creUserDomain, user);
 			
 			this.updateCreUser(user);
 			

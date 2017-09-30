@@ -12,7 +12,9 @@ public interface TrdOrderMapper {
 	List<TrdOrder> findByOrderNo(String orderNo);
 	
 	List<TrdOrder> findByClOrderNo(String clOrderNo);
-
+	
+	List<TrdOrder> findByCreUserId(Integer creUserId);
+	
 	int saveTrdOrder(TrdOrder trdOrder);
 	
 	int updateTrdOrder(TrdOrder trdOrder);

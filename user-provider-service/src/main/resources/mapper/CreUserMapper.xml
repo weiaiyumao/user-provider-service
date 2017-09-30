@@ -38,6 +38,10 @@
 		SELECT * FROM cre_user WHERE CL_ACCOUNT_ID = #{clAccountId} AND DELETE_STATUS = '0'
 	</select>
 	
+	<select id="findById" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT * FROM cre_user WHERE ID = #{id} AND DELETE_STATUS = '0'
+	</select>
+	
 	<update id="updateCreUser" parameterType="cn.entity.CreUser">
 		UPDATE cre_user
 		<trim prefix="set" suffixOverrides=",">

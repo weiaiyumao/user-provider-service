@@ -19,7 +19,11 @@ public class TrdOrder implements Serializable{
 	
 	private String orderNo; // 订单编号
 	
+	private String tradeNo; // 第三方支付订单号
+	
 	private String clOrderNo; // 创蓝充值订单业务号
+	
+	private Integer productsId; // 产品ID
 	
 	private Integer number; // 条数
 	
@@ -151,6 +155,22 @@ public class TrdOrder implements Serializable{
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+
+	public Integer getProductsId() {
+		return productsId;
+	}
+
+	public void setProductsId(Integer productsId) {
+		this.productsId = productsId;
 	}
 	
 	
