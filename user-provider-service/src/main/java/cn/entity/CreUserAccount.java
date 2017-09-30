@@ -18,6 +18,8 @@ public class CreUserAccount implements Serializable{
 	
 	private Integer account;
 	
+	private Integer apiAccount;
+	
 	private String deleteStatus;
 	
 	private Integer version;
@@ -81,5 +83,14 @@ public class CreUserAccount implements Serializable{
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	public Integer getApiAccount() {
+		return apiAccount;
+	}
+
+	public void setApiAccount(Integer apiAccount) {
+		this.apiAccount = apiAccount;
+	}
+	
 	
 }
