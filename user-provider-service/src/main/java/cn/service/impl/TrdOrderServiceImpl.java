@@ -134,17 +134,17 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			
 			if (productsId == 1) {
 				order.setNumber(500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(900));
+				order.setMoney(new BigDecimal(950));
 			} 
 			
 			if (productsId == 2) {
-				order.setNumber(1500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(2400));
+				order.setNumber(5000000);  // 根据条数计算 具体金额
+				order.setMoney(new BigDecimal(9000));
 			} 
 			
 			if (productsId == 3) {
-				order.setNumber(2500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(3500));
+				order.setNumber(10000000);  // 根据条数计算 具体金额
+				order.setMoney(new BigDecimal(16000));
 			} 
 			
 			if (productsId == 4) {
