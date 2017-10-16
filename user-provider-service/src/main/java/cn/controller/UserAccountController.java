@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +39,7 @@ public class UserAccountController {
 	 * @return
 	 */
 	@RequestMapping("/rechargeOrRefunds")
-	public BackResult<Boolean> rechargeOrRefunds(HttpServletRequest request, HttpServletResponse response,TrdOrderDomain trdOrderDomain) {
+	public BackResult<Boolean> rechargeOrRefunds(HttpServletRequest request, HttpServletResponse response,@RequestBody TrdOrderDomain trdOrderDomain) {
 		BackResult<Boolean> result = creUserAccountService.rechargeOrRefunds(trdOrderDomain);
 		return result;
 	}
