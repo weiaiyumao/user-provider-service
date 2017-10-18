@@ -20,7 +20,7 @@ public class ApiAccountInfoController {
 	private ApiAccountInfoBusService apiAccountInfoBusService;
 	
 	@RequestMapping("/findByCreUserId")
-	public BackResult<ApiAccountInfoDomain> save(String creUserId) {
+	public BackResult<ApiAccountInfoDomain> findByCreUserId(String creUserId) {
 		
 		BackResult<ApiAccountInfoDomain> result = new BackResult<ApiAccountInfoDomain>();
 		
@@ -37,7 +37,7 @@ public class ApiAccountInfoController {
 	}
 	
 	@RequestMapping("/updateApiAccountInfo")
-	public BackResult<ApiAccountInfoDomain> save(ApiAccountInfoDomain domain) {
+	public BackResult<ApiAccountInfoDomain> updateApiAccountInfo(ApiAccountInfoDomain domain) {
 		
 		BackResult<ApiAccountInfoDomain> result = new BackResult<ApiAccountInfoDomain>();
 		
