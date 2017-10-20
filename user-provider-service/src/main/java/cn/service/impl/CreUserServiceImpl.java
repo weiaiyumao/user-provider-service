@@ -161,7 +161,7 @@ public class CreUserServiceImpl implements CreUserService {
 			
 			// 赠送5000 条
 			CreUserAccount creUserAccount = new CreUserAccount();
-			creUserAccount.setAccount(2000); // 充值默认送2000
+			creUserAccount.setAccount(30); // 充值默认送30
 			creUserAccount.setCreUserId(creUser.getId());
 			creUserAccount.setVersion(0);
 			creUserAccount.setCreateTime(new Date());
