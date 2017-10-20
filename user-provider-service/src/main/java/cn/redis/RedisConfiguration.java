@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-@Configuration
+//@Configuration
 public class RedisConfiguration {
 	
 //	@Bean(name = "jedis.pool")
