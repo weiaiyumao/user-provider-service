@@ -29,6 +29,8 @@ import cn.utils.Constant;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.TrdOrderDomain;
+import main.java.cn.hhtp.util.HttpUtil;
+import main.java.cn.hhtp.util.MD5Util;
 import main.java.cn.sms.util.ChuangLanSmsUtil;
 import net.sf.json.JSONObject;
 
@@ -60,6 +62,15 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 
 	@Value("${alipay_callbackurl}")
 	private String alipayCallbackurl;
+	
+	@Value("${api_host}")
+	private String apiHost;
+
+	@Value("${api_key}")
+	private String apiKey;
+
+	@Value("${order}")
+	private String order;
 	
 	@Override
 	public TrdOrder findByOrderNo(String orderNo) {
@@ -111,6 +122,36 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			// 发送短信 提示 客户充值 成功
 			CreUser user = creUserMapper.findById(order.getCreUserId());
 			ChuangLanSmsUtil.getInstance().sendSmsByMobileForRecharge(user.getUserPhone(), order.getNumber());
+			
+			try {
+				// 给erp 推送下单成功消息
+				JSONObject jsonAccount = new JSONObject();
+				String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+				String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+				jsonAccount.put("account_name", user.getUserPhone());
+				jsonAccount.put("money", order.getMoney());
+				jsonAccount.put("amount", order.getNumber());
+				jsonAccount.put("bank", "5");
+				jsonAccount.put("pay_mode", "1");
+				jsonAccount.put("remark", "手机号：" + user.getUserPhone() + "客户充值成功");
+				jsonAccount.put("sequence", order.getTradeNo());
+				jsonAccount.put("timestamp", timestamp);
+				jsonAccount.put("token", tokenValue);
+				logger.info("下单成功,请求参数:" + jsonAccount);
+				String responseStr = HttpUtil.createHttpPost(apiHost + order, jsonAccount);
+				logger.info("下单成功,请求结果:" + responseStr);
+				JSONObject json = JSONObject.fromObject(responseStr);
+				if (json.get("status").equals("success")) {
+					// erp 请求成功 记录erpid
+					JSONObject data = JSONObject.fromObject(json.get("data"));
+					order.setOrderNo("ERPID_" + data.get("id").toString());
+					this.updateTrdOrder(order);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("订单号：" + orderNo + "请求erp下单数据异常：" + e.getMessage());
+			}
+			
 		} else {
 			// 根据根据回调状态修改 订单状态
 			order.setStatus(Constant.TRD_ORDER_STATUS_FAILED);
@@ -134,17 +175,17 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			
 			if (productsId == 1) {
 				order.setNumber(500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(900));
+				order.setMoney(new BigDecimal(950));
 			} 
 			
 			if (productsId == 2) {
-				order.setNumber(1500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(2400));
+				order.setNumber(5000000);  // 根据条数计算 具体金额
+				order.setMoney(new BigDecimal(9000));
 			} 
 			
 			if (productsId == 3) {
-				order.setNumber(2500000);  // 根据条数计算 具体金额
-				order.setMoney(new BigDecimal(3500));
+				order.setNumber(10000000);  // 根据条数计算 具体金额
+				order.setMoney(new BigDecimal(16000));
 			} 
 			
 			if (productsId == 4) {

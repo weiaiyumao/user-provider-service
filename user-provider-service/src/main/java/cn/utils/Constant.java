@@ -32,4 +32,5 @@ public class Constant {
 	 * 失败
 	 */
 	public final static String TRD_ORDER_STATUS_FAILED = "1";
+	
 }

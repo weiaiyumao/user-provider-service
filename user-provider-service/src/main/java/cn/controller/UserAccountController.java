@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.CreUserAccountService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 
@@ -38,8 +40,8 @@ public class UserAccountController {
 	 * @return
 	 */
 	@RequestMapping("/rechargeOrRefunds")
-	public BackResult<Boolean> rechargeOrRefunds(HttpServletRequest request, HttpServletResponse response,TrdOrderDomain trdOrderDomain) {
-		BackResult<Boolean> result = creUserAccountService.rechargeOrRefunds(trdOrderDomain);
+	public BackResult<ErpTradeDomain> rechargeOrRefunds(HttpServletRequest request, HttpServletResponse response,@RequestBody TrdOrderDomain trdOrderDomain) {
+		BackResult<ErpTradeDomain> result = creUserAccountService.rechargeOrRefunds(trdOrderDomain);
 		return result;
 	}
 	
