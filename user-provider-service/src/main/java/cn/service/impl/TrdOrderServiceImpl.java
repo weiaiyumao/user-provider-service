@@ -70,7 +70,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 	private String apiKey;
 
 	@Value("${order}")
-	private String order;
+	private String orderUrl;
 	
 	@Override
 	public TrdOrder findByOrderNo(String orderNo) {
@@ -146,7 +146,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				jsonAccount.put("timestamp", timestamp);
 				jsonAccount.put("token", tokenValue);
 				logger.info("下单成功,请求参数:" + jsonAccount);
-				String responseStr = HttpUtil.createHttpPost(apiHost + order, jsonAccount);
+				String responseStr = HttpUtil.createHttpPost(apiHost + orderUrl, jsonAccount);
 				logger.info("下单成功,请求结果:" + responseStr);
 				JSONObject json = JSONObject.fromObject(responseStr);
 				if (json.get("status").equals("success")) {
