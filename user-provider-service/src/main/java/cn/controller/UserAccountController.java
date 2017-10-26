@@ -69,6 +69,17 @@ public class UserAccountController {
 		return result;
 	}
 	
+	/**
+	 * 消费API条数
+	 * @param trdOrderDomain
+	 * @return
+	 */
+	@RequestMapping("/consumeApiAccount")
+	public BackResult<Boolean> consumeApiAccount(String creUserId,String count) {
+		BackResult<Boolean> result = creUserAccountService.consumeApiAccount(creUserId, count);
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		
 	}

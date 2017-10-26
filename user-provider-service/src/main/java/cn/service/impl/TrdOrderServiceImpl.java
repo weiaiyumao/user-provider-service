@@ -112,11 +112,19 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			order.setPayTime(new Date()); // 交易成功时间
 			order.setUpdateTime(new Date()); 
 			this.updateTrdOrder(order);
-
+			
 			// 客户账户条数增加
 			List<CreUserAccount> accountList = creUserAccountMapper.findCreUserAccountByUserId(order.getCreUserId());
 			CreUserAccount account = accountList.get(0);
-			account.setAccount(account.getAccount() + order.getNumber());
+			
+			if(orderNo.substring(0,4).equals("CLRQ")) {
+				// 账号二次清洗充值回调
+				account.setApiAccount(account.getApiAccount() + order.getNumber());
+			} else if (orderNo.substring(0,4).equals("CLSH")) {
+				// 空号检测充值回调
+				account.setAccount(account.getAccount() + order.getNumber());
+			}
+
 			creUserAccountMapper.updateCreUserAccount(account);
 
 			// 发送短信 提示 客户充值 成功
@@ -166,13 +174,13 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 		BackResult<String> result = new BackResult<String>();
 		try {
 			
-			String orderNo = "CLSH_" + System.currentTimeMillis();
+			String orderNo = String.valueOf(System.currentTimeMillis());
 			// 生成订单
 			TrdOrder order = new TrdOrder();
 			order.setCreUserId(creUserId);
 			order.setProductsId(productsId);
 			
-			
+			// 空号检测产品
 			if (productsId == 1) {
 				order.setNumber(500000);  // 根据条数计算 具体金额
 				order.setMoney(new BigDecimal(950));
@@ -195,10 +203,32 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
 			}
 			
+			// 账号二次清洗产品
+			if (productsId == 5) {
+				order.setNumber(100000 * 1);
+				order.setMoney(new BigDecimal(1900)); // 充值金额1900---10万条
+			}
+			
+			if (productsId == 6) {
+				order.setNumber(100000 * 5);
+				order.setMoney(new BigDecimal(9000)); // 充值金额9000---50万条
+			}
+			
+			if (productsId == 7) {
+				order.setNumber(100000 * 10);
+				order.setMoney(new BigDecimal(18000)); // 充值金额18000---100万条
+			}
+			
+			if (productsId == 8) {
+				order.setNumber(number);  
+				BigDecimal b1 = new BigDecimal(number);   
+				BigDecimal b2 = new BigDecimal(0.02);  // 单价2分钱一条
+				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+			}
 			
 			order.setPayType(payType);
 			order.setType(type);
-			order.setOrderNo(orderNo);
+			order.setOrderNo(productsId >= 5 ? "CLRQ_" + orderNo : "CLSH_" +orderNo);
 			order.setStatus(Constant.TRD_ORDER_STATUS_PROCESSING);
 			order.setDeleteStatus("0");
 			order.setVersion(0);
@@ -209,7 +239,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			// 向支付宝发送请求 生成二维码
 			AlipayClient alipayClient = new DefaultAlipayClient(alipayPayurl, alipayAppid, alipayPrivatekey,"json","utf-8", alipayPublickey, "RSA2");
 			AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest(); // 创建API对应的request类
-			String subject = "创蓝实号检测产品";
+			String subject = productsId >= 5 ? "创蓝账号二次清洗" : "创蓝实号检测产品";
 			String storeId = "创蓝数据";
 			request.setBizContent("{" + "    \"out_trade_no\":\""+orderNo+"\"," + "    \"total_amount\":\""+order.getMoney()+"\","
 					+ "    \"subject\":\""+subject+"\"," + "    \"store_id\":\""+storeId+"\","

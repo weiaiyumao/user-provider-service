@@ -20,7 +20,11 @@
     </resultMap> 
     
 	<select id="findByCreUserIdAndName" resultMap="BaseResultMap" parameterType="HashMap">
-		SELECT * FROM api_acount_info WHERE CRE_USER_ID = #{creUserId} AND NAME = #{name} AND DELETE_STATUS = '0'
+		SELECT * FROM api_acount_info WHERE CRE_USER_ID = #{0} AND NAME = #{1} AND DELETE_STATUS = '0'
+	</select>
+	
+	<select id="findByNameAndPwd" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT * FROM api_acount_info WHERE NAME = #{0} AND PASSWORD = #{1} AND DELETE_STATUS = '0'
 	</select>
 	
 	<select id="findByCreUserId" resultMap="BaseResultMap" parameterType="HashMap">
@@ -28,6 +32,38 @@
 	</select>
 
 	<update id="update" parameterType="cn.entity.ApiAccountInfo">
+		UPDATE api_acount_info
+		<trim prefix="set" suffixOverrides=",">
+			<if test="creUserId != null">
+				CRE_USER_ID = #{creUserId},
+			</if>
+			<if test="name != null">
+				NAME = #{name},
+			</if>
+			<if test="password != null">
+				PASSWORD = #{password},
+			</if>
+			<if test="numReminding != null">
+				NUM_REMINDING = #{numReminding},
+			</if>
+			<if test="bdIp != null">
+				BD_IP = #{bdIp},
+			</if>
+			<if test="pushMobiles != null">
+				PUSH_MOBILES = #{pushMobiles},
+			</if>
+			<if test="deleteStatus != null">
+				DELETE_STATUS = #{deleteStatus},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime},
+			</if>
+			version = version + 1
+		</trim>
+		WHERE ID=#{id} and VERSION = #{version}
+	</update>
+	
+	<update id="updateDomain" parameterType="main.java.cn.domain.ApiAccountInfoDomain">
 		UPDATE api_acount_info
 		<trim prefix="set" suffixOverrides=",">
 			<if test="creUserId != null">

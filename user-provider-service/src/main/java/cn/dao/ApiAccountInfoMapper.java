@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.entity.ApiAccountInfo;
+import main.java.cn.domain.ApiAccountInfoDomain;
 
 @Mapper
 public interface ApiAccountInfoMapper {
@@ -16,4 +17,8 @@ public interface ApiAccountInfoMapper {
 	int save(ApiAccountInfo info);
 	
 	int update(ApiAccountInfo info);
+	
+	int updateDomain(ApiAccountInfoDomain info);
+	
+	List<ApiAccountInfo> findByNameAndPwd(String name, String password);
 }

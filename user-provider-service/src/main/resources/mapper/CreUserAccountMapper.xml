@@ -29,7 +29,7 @@
 			<if test="account != null">
 				ACCOUNT = #{account},
 			</if>
-			<if test="account != null">
+			<if test="apiAccount != null">
 				API_ACCOUNT = #{apiAccount},
 			</if>
 			<if test="deleteStatus != null">
