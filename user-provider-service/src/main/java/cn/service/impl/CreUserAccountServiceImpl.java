@@ -430,6 +430,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			}
 
 			account.setAccount(account.getAccount() - Integer.valueOf(count));
+			account.setUpdateTime(new Date());
 			creUserAccountMapper.updateCreUserAccount(account);
 			result.setResultObj(Boolean.TRUE);
 		} catch (Exception e) {
@@ -469,6 +470,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			}
 
 			account.setApiAccount(account.getApiAccount() - Integer.valueOf(count));
+			account.setUpdateTime(new Date());
 			creUserAccountMapper.updateCreUserAccount(account);
 			result.setResultObj(Boolean.TRUE);
 			logger.info("用户id" + creUserId + "进行账户2次清洗本次成功消费：" + count + "条，剩余：" + (account.getApiAccount() - Integer.valueOf(count)) + "条");

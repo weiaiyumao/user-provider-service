@@ -1,7 +1,5 @@
 package cn.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.ApiAccountInfoDomain;
-import main.java.cn.domain.MobileInfoDomain;
 import main.java.cn.service.ApiAccountInfoBusService;
 
 @RestController
