@@ -27,7 +27,7 @@ public class PayCallbackController {
 	@RequestMapping("/alipayRecharge")
 	public BackResult<Boolean> recharge(String outTrdOrder,String orderStatus,String traOrder) {
 		
-		logger.info("订单号：【" + "】充值回调状态：【" + orderStatus + "】");
+		logger.info("订单号：【" + outTrdOrder +"】充值回调状态：【" + orderStatus + "】");
 		BackResult<Boolean> result = new BackResult<Boolean>();
 		try {
 			trdOrderService.payCallBack(outTrdOrder, orderStatus,traOrder);
