@@ -8,7 +8,8 @@
     <resultMap id="BaseResultMap" type="cn.entity.CreUserAccount" >  
        <result column="id" property="id"></result>  
        <result column="cre_user_id" property="creUserId"></result>  
-       <result column="account" property="account"></result>  
+       <result column="account" property="account"></result> 
+       <result column="api_account" property="apiAccount"></result>
        <result column="delete_status" property="deleteStatus"></result>
        <result column="version" property="version"></result>  
        <result column="create_time" property="createTime"></result>
@@ -28,6 +29,9 @@
 			<if test="account != null">
 				ACCOUNT = #{account},
 			</if>
+			<if test="apiAccount != null">
+				API_ACCOUNT = #{apiAccount},
+			</if>
 			<if test="deleteStatus != null">
 				DELETE_STATUS = #{deleteStatus},
 			</if>
@@ -43,6 +47,7 @@
 		INSERT INTO cre_user_account(
 			CRE_USER_ID,
 			ACCOUNT,
+			API_ACCOUNT,
 			DELETE_STATUS,
 			VERSION,
 			CREATE_TIME,
@@ -50,6 +55,7 @@
 		VALUES (
 			#{creUserId},
 			#{account},
+			#{apiAccount},
 			'0',
 			0,
 			#{createTime},

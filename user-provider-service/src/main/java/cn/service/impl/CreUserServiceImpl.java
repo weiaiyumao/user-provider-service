@@ -214,4 +214,31 @@ public class CreUserServiceImpl implements CreUserService {
 		return result;
 	}
 
+	@Override
+	public BackResult<CreUserDomain> findById(Integer id) {
+		
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+		
+		try {
+			CreUser user = creUserMapper.findById(id);
+			
+			if (null == user) {
+				result.setResultMsg("用户信息不存在，或者已经删除请联系客服");
+				result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
+			} else {
+				CreUserDomain domain = new CreUserDomain();
+				BeanUtils.copyProperties(user, domain);
+				result.setResultMsg("成功");
+				result.setResultObj(domain);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户ID：【" + id + "】获取用户信息异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+		return result;
+	}
+
 }

@@ -52,6 +52,11 @@ public class UserController {
 		return result;
 	}
 	
-	
+	@RequestMapping(value = "/findById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> findById(HttpServletRequest request, HttpServletResponse response,Integer id) {
+		
+		BackResult<CreUserDomain> result = creUserService.findById(id);
+		return result;
+	}
 	
 }
