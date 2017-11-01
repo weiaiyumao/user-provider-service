@@ -174,7 +174,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 		BackResult<String> result = new BackResult<String>();
 		try {
 			
-			String orderNo = String.valueOf(System.currentTimeMillis());
+			String timestamp = String.valueOf(System.currentTimeMillis());
 			// 生成订单
 			TrdOrder order = new TrdOrder();
 			order.setCreUserId(creUserId);
@@ -228,7 +228,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			
 			order.setPayType(payType);
 			order.setType(type);
-			order.setOrderNo(productsId >= 5 ? "CLRQ_" + orderNo : "CLSH_" +orderNo);
+			order.setOrderNo(productsId >= 5 ? "CLRQ_" + timestamp : "CLSH_" +timestamp);
 			order.setStatus(Constant.TRD_ORDER_STATUS_PROCESSING);
 			order.setDeleteStatus("0");
 			order.setVersion(0);
@@ -241,13 +241,13 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest(); // 创建API对应的request类
 			String subject = productsId >= 5 ? "创蓝账号二次清洗" : "创蓝实号检测产品";
 			String storeId = "创蓝数据";
-			request.setBizContent("{" + "    \"out_trade_no\":\""+orderNo+"\"," + "    \"total_amount\":\""+order.getMoney()+"\","
+			request.setBizContent("{" + "    \"out_trade_no\":\""+order.getOrderNo()+"\"," + "    \"total_amount\":\""+order.getMoney()+"\","
 					+ "    \"subject\":\""+subject+"\"," + "    \"store_id\":\""+storeId+"\","
 							+ "    \"timeout_express\":\"90m\"}");// 设置业务参数
 
 			request.setNotifyUrl(alipayCallbackurl);
 			
-			logger.info("支付申请参数：{out_trade_no:"+orderNo+"total_amount:"+order.getMoney()+"subject:"+subject+"store_id:"+storeId+"}");
+			logger.info("支付申请参数：{out_trade_no:"+order.getOrderNo()+"total_amount:"+order.getMoney()+"subject:"+subject+"store_id:"+storeId+"}");
 			
 			AlipayTradePrecreateResponse response = alipayClient.execute(request);
 
@@ -261,7 +261,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 					
 					JSONObject resultObj = new JSONObject();
 					resultObj.put("payUrl", json.get("qr_code").toString());
-					resultObj.put("orderNo", orderNo);
+					resultObj.put("orderNo", order.getOrderNo());
 					result.setResultObj(resultObj.toString());
 					
 				}
