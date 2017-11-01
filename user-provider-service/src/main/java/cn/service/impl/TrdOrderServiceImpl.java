@@ -216,7 +216,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			
 			if (productsId == 7) {
 				order.setNumber(100000 * 10);
-				order.setMoney(new BigDecimal(18000)); // 充值金额18000---100万条
+				order.setMoney(new BigDecimal(16000)); // 充值金额16000---100万条
 			}
 			
 			if (productsId == 8) {
