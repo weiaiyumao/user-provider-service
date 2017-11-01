@@ -198,6 +198,8 @@ public class CreUserServiceImpl implements CreUserService {
 			
 			BeanUtils.copyProperties(creUserDomain, user);
 			
+			user.setUserEmail(creUserDomain.getUserEmail());
+			
 			this.updateCreUser(user);
 			
 			BeanUtils.copyProperties(user, creuserdomain);
