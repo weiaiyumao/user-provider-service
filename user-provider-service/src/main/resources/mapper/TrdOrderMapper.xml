@@ -33,7 +33,7 @@
 	</select>
 	
 	<select id="findByCreUserId" resultMap="BaseResultMap" parameterType="HashMap">
-		SELECT * FROM trd_order WHERE CRE_USER_ID = #{creUserId} AND DELETE_STATUS = '0' AND STATUS = '1'
+		SELECT * FROM trd_order WHERE CRE_USER_ID = #{creUserId} AND DELETE_STATUS = '0' AND STATUS = '1' ORDER BY ID DESC
 	</select>
 	
 	<update id="updateTrdOrder" parameterType="cn.entity.TrdOrder">
