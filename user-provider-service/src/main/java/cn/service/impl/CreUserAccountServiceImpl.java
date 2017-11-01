@@ -23,6 +23,7 @@ import cn.utils.CommonUtils;
 import cn.utils.Constant;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 
@@ -66,12 +67,12 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 		try {
 			List<CreUser> user = creUserMapper.findCreUserByUserPhone(mobile);
 
-			if (null == user) {
+			if (CommonUtils.isNotEmpty(user)) {
 				result.setResultMsg("系统未查询到该用户");
 				result.setResultCode(ResultCode.RESULT_SUCCEED);
 				return result;
 			}
-
+			
 			CreUserAccount account = this.findCreUserAccountByUserId(user
 					.get(0).getId());
 
@@ -97,31 +98,34 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 	}
 
 	@Transactional
-	public synchronized BackResult<Boolean> rechargeOrRefunds(
+	public synchronized BackResult<ErpTradeDomain> rechargeOrRefunds(
 			TrdOrderDomain trdOrderDomain) {
 
-		BackResult<Boolean> result = new BackResult<Boolean>();
+		BackResult<ErpTradeDomain> result = new BackResult<ErpTradeDomain>();
 
 		// 账号检测
-		CreUser creUser = creUserMapper.findById(trdOrderDomain
-				.getCreUserId());
+		List<CreUser> userList = creUserMapper.findCreUserByUserPhone(trdOrderDomain.getMobile());
 
-		if (null == creUser) {
-			result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
-			result.setResultMsg("数据库不存在该用户");
+		if (CommonUtils.isNotEmpty(userList)) {
+			result.setResultMsg("系统未查询到该用户");
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultObj(null);
 			return result;
 		}
 		
 		// 账户检测
-		CreUserAccount creUserAccount = this
-				.findCreUserAccountByUserId(trdOrderDomain
-						.getCreUserId());
+		CreUserAccount creUserAccount = this.findCreUserAccountByUserId(userList.get(0).getId());
 
 		if (null == creUserAccount) {
 			result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
 			result.setResultMsg("数据库不存在该用户的账户记录");
+			result.setResultObj(null);
 			return result;
 		}
+		
+		// 设置用户id 和订单号
+		trdOrderDomain.setCreUserId(userList.get(0).getId());
+		trdOrderDomain.setOrderNo("CLSH_" + System.currentTimeMillis());
 
 		switch (trdOrderDomain.getType()) {
 		case Constant.TRD_ORDER_TYPE_RECHARGE:
@@ -134,6 +138,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
 			result.setResultMsg("用户ID为" + trdOrderDomain.getCreUserId()
 					+ "无法解析的数据类型：【" + trdOrderDomain.getType() + "】");
+			result.setResultObj(null);
 			break;
 		}
 
@@ -141,10 +146,10 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 	}
 
 	@Transactional
-	public BackResult<Boolean> recharge(TrdOrderDomain trdOrderDomain,
+	public BackResult<ErpTradeDomain> recharge(TrdOrderDomain trdOrderDomain,
 			CreUserAccount creUserAccount) {
 
-		BackResult<Boolean> result = new BackResult<Boolean>();
+		BackResult<ErpTradeDomain> result = new BackResult<ErpTradeDomain>();
 
 		try {
 
@@ -155,6 +160,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			if (!CommonUtils.isNotEmpty(orderList)) {
 				result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 				result.setResultMsg("该订单已经处理，不能重复处理");
+				result.setResultObj(null);
 				return result;
 			}
 
@@ -172,6 +178,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品1充值金额必须为950");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -185,6 +192,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品2充值金额必须为9000");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -198,6 +206,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品3充值金额必须为16000");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -205,7 +214,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			
 			if (trdOrderDomain.getProductsId() == 4) {
 				order.setMoney(trdOrderDomain.getMoney());
-				order.setNumber(Integer.valueOf(trdOrderDomain.getMoney().divide(new BigDecimal(0.002),0).toString()));
+				order.setNumber(trdOrderDomain.getMoney().divide(new BigDecimal(0.002),0).intValue());
 			}
 
 			order.setCreUserId(trdOrderDomain.getCreUserId());
@@ -225,7 +234,11 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			creUserAccount.setAccount(creUserAccount.getAccount()
 					+ order.getNumber());
 			this.updateCreUserAccount(creUserAccount);
-
+			
+			ErpTradeDomain domain = new ErpTradeDomain();
+			domain.setMoney(trdOrderDomain.getMoney());
+			domain.setCount(order.getNumber());
+			result.setResultObj(domain);
 		} catch (Exception e) {
 			logger.error("用户ID：【" + trdOrderDomain.getCreUserId()
 					+ "】执行充值，充值金额：【" + trdOrderDomain.getMoney() + "】，充值条数；【"
@@ -233,16 +246,17 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			e.printStackTrace();
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据落地异常");
+			result.setResultObj(null);
 		}
 
 		return result;
 	}
 
 	@Transactional
-	public BackResult<Boolean> refunds(TrdOrderDomain trdOrderDomain,
+	public BackResult<ErpTradeDomain> refunds(TrdOrderDomain trdOrderDomain,
 			CreUserAccount creUserAccount) {
 
-		BackResult<Boolean> result = new BackResult<Boolean>();
+		BackResult<ErpTradeDomain> result = new BackResult<ErpTradeDomain>();
 
 		try {
 
@@ -252,6 +266,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			if (!CommonUtils.isNotEmpty(orderList)) {
 				result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 				result.setResultMsg("该订单已经处理，不能重复处理");
+				result.setResultObj(null);
 				return result;
 			}
 
@@ -269,6 +284,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品1退款金额必须为950");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -282,6 +298,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品2退款金额必须为9000");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -295,6 +312,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				} else {
 					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
 					result.setResultMsg("产品3退款金额必须为16000");
+					result.setResultObj(null);
 					return result;
 				}
 				
@@ -302,7 +320,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			
 			if (trdOrderDomain.getProductsId() == 4) {
 				order.setMoney(trdOrderDomain.getMoney());
-				order.setNumber(Integer.valueOf(trdOrderDomain.getMoney().divide(new BigDecimal(0.002),0).toString()));
+				order.setNumber(trdOrderDomain.getMoney().divide(new BigDecimal(0.002),0).intValue());
 			}
 			
 
@@ -320,6 +338,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 				logger.info("用户ID：【" + trdOrderDomain.getCreUserId() + "】执行退款，退款金额：【"
 						+ trdOrderDomain.getMoney() + "】，退款条数；【"
 						+ order.getNumber() + "】；当前账户剩余条数【" + creUserAccount.getAccount() + "】不支持本次退款");
+				result.setResultObj(null);
 				
 				return result;
 			}
@@ -333,12 +352,17 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			logger.info("用户ID：【" + trdOrderDomain.getCreUserId() + "】执行退款，退款金额：【"
 					+ trdOrderDomain.getMoney() + "】，退款条数；【"
 					+ order.getNumber() + "】");
-
+			
+			ErpTradeDomain domain = new ErpTradeDomain();
+			domain.setMoney(trdOrderDomain.getMoney());
+			domain.setCount(order.getNumber());
+			result.setResultObj(domain);
 		} catch (Exception e) {
 			logger.error("用户ID：【" + trdOrderDomain.getCreUserId() + "】执行退款，退款金额：【" + trdOrderDomain.getMoney() + "】，退款条数；【" + trdOrderDomain.getNumber() + "】，发生系统异常：" + e.getMessage());
 			e.printStackTrace();
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据落地异常");
+			result.setResultObj(null);
 		}
 
 		return result;
