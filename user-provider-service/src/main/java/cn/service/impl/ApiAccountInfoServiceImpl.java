@@ -182,12 +182,23 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 			if (!CommonUtils.isNotString(list.get(0).getBdIp())) {
 				
 				//
-				if (CommonUtils.isNotString(ip) || list.get(0).getBdIp().indexOf(ip) == -1) {
+				Boolean fag = false;
+				
+				String[] ips = list.get(0).getBdIp().split(",");
+				
+				for (String str : ips) {
+					
+					if (str.equals(ip)) {
+						fag = true;
+					}
+					
+				}
+				
+				if (!fag) {
 					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
 					result.setResultMsg("API商户绑定的IP地址验证校验失败！");
 					return result;
 				}
-				
 				
 			}
 			
