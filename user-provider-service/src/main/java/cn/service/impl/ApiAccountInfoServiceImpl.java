@@ -179,10 +179,16 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 			}
 
 			// 2、检测api账户ip绑定信息 如果商户设置了ip则进行验证 反之不验证改参数
-			if (!CommonUtils.isNotString(list.get(0).getBdIp()) && !CommonUtils.isNotString(ip)  && list.get(0).getBdIp().indexOf(ip) == -1) {
-				result.setResultCode(ResultCode.RESULT_API_NOTIPS);
-				result.setResultMsg("API商户绑定的IP地址验证校验失败！");
-				return result;
+			if (!CommonUtils.isNotString(list.get(0).getBdIp())) {
+				
+				//
+				if (CommonUtils.isNotString(ip) || list.get(0).getBdIp().indexOf(ip) == -1) {
+					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
+					result.setResultMsg("API商户绑定的IP地址验证校验失败！");
+					return result;
+				}
+				
+				
 			}
 			
 			// 3、检测剩余可消费条数信息
