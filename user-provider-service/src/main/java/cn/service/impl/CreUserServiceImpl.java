@@ -163,6 +163,7 @@ public class CreUserServiceImpl implements CreUserService {
 			CreUserAccount creUserAccount = new CreUserAccount();
 			creUserAccount.setAccount(30); // 充值默认送30
 			creUserAccount.setCreUserId(creUser.getId());
+			creUserAccount.setApiAccount(0); // 默认api账户0条
 			creUserAccount.setVersion(0);
 			creUserAccount.setCreateTime(new Date());
 			creUserAccount.setUpdateTime(new Date());
