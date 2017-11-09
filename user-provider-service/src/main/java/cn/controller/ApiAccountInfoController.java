@@ -77,4 +77,16 @@ public class ApiAccountInfoController {
 			int checkCount){
 		return apiAccountInfoBusService.checkApiAccount(apiName, password, ip, checkCount);
 	}
+	
+	/**
+	 * 检测api账户信息
+	 * @param apiName
+	 * @param password
+	 * @param ip
+	 * @return
+	 */
+	@RequestMapping("/checkApiAccountInfo")
+	public BackResult<Integer> checkApiAccount(String apiName, String password, String ip){
+		return apiAccountInfoBusService.checkApiAccount(apiName, password, ip);
+	}
 }

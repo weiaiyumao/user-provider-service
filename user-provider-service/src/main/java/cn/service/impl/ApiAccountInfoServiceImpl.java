@@ -231,4 +231,53 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 		return result;
 	}
 
+	@Override
+	public BackResult<Integer> checkApiAccount(String apiName, String password, String ip) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		try {
+
+			// 1、检测api账户信息
+			List<ApiAccountInfo> list = apiAccountInfoMapper.findByNameAndPwd(apiName, password);
+			if (CommonUtils.isNotEmpty(list)) {
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				return result;
+			}
+
+			// 2、检测api账户ip绑定信息 如果商户设置了ip则进行验证 反之不验证改参数
+			if (!CommonUtils.isNotString(list.get(0).getBdIp())) {
+				
+				//
+				Boolean fag = false;
+				
+				String[] ips = list.get(0).getBdIp().split(",");
+				
+				for (String str : ips) {
+					
+					if (str.equals(ip)) {
+						fag = true;
+					}
+					
+				}
+				
+				if (!fag) {
+					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
+					result.setResultMsg("API商户绑定的IP地址验证校验失败！");
+					return result;
+				}
+				
+			}
+			
+			result.setResultObj(list.get(0).getCreUserId());
+			result.setResultMsg("账户检测正常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("检测API账户[" + apiName + "]信息出现系统异常" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+		
+		return result;
+	}
+
 }
