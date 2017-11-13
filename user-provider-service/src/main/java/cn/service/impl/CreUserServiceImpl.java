@@ -15,8 +15,10 @@ import cn.dao.CreUserAccountMapper;
 import cn.dao.CreUserMapper;
 import cn.entity.CreUser;
 import cn.entity.CreUserAccount;
+import cn.redis.RedisClient;
 import cn.service.CreUserService;
 import cn.utils.CommonUtils;
+import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.CreUserDomain;
@@ -44,8 +46,8 @@ public class CreUserServiceImpl implements CreUserService {
 	@Value("${activePlatformAccount}")
 	private String activePlatformAccount;
 
-//	@Autowired
-//	private RedisTemplate redisTemplate;
+	@Autowired  
+    protected RedisClient redisClinet;  
 
 	@Override
 	public CreUser findCreUserByUserPhone(String userPhone) {
@@ -115,7 +117,7 @@ public class CreUserServiceImpl implements CreUserService {
 	}
 
 	@Transactional
-	public BackResult<CreUserDomain> findOrsaveUser(CreUserDomain creUserDomain) {
+	public synchronized BackResult<CreUserDomain> findOrsaveUser(CreUserDomain creUserDomain) {
 		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
 
 		try {
@@ -125,52 +127,76 @@ public class CreUserServiceImpl implements CreUserService {
 			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
 
 			if (null != user) {
+				// 修改最后登录时间 和登录ＩＰ
+				user.setLastLoginIp(creUserDomain.getLastLoginIp());
+				user.setLastLoginTime(new Date());
+				this.updateCreUser(user);
 				BeanUtils.copyProperties(user, creUserDomains);
 				result.setResultObj(creUserDomains);
 				return result;
+			} else {
+				// 不存在重新注册
+				String register_key = "USER_IP_" + creUserDomain.getLastLoginIp().replace(".", "");
+				String count  = redisClinet.get(register_key);
+				
+				if (count == null || count.equals("") || count.equals("null")) {
+					count = "0";
+					redisClinet.set(register_key, "1",DateUtils.getMiao());
+				}
+				
+				if (Integer.parseInt(redisClinet.get(register_key)) <= 2) {
+					CreUser creUser = new CreUser();
+
+					BeanUtils.copyProperties(creUserDomain, creUser);
+					creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+					creUser.setLastLoginTime(new Date());
+
+					JSONObject josnObject = new JSONObject();
+					String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+					String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+					josnObject.put("account_name", creUserDomain.getUserPhone());
+					josnObject.put("timestamp", timestamp);
+					josnObject.put("token", tokenValue);
+
+					logger.info("接口请求参数" + josnObject.toString());
+					String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
+							josnObject);
+					logger.info("接口返回结果" + responseStr);
+
+					JSONObject json = JSONObject.fromObject(responseStr);
+
+					if (json.get("status").equals("success")) {
+						JSONObject data = JSONObject.fromObject(json.get("data"));
+						creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
+					}
+
+					this.saveCreUser(creUser);
+					creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+					BeanUtils.copyProperties(creUser, creUserDomains);
+					
+					// 赠送5000 条
+					CreUserAccount creUserAccount = new CreUserAccount();
+					creUserAccount.setAccount(5000); // 充值默认送5000
+					creUserAccount.setCreUserId(creUser.getId());
+					creUserAccount.setApiAccount(0); // 默认api账户0条
+					creUserAccount.setVersion(0);
+					creUserAccount.setCreateTime(new Date());
+					creUserAccount.setUpdateTime(new Date());
+					creUserAccount.setDeleteStatus("0");
+					creUserAccountMapper.saveCreUserAccount(creUserAccount);
+					
+					result.setResultObj(creUserDomains);
+					
+					// 同一ＩＰ　次数加　１　
+					int redisCount = Integer.parseInt(count) + 1;
+					redisClinet.set(register_key, String.valueOf(redisCount),DateUtils.getMiao());
+				} else {
+					result.setResultCode(ResultCode.RESULT_REGISTERFAILED);
+					result.setResultMsg("IP地址超过注册限制");
+				}
+				
 			}
 			
-			// 不存在重新注册
-
-			CreUser creUser = new CreUser();
-
-			BeanUtils.copyProperties(creUserDomain, creUser);
-
-			JSONObject josnObject = new JSONObject();
-			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
-			josnObject.put("account_name", creUserDomain.getUserPhone());
-			josnObject.put("timestamp", timestamp);
-			josnObject.put("token", tokenValue);
-
-			logger.info("接口请求参数" + josnObject.toString());
-			String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
-					josnObject);
-			logger.info("接口返回结果" + responseStr);
-
-			JSONObject json = JSONObject.fromObject(responseStr);
-
-			if (json.get("status").equals("success")) {
-				JSONObject data = JSONObject.fromObject(json.get("data"));
-				creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
-			}
-
-			this.saveCreUser(creUser);
-			creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
-			BeanUtils.copyProperties(creUser, creUserDomains);
-			
-			// 赠送5000 条
-			CreUserAccount creUserAccount = new CreUserAccount();
-			creUserAccount.setAccount(5000); // 充值默认送5000
-			creUserAccount.setCreUserId(creUser.getId());
-			creUserAccount.setApiAccount(0); // 默认api账户0条
-			creUserAccount.setVersion(0);
-			creUserAccount.setCreateTime(new Date());
-			creUserAccount.setUpdateTime(new Date());
-			creUserAccount.setDeleteStatus("0");
-			creUserAccountMapper.saveCreUserAccount(creUserAccount);
-			
-			result.setResultObj(creUserDomains);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());

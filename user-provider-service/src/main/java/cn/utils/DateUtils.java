@@ -757,6 +757,17 @@ public class DateUtils {
         return format.format(date); 
 	}
 	
+	/**
+	 * 获取今天还剩余多少秒
+	 * @return
+	 */
+	public static int getMiao(){  
+	    Calendar curDate = Calendar.getInstance();  
+	    Calendar tommorowDate = new GregorianCalendar(curDate  
+	            .get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate  
+	            .get(Calendar.DATE) + 1, 0, 0, 0);  
+	    return (int)(tommorowDate.getTimeInMillis() - curDate .getTimeInMillis()) / 1000;  
+	}  
 
 	public static void main(String[] args) {
 
@@ -767,7 +778,9 @@ public class DateUtils {
 //		System.out.println(DateUtils.parseDate("2017-01-05 12:27:23", "yyyy-MM-dd hh:mm:ss"));
 		
 		
-		        System.out.println( DateUtils.DateAddhours("2017-07-07 16:42:30", -8));
+//		      r  System.out.println( DateUtils.DateAddhours("2017-07-07 16:42:30", -8));
+		        
+		        System.out.println(DateUtils.getMiao());
 	}
-
+	
 }
