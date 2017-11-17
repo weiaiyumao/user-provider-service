@@ -270,4 +270,37 @@ public class CreUserServiceImpl implements CreUserService {
 		return result;
 	}
 
+	@Transactional
+	public BackResult<CreUserDomain> updateCreUser(String userPhone, String email) {
+		CreUser user = this.findCreUserByUserPhone(userPhone);
+
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+		
+		CreUserDomain creuserdomain = new CreUserDomain();
+		
+		try {
+			if (null == user) {
+				result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
+				result.setResultMsg("用户信息不存在");
+				return result;
+			}
+			
+			user.setUserEmail(email);
+			
+			this.updateCreUser(user);
+			
+			BeanUtils.copyProperties(user, creuserdomain);
+			
+			result.setResultObj(creuserdomain);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号：【" + userPhone + "】执行修改操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据修改失败");
+		}
+		
+		return result;
+	}
+
 }

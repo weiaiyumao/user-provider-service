@@ -52,6 +52,13 @@ public class UserController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/updateCreUserEmail", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> updateCreUser(HttpServletRequest request, HttpServletResponse response,String userPhone, String email) {
+		
+		BackResult<CreUserDomain> result = creUserService.updateCreUser(userPhone,email);
+		return result;
+	}
+	
 	@RequestMapping(value = "/findById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<CreUserDomain> findById(HttpServletRequest request, HttpServletResponse response,Integer id) {
 		
