@@ -66,4 +66,10 @@ public class UserController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/activateUser", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> activateUser(@RequestBody CreUserDomain creUserDomain){
+		BackResult<CreUserDomain> result = creUserService.activateUser(creUserDomain);
+		return result;
+	}
+	
 }

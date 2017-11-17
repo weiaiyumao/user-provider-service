@@ -303,4 +303,75 @@ public class CreUserServiceImpl implements CreUserService {
 		return result;
 	}
 
+	@Transactional
+	public BackResult<CreUserDomain> activateUser(CreUserDomain creUserDomain) {
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+
+		try {
+			
+			CreUserDomain creUserDomains = new CreUserDomain();
+
+			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+
+			if (null != user) {
+				BeanUtils.copyProperties(user, creUserDomains);
+				result.setResultObj(creUserDomains);
+				result.setResultMsg("账户已经激活");
+				return result;
+			} else {
+				// 不存在重新注册
+				CreUser creUser = new CreUser();
+
+				BeanUtils.copyProperties(creUserDomain, creUser);
+				creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+				creUser.setLastLoginTime(new Date());
+
+				JSONObject josnObject = new JSONObject();
+				String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+				String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+				josnObject.put("account_name", creUserDomain.getUserPhone());
+				josnObject.put("timestamp", timestamp);
+				josnObject.put("token", tokenValue);
+
+				logger.info("接口请求参数" + josnObject.toString());
+				String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
+						josnObject);
+				logger.info("接口返回结果" + responseStr);
+
+				JSONObject json = JSONObject.fromObject(responseStr);
+
+				if (json.get("status").equals("success")) {
+					JSONObject data = JSONObject.fromObject(json.get("data"));
+					creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
+				}
+
+				this.saveCreUser(creUser);
+				creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+				BeanUtils.copyProperties(creUser, creUserDomains);
+				
+				// 赠送5000 条
+				CreUserAccount creUserAccount = new CreUserAccount();
+				creUserAccount.setAccount(5000); // 充值默认送5000
+				creUserAccount.setCreUserId(creUser.getId());
+				creUserAccount.setApiAccount(0); // 默认api账户0条
+				creUserAccount.setVersion(0);
+				creUserAccount.setCreateTime(new Date());
+				creUserAccount.setUpdateTime(new Date());
+				creUserAccount.setDeleteStatus("0");
+				creUserAccountMapper.saveCreUserAccount(creUserAccount);
+				
+				result.setResultObj(creUserDomains);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据入库失败");
+		}
+
+		return result;
+	}
+
 }
