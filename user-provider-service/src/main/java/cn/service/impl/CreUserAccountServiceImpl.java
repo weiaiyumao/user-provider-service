@@ -275,55 +275,8 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			// 保存流水记录
 			BeanUtils.copyProperties(trdOrderDomain, order);
 
-			
-			if (trdOrderDomain.getProductsId() == 1) {
-				
-				if (new BigDecimal(950).equals(trdOrderDomain.getMoney())) {
-					order.setNumber(500000);  
-					order.setMoney(new BigDecimal(950));
-				} else {
-					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
-					result.setResultMsg("产品1退款金额必须为950");
-					result.setResultObj(null);
-					return result;
-				}
-				
-			} 
-			
-			if (trdOrderDomain.getProductsId() == 2) {
-				
-				if (new BigDecimal(9000).equals(trdOrderDomain.getMoney())) {
-					order.setNumber(5000000);  // 根据条数计算 具体金额
-					order.setMoney(new BigDecimal(9000));
-				} else {
-					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
-					result.setResultMsg("产品2退款金额必须为9000");
-					result.setResultObj(null);
-					return result;
-				}
-				
-			} 
-			
-			if (trdOrderDomain.getProductsId() == 3) {
-				
-				if (new BigDecimal(16000).equals(trdOrderDomain.getMoney())) {
-					order.setNumber(10000000);  // 根据条数计算 具体金额
-					order.setMoney(new BigDecimal(16000));
-				} else {
-					result.setResultCode(ResultCode.RESULT_BUSINESS_EXCEPTIONS);
-					result.setResultMsg("产品3退款金额必须为16000");
-					result.setResultObj(null);
-					return result;
-				}
-				
-			} 
-			
-			if (trdOrderDomain.getProductsId() == 4) {
-				order.setMoney(trdOrderDomain.getMoney());
-				order.setNumber(trdOrderDomain.getMoney().divide(new BigDecimal(0.002),0).intValue());
-			}
-			
-
+			order.setMoney(trdOrderDomain.getMoney());
+			order.setNumber(trdOrderDomain.getNumber());
 			order.setCreUserId(creUserAccount.getCreUserId());
 			order.setCreateTime(new Date());
 			order.setUpdateTime(new Date());
