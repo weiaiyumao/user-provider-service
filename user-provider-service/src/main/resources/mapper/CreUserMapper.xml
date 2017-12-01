@@ -30,6 +30,10 @@
        <result column="bit_onoff" property="bitOnoff"></result>
     </resultMap> 
 
+	<select id="findAll" resultMap="BaseResultMap">
+		SELECT * FROM cre_user WHERE DELETE_STATUS = '0'
+	</select>
+	
 	<select id="findCreUserByUserPhone" resultMap="BaseResultMap" parameterType="HashMap">
 		SELECT * FROM cre_user WHERE USER_PHONE = #{userPhone} AND DELETE_STATUS = '0'
 	</select>
@@ -42,6 +46,11 @@
 		SELECT * FROM cre_user WHERE ID = #{id} AND DELETE_STATUS = '0'
 	</select>
 	
+	<update id="updateCreUserClAccountId" parameterType="string">
+		update cre_user
+		set CL_ACCOUNT_ID = #{clAccountId}
+		WHERE USER_PHONE = #{userPhone} AND DELETE_STATUS = '0'
+	</update>
 	<update id="updateCreUser" parameterType="cn.entity.CreUser">
 		UPDATE cre_user
 		<trim prefix="set" suffixOverrides=",">

@@ -22,6 +22,7 @@ import cn.utils.CommonUtils;
 import cn.utils.Constant;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 
@@ -92,9 +93,9 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 	}
 
 	@Override
-	public BackResult<Boolean> rechargeOrRefunds(TrdOrderDomain trdOrderDomain) {
+	public BackResult<ErpTradeDomain> rechargeOrRefunds(TrdOrderDomain trdOrderDomain) {
 
-		BackResult<Boolean> result = new BackResult<Boolean>();
+		BackResult<ErpTradeDomain> result = new BackResult<ErpTradeDomain>();
 
 		// 账号检测
 		CreUser creUser = creUserMapper.findByUserId(trdOrderDomain.getCreUserId());
@@ -107,10 +108,10 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 		switch (trdOrderDomain.getType()) {
 		case Constant.TRD_ORDER_TYPE_RECHARGE:
-			result = this.recharge(trdOrderDomain, creUser.getId());
+//			result = this.recharge(trdOrderDomain, creUser.getId());
 			break;
 		case Constant.TRD_ORDER_TYPE_REFUNDS:
-			result = this.refunds(trdOrderDomain, creUser.getId());
+//			result = this.refunds(trdOrderDomain, creUser.getId());
 			break;
 		default:
 			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
@@ -284,6 +285,12 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public BackResult<Boolean> consumeApiAccount(String creUserId, String count) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

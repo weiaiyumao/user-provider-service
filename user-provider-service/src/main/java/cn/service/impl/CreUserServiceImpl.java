@@ -214,4 +214,10 @@ public class CreUserServiceImpl implements CreUserService {
 		return result;
 	}
 
+	@Override
+	public BackResult<CreUserDomain> findById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

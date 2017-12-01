@@ -20,14 +20,14 @@ public class CreUserAccountServiceTest {
     private CreUserAccountService creUserAccountService;  
 	
 	@Test  
-    public void saveCreUser()  {  
+    public void saveCreUser(){  
     	CreUserAccount creUserAccount = new CreUserAccount();
     	creUserAccount.setCreUserId(1575);
 		creUserAccount.setCreateTime(new Date());
 		creUserAccount.setUpdateTime(new Date());
 		int row = creUserAccountService.saveCreUserAccount(creUserAccount);
 		System.out.println(row);
-    } 
+    }
 	
 //	@Test  
     public void findAllUsers()  {  

@@ -1,9 +1,7 @@
 
-      
 server:
   port: 8767
   
 spring:
   application:
-    name: user-provider-service
-           
+    name: user-provider-service  
