@@ -196,28 +196,28 @@ public class TodayDataSaveDBTask {
 		
 		public void updateCreUseErpid(String mobile){
 			net.sf.json.JSONObject josnObject = new net.sf.json.JSONObject();
+			// 给erp 推送下单成功消息
+			JSONObject jsonAccount = new JSONObject();
 			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + "chuanglan_real_phone_test_8888");
-			josnObject.put("account_name", mobile);
-			josnObject.put("timestamp", timestamp);
-			josnObject.put("token", tokenValue);
-
-			logger.info("接口请求参数" + josnObject.toString());
-			String responseStr = SendRequestService.getInstance().sendRequest("https://erp.253.com/" + "realPhoneTestApi/activePlatformAccount",josnObject);
-			logger.info("接口返回结果" + responseStr);
-
-			net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(responseStr);
-
+			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+			jsonAccount.put("account_name", user.getUserPhone());
+			jsonAccount.put("money", order.getMoney());
+			jsonAccount.put("amount", order.getNumber());
+			jsonAccount.put("bank", "5");
+			jsonAccount.put("pay_mode", "1");
+			jsonAccount.put("remark", "手机号：" + user.getUserPhone() + "客户充值成功");
+			jsonAccount.put("sequence", order.getTradeNo());
+			jsonAccount.put("timestamp", timestamp);
+			jsonAccount.put("token", tokenValue);
+			logger.info("下单成功,请求参数:" + jsonAccount);
+			String responseStr = HttpUtil.createHttpPost(apiHost + orderUrl, jsonAccount);
+			logger.info("下单成功,请求结果:" + responseStr);
+			JSONObject json = JSONObject.fromObject(responseStr);
 			if (json.get("status").equals("success")) {
-				net.sf.json.JSONObject data = net.sf.json.JSONObject.fromObject(json.get("data"));
-				CreUser creUser = creUserMapper.findCreUserByUserPhone(mobile).get(0);
-				if(creUser.getClAccountId() == null || creUser.getClAccountId()!=Integer.parseInt(data.get("id").toString())){
-					Map<String,Object> params = new HashMap<String,Object>();
-					params.put("userPhone", mobile);
-					params.put("clAccountId", data.get("id").toString());
-					creUserMapper.updateCreUserClAccountId(params);
-					System.out.println(mobile + "修改成功");
-				}
+				// erp 请求成功 记录erpid
+				JSONObject data = JSONObject.fromObject(json.get("data"));
+				order.setOrderNo("ERPID_" + data.get("id").toString());
+				this.updateTrdOrder(order);
 			}
 
 		}
