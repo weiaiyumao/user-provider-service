@@ -374,4 +374,55 @@ public class CreUserServiceImpl implements CreUserService {
 		return result;
 	}
 
+	@Override
+	public BackResult<CreUserDomain> activateUserZzt(CreUserDomain creUserDomain) {
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+
+		try {
+			
+			CreUserDomain creUserDomains = new CreUserDomain();
+
+			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+
+			if (null != user) {
+				BeanUtils.copyProperties(user, creUserDomains);
+				result.setResultObj(creUserDomains);
+				result.setResultMsg("账户已经激活");
+				return result;
+			} else {
+				// 不存在重新注册
+				CreUser creUser = new CreUser();
+
+				BeanUtils.copyProperties(creUserDomain, creUser);
+				creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+				creUser.setLastLoginTime(new Date());
+				this.saveCreUser(creUser);
+				creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+				BeanUtils.copyProperties(creUser, creUserDomains);
+				
+				// 赠送5000 条
+				CreUserAccount creUserAccount = new CreUserAccount();
+				creUserAccount.setAccount(5000); // 充值默认送5000
+				creUserAccount.setCreUserId(creUser.getId());
+				creUserAccount.setApiAccount(0); // 默认api账户0条
+				creUserAccount.setVersion(0);
+				creUserAccount.setCreateTime(new Date());
+				creUserAccount.setUpdateTime(new Date());
+				creUserAccount.setDeleteStatus("0");
+				creUserAccountMapper.saveCreUserAccount(creUserAccount);
+				
+				result.setResultObj(creUserDomains);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据入库失败");
+		}
+
+		return result;
+	}
+
 }
