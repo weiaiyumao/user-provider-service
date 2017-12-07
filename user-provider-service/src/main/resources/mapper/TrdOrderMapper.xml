@@ -23,7 +23,14 @@
        <result column="create_time" property="createTime"></result>  
        <result column="update_time" property="updateTime"></result>
     </resultMap> 
-
+	
+	<select id="getTrdOrderList" resultType="HashMap">
+		select c.user_phone,t.money,t.number,t.trade_no
+		from trd_order t 
+		inner JOIN cre_user c on c.id = t.cre_user_id and c.delete_status = 0
+		where t.`status` = 1 and t.delete_status = 0
+	</select>
+	
 	<select id="findByOrderNo" resultMap="BaseResultMap" parameterType="HashMap">
 		SELECT * FROM trd_order WHERE ORDER_NO = #{orderNo} AND DELETE_STATUS = '0' 
 	</select>

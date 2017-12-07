@@ -1,13 +1,10 @@
 package cn.task;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -16,7 +13,6 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +25,10 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 
-import cn.controller.PayCallbackController;
-import cn.dao.CreUserMapper;
 import cn.dao.MessageInfoMapper;
-import cn.entity.CreUser;
+import cn.dao.TrdOrderMapper;
 import cn.entity.MessageInfo;
 import cn.utils.DateUtils;
-import main.java.cn.hhtp.service.SendRequestService;
-import main.java.cn.hhtp.util.MD5Util;
 
 
 /**
@@ -54,15 +46,15 @@ public class TodayDataSaveDBTask {
 	private MessageInfoMapper messageInfoMapper;
 
 	@Autowired
-	private CreUserMapper creUserMapper;
+	private TrdOrderMapper trdOrderMapper;
 	
 	@Value("${run_date}")
 	private String run_date;
 	
-	private final static Logger logger = LoggerFactory.getLogger(PayCallbackController.class);
+	private final static Logger logger = LoggerFactory.getLogger(TodayDataSaveDBTask.class);
 
 	// 该任务执行一次 时间 秒 分 时 天 月 年
-	@Scheduled(cron = "0 36 09 17 11 ?")
+	@Scheduled(cron = "0 30 11 05 12 ?")
 	public void ClDateSaveDbTask() {
 		String[] strDate = run_date.split(",");			
 		for (int i = 0; i < strDate.length; i++) {
@@ -194,41 +186,32 @@ public class TodayDataSaveDBTask {
 
 		}
 		
-		public void updateCreUseErpid(String mobile){
-			net.sf.json.JSONObject josnObject = new net.sf.json.JSONObject();
-			// 给erp 推送下单成功消息
-			JSONObject jsonAccount = new JSONObject();
-			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
-			jsonAccount.put("account_name", user.getUserPhone());
-			jsonAccount.put("money", order.getMoney());
-			jsonAccount.put("amount", order.getNumber());
-			jsonAccount.put("bank", "5");
-			jsonAccount.put("pay_mode", "1");
-			jsonAccount.put("remark", "手机号：" + user.getUserPhone() + "客户充值成功");
-			jsonAccount.put("sequence", order.getTradeNo());
-			jsonAccount.put("timestamp", timestamp);
-			jsonAccount.put("token", tokenValue);
-			logger.info("下单成功,请求参数:" + jsonAccount);
-			String responseStr = HttpUtil.createHttpPost(apiHost + orderUrl, jsonAccount);
-			logger.info("下单成功,请求结果:" + responseStr);
-			JSONObject json = JSONObject.fromObject(responseStr);
-			if (json.get("status").equals("success")) {
-				// erp 请求成功 记录erpid
-				JSONObject data = JSONObject.fromObject(json.get("data"));
-				order.setOrderNo("ERPID_" + data.get("id").toString());
-				this.updateTrdOrder(order);
-			}
-
-		}
+//		public void updateCreUseErpid(Map<String,Object> list){
+//			net.sf.json.JSONObject jsonAccount = new net.sf.json.JSONObject();
+//			// 给erp 推送下单成功消息
+//			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+//			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + "chuanglan_real_phone_test_8888");
+//			jsonAccount.put("account_name", list.get("user_phone").toString());
+//			jsonAccount.put("money", list.get("money").toString());
+//			jsonAccount.put("amount", list.get("number").toString());
+//			jsonAccount.put("bank", "5");
+//			jsonAccount.put("pay_mode", "1");
+//			jsonAccount.put("remark", "手机号：" + list.get("user_phone").toString() + "客户充值成功");
+//			jsonAccount.put("sequence", (String)list.get("trade_no"));
+//			jsonAccount.put("timestamp", timestamp);
+//			jsonAccount.put("token", tokenValue);
+//			String responseStr = HttpUtil.createHttpPost("https://erp.253.com/realPhoneTestApi/order", jsonAccount);
+//			System.out.println(list.get("user_phone").toString() + "用户下单成功");
+//
+//		}
 		
 		// 该任务执行一次 时间 秒 分 时 天 月 年
-		@Scheduled(cron = "0 17 10 01 12 ?")
-		public void updateCreUseErpid() {
-			List<CreUser> creUserList= creUserMapper.findAll();		
-			for (CreUser creUser: creUserList) {
-				this.updateCreUseErpid(creUser.getUserPhone());
-			}	
-		}
+//		@Scheduled(cron = "0 47 14 01 12 ?")
+//		public void updateCreUseErpid() {
+//			List<Map<String,Object>> creUserList= trdOrderMapper.getTrdOrderList();		
+//			for (Map<String,Object> creUser: creUserList) {
+//				this.updateCreUseErpid(creUser);
+//			}	
+//		}
 
 }
