@@ -1,6 +1,7 @@
 package cn.user.provider.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import cn.UserProviderServiceApp;
 import cn.entity.CreUserAccount;
 import cn.service.CreUserAccountService;
+import main.java.cn.common.BackResult;
+import main.java.cn.domain.TrdOrderDomain;
+import main.java.cn.domain.page.PageDomain;
 
 @RunWith(SpringJUnit4ClassRunner.class)  
 @SpringBootTest(classes=UserProviderServiceApp.class)// 指定spring-boot的启动类   
@@ -19,7 +23,7 @@ public class CreUserAccountServiceTest {
 	@Autowired  
     private CreUserAccountService creUserAccountService;  
 	
-	@Test  
+	//@Test  
     public void saveCreUser()  {  
     	CreUserAccount creUserAccount = new CreUserAccount();
     	creUserAccount.setCreUserId(1575);
@@ -37,5 +41,19 @@ public class CreUserAccountServiceTest {
 		int row = creUserAccountService.updateCreUserAccount(creUserAccount);
 		System.out.println(row);
     } 
+    
+    @Test
+    public void pageFindCreUser(){
+    	Integer creUserId=1600;
+    	Integer numPage=5;
+    	Integer curPage=3;
+    	BackResult<PageDomain<TrdOrderDomain>>  page=creUserAccountService
+    			.pageFindTrdOrderByCreUserId(creUserId, numPage, curPage);
+    	System.out.println(page.getResultObj());
+    	List<TrdOrderDomain> list=page.getResultObj().getTlist();
+    	for(TrdOrderDomain tod:list){
+    		System.out.println(tod+"=========");
+    	}
+    }
 
 }

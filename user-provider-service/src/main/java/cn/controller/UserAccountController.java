@@ -15,6 +15,7 @@ import main.java.cn.common.BackResult;
 import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
+import main.java.cn.domain.page.PageDomain;
 
 @RestController
 @RequestMapping("/userAccount")
@@ -22,6 +23,11 @@ public class UserAccountController {
 	
 	@Autowired
 	private CreUserAccountService creUserAccountService;
+	
+	
+	
+	
+	
 
 	/**
 	 * 查询账户余额
@@ -58,6 +64,22 @@ public class UserAccountController {
 		return result;
 	}
 	
+	
+	/**
+	 * 查询消费记录<分页>
+	 * @param request
+	 * @param response
+	 * @param creUserId
+	 * @param numPerPage
+	 * @param currentPage
+	 * @return
+	 */
+	@RequestMapping("/pageFindTrdOrderByCreUserId")
+	public BackResult<PageDomain<TrdOrderDomain>> pageFindTrdOrderByCreUserId(HttpServletRequest request, HttpServletResponse response,Integer creUserId,Integer pageSize,Integer pageNum){
+		BackResult<PageDomain<TrdOrderDomain>> result = creUserAccountService.pageFindTrdOrderByCreUserId(creUserId, pageSize, pageNum);
+		return result;
+	}
+	
 	/**
 	 * 消费条数
 	 * @param trdOrderDomain
@@ -83,4 +105,6 @@ public class UserAccountController {
 	public static void main(String[] args) {
 		
 	}
+	
+	
 }
