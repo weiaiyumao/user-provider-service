@@ -30,10 +30,8 @@ public class UserController {
 	 * @param mobile
 	 * @return
 	 */
-	@RequestMapping("/findbyMobile")
+	@RequestMapping(value = "/findbyMobile", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<CreUserDomain> findbyMobile(HttpServletRequest request, HttpServletResponse response,String mobile) {
-		
-		
 		BackResult<CreUserDomain> result = creUserService.findbyMobile(mobile);
 		return result;
 	}

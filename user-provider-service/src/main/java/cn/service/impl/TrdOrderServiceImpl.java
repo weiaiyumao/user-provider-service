@@ -152,7 +152,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				if (json.get("status").equals("success")) {
 					// erp 请求成功 记录erpid
 					JSONObject data = JSONObject.fromObject(json.get("data"));
-					order.setOrderNo("ERPID_" + data.get("id").toString());
+					order.setClOrderNo("ERPID_" + data.get("id").toString());
 					this.updateTrdOrder(order);
 				}
 			} catch (Exception e) {
