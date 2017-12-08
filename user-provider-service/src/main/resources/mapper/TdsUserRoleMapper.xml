@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.TdsUserRoleMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.TdsUserRole">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="role_id" property="roleId"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,
+		USER_ID,
+		ROLE_ID,
+		CREATE_TIME,
+		UPDATE_TIME,
+		CREATER,
+		UPDATER,
+		IS_DELETED
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_role
+		WHERE
+		ID=#{id}
+	</select>
+
+	<insert id="insert" parameterType="cn.entity.TdsUserRole">
+		INSERT INTO tds_user_role (
+		<if test="userId != null"> USER_ID , </if>
+		<if test="roleId != null"> ROLE_ID , </if>
+		<if test="createTime != null"> CREATE_TIME , </if>
+		<if test="updateTime != null"> UPDATE_TIME , </if>
+		<if test="creater != null"> CREATER , </if>
+		<if test="updater != null"> UPDATER , </if>
+		<if test="isDeleted != null"> IS_DELETED , </if>
+		) VALUES (
+		<if test="userId != null"> #{userId} , </if>
+		<if test="roleId != null"> #{roleId} , </if>
+		<if test="createTime != null"> #{createTime} , </if>
+		<if test="updateTime != null"> #{updateTime} , </if>
+		<if test="creater != null"> #{creater} , </if>
+		<if test="updater != null"> #{updater} , </if>
+		<if test="isDeleted != null"> #{isDeleted} , </if>
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM tds_user_role
+		WHERE ID=#{id}
+	</delete>
+
+	<update id="update" parameterType="cn.entity.TdsUserRole">
+		UPDATE tds_user_role
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> USER_ID = #{userId}, </if>
+			<if test="roleId != null"> ROLE_ID = #{roleId}, </if>
+			<if test="createTime != null"> CREATE_TIME = #{createTime}, </if>
+			<if test="updateTime != null"> UPDATE_TIME = #{updateTime}, </if>
+			<if test="creater != null"> CREATER = #{creater}, </if>
+			<if test="updater != null"> UPDATER = #{updater}, </if>
+			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+		</trim>
+		WHERE ID=#{id}
+	</update>
+</mapper>

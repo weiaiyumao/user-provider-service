@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.TdsFunctionMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.TdsFunction">
+		<result column="id" property="id"></result>
+		<result column="url" property="url"></result>
+		<result column="name" property="name"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="parent_id" property="parentId"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		ID, URL, NAME, REMARKS, PARENT_ID, CREATE_TIME, UPDATE_TIME, CREATER,
+		UPDATER, IS_DELETED 
+	</sql>
+	
+	<select id="loadById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM tds_function
+		WHERE ID = #{id}
+	</select>
+	
+	<select  id="selectByList" resultMap="BaseResultMap" parameterType="BaseResultMap">
+	    SELECT 
+	    <include refid="Base_Column_List"/>
+	    FROM tds_function
+	    <where>
+	    <if test="id != null"> AND ID=#{id}</if>
+	    <if test="url != null"> AND URL=#{url}</if>
+		<if test="name != null">AND NAME=#{name}</if>
+		<if test="remarks != null">AND REMARKS=#{remarks}</if>
+		<if test="parentId != null">AND PARENT_ID=#{parentId}</if>
+		<if test="createTime != null">AND CREATE_TIME=#{createTime}</if>
+		<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
+		<if test="creater != null">AND CREATER=#{creater}</if>
+		<if test="updater != null">AND UPDATER=#{creater}</if>
+		<if test="isDeleted != null">AND IS_DELETED=#{isDeleted}</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="cn.entity.TdsFunction">
+		INSERT INTO tds_function (
+		<if test="url != null"> URL , </if>
+		<if test="name != null"> NAME , </if>
+		<if test="remarks != null"> REMARKS , </if>
+		<if test="parentId != null"> PARENT_ID , </if>
+		<if test="createTime != null"> CREATE_TIME , </if>
+		<if test="updateTime != null"> UPDATE_TIME , </if>
+		<if test="creater != null"> CREATER , </if>
+		<if test="updater != null"> UPDATER , </if>
+		<if test="isDeleted != null"> IS_DELETED , </if>
+		) VALUES (
+		<if test="url != null"> #{url} , </if>
+		<if test="name != null"> #{name} , </if>
+		<if test="remarks != null"> #{remarks} , </if>
+		<if test="parentId != null"> #{parentId} , </if>
+		<if test="createTime != null">#{createTime} , </if>
+		<if test="updateTime != null">#{updateTime}, </if>
+		<if test="creater != null"> #{creater} , </if>
+		<if test="updater != null"> #{updater} , </if>
+		<if test="isDeleted != null"> #{isDeleted} , </if>
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM tds_function
+		WHERE ID=#{id}
+	</delete>
+
+	<update id="update" parameterType="cn.entity.TdsFunction">
+		UPDATE tds_function
+		<trim prefix="set" suffixOverrides=",">
+			<if test="url != null"> URL = #{url}, </if>
+			<if test="name != null"> NAME = #{name}, </if>
+			<if test="remarks != null"> REMARKS = #{remarks}, </if>
+			<if test="parentId != null"> PARENT_ID = #{parentId}, </if>
+			<if test="createTime != null"> CREATE_TIME = #{createTime}, </if>
+			<if test="updateTime != null"> UPDATE_TIME = #{updateTime}, </if>
+			<if test="creater != null"> CREATER = #{creater}, </if>
+			<if test="updater != null"> UPDATER = #{updater}, </if>
+			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+		</trim>
+		WHERE ID=#{id}
+	</update>
+</mapper>
