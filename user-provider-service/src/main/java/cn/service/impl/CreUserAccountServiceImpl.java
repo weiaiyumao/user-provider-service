@@ -429,6 +429,10 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 		BackResult<PageDomain<TrdOrderDomain>> result = new BackResult<PageDomain<TrdOrderDomain>>();
 		List<TrdOrderDomain> list = new ArrayList<TrdOrderDomain>();
 		PageDomain<TrdOrderDomain> listDomain = new PageDomain<TrdOrderDomain>();
+		listDomain.setTotalPages(0);
+		listDomain.setCurrentPage(1);
+		listDomain.setNumPerPage(10);
+		listDomain.setTotalNumber(0);
 		Map<String, Object> map = new HashMap<>();
 		int totalNumber = 0; // 总条数
 		int totalPages=0;   //总页数
@@ -439,6 +443,8 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			totalNumber = trdOrderMapper.quertCountTrdOrder(creUserId); // 总条数
 			if (totalNumber == 0) {
 				result.setResultMsg("该用户没有订单信息");
+				result.setResultObj(listDomain);
+				
 			} else {
 				List<TrdOrder> orderList = trdOrderMapper.pageFindTrdOrderByCreUserId(map);
 				for (TrdOrder trdOrder : orderList) {
