@@ -1,7 +1,9 @@
 package cn.dao;
 
+
 import org.apache.ibatis.annotations.Mapper;
 import cn.entity.TdsModular;
+import cn.utils.IBaseDao;
 
 
 /**
@@ -11,13 +13,7 @@ import cn.entity.TdsModular;
  * @author Gen
  */
 @Mapper
-public interface TdsModularMapper{
+public interface TdsModularMapper extends IBaseDao<TdsModular, Integer>{
 	
-    TdsModular loadById(Integer id);
-	
-	void insert(TdsModular entity);
-	
-	void deleteById(Integer id);
-	
-	void update(TdsModular entity);
+   
 }

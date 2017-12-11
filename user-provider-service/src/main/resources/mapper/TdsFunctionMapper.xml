@@ -18,7 +18,6 @@
 		<result column="is_deleted" property="isDeleted"></result>
 	</resultMap>
 
-
 	<sql id="Base_Column_List">
 		ID, URL, NAME, REMARKS, PARENT_ID, CREATE_TIME, UPDATE_TIME, CREATER,
 		UPDATER, IS_DELETED 
@@ -28,10 +27,11 @@
 		SELECT
 		<include refid="Base_Column_List"/>
 		FROM tds_function
-		WHERE ID = #{id}
+		WHERE ID = #{id} AND IS_DELETED=0
 	</select>
 	
-	<select  id="selectByList" resultMap="BaseResultMap" parameterType="BaseResultMap">
+	
+	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.TdsFunction">
 	    SELECT 
 	    <include refid="Base_Column_List"/>
 	    FROM tds_function
@@ -44,13 +44,15 @@
 		<if test="createTime != null">AND CREATE_TIME=#{createTime}</if>
 		<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
 		<if test="creater != null">AND CREATER=#{creater}</if>
-		<if test="updater != null">AND UPDATER=#{creater}</if>
-		<if test="isDeleted != null">AND IS_DELETED=#{isDeleted}</if>
+		<if test="updater != null">AND UPDATER=#{updater}</if>
+		AND IS_DELETED=0
 		</where>
-	</select>
+	</select> 
+	
 
-	<insert id="insert" parameterType="cn.entity.TdsFunction">
-		INSERT INTO tds_function (
+	<insert id="save" parameterType="cn.entity.TdsFunction">
+		INSERT INTO tds_function 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
 		<if test="url != null"> URL , </if>
 		<if test="name != null"> NAME , </if>
 		<if test="remarks != null"> REMARKS , </if>
@@ -59,8 +61,9 @@
 		<if test="updateTime != null"> UPDATE_TIME , </if>
 		<if test="creater != null"> CREATER , </if>
 		<if test="updater != null"> UPDATER , </if>
-		<if test="isDeleted != null"> IS_DELETED , </if>
-		) VALUES (
+		IS_DELETED
+		</trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
 		<if test="url != null"> #{url} , </if>
 		<if test="name != null"> #{name} , </if>
 		<if test="remarks != null"> #{remarks} , </if>
@@ -69,14 +72,15 @@
 		<if test="updateTime != null">#{updateTime}, </if>
 		<if test="creater != null"> #{creater} , </if>
 		<if test="updater != null"> #{updater} , </if>
-		<if test="isDeleted != null"> #{isDeleted} , </if>
-		)
+		 0
+		</trim>
 	</insert>
 
-	<delete id="deleteById" parameterType="java.lang.Integer">
-		DELETE FROM tds_function
-		WHERE ID=#{id}
-	</delete>
+	  <!-- 逻辑删除  -->
+	<update id="deleteById"  parameterType="java.lang.Integer">
+	    UPDATE tds_function SET IS_DELETED=1
+	    WHERE ID=#{id}
+	</update>
 
 	<update id="update" parameterType="cn.entity.TdsFunction">
 		UPDATE tds_function

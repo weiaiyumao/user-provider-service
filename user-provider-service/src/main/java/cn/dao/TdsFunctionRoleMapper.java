@@ -1,7 +1,9 @@
 package cn.dao;
 
+
 import org.apache.ibatis.annotations.Mapper;
 import cn.entity.TdsFunctionRole;
+import cn.utils.IBaseDao;
 
 
 /**
@@ -11,13 +13,6 @@ import cn.entity.TdsFunctionRole;
  * @author Gen
  */
 @Mapper
-public interface TdsFunctionRoleMapper{
+public interface TdsFunctionRoleMapper extends IBaseDao<TdsFunctionRole, Integer>{
 	
-    TdsFunctionRole loadById(Integer id);
-	
-	void insert(TdsFunctionRole entity);
-	
-	void deleteById(Integer id);
-	
-	void update(TdsFunctionRole entity);
 }

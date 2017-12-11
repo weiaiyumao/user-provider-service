@@ -1,8 +1,10 @@
 package cn.dao;
 
-import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+
 import cn.entity.TdsFunction;
+import cn.utils.IBaseDao;
 
 
 /**
@@ -12,15 +14,6 @@ import cn.entity.TdsFunction;
  * @author Gen
  */
 @Mapper
-public interface TdsFunctionMapper{
+public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	
-    TdsFunction loadById(Integer id);
-	
-	List<TdsFunction> selectByList(TdsFunction queryParam);
-	
-	void insert(TdsFunction insertParam);
-	
-	void deleteById(Integer id);
-	
-	void update(TdsFunction insertParam);
 }
