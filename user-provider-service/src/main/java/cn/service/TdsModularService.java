@@ -3,6 +3,8 @@ package cn.service;
 import java.util.List;
 
 import cn.entity.TdsModular;
+import main.java.cn.common.BackResult;
+import main.java.cn.domain.tds.TdsModularDomain;
 import main.java.cn.service.tds.TdsModularBusService;
 
 /**
@@ -13,13 +15,13 @@ import main.java.cn.service.tds.TdsModularBusService;
  */
 public interface TdsModularService extends TdsModularBusService{
 	
-	      TdsModular loadById(Integer id); 
+	      BackResult<TdsModular> loadById(Integer id); 
 	    
-	      Integer saveTdsModular(TdsModular entity);
+	      BackResult<TdsModularDomain> saveTdsModular(TdsModularDomain entity);
 	   	
-	      Integer deleteById(Integer id);
+	      BackResult<Integer> deleteById(Integer id);
 	    
-	      Integer updateTdsModular(TdsModular entity);
+	      BackResult<TdsModularDomain> updateTdsModular(TdsModularDomain entity);
 	      
-	      List<TdsModular> selectAll(TdsModular entity);
+	      BackResult<List<TdsModularDomain>> selectAll(TdsModularDomain entity);
 }

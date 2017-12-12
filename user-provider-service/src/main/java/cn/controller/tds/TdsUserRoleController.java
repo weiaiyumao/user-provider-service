@@ -2,8 +2,6 @@ package cn.controller.tds;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,23 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.entity.TdsRole;
 import cn.entity.TdsUserRole;
-import cn.service.TdsRoleService;
 import cn.service.TdsUserRoleService;
 import main.java.cn.common.BackResult;
-import main.java.cn.common.ResultCode;
+import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 @RestController
 @RequestMapping("/userRole")
 public class TdsUserRoleController {
 
-	private final static Logger logger = LoggerFactory.getLogger(TdsUserRoleController.class);
 
 	@Autowired
-	private  TdsUserRoleService  tdsUserRoleService;
+	private TdsUserRoleService tdsUserRoleService;
 
-	
 	/**
 	 * 根据id查询
 	 * 
@@ -36,17 +30,7 @@ public class TdsUserRoleController {
 	 */
 	@RequestMapping(value = "/loadById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<TdsUserRole> loadById(Integer id) {
-		BackResult<TdsUserRole> result = new BackResult<TdsUserRole>();
-		try {
-			TdsUserRole tds = tdsUserRoleService.loadById(id);
-			result.setResultObj(tds);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("系统异常");
-		}
-
+		BackResult<TdsUserRole> result = tdsUserRoleService.loadById(id);
 		return result;
 	}
 
@@ -57,16 +41,8 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserRole> saveTdsFunction(@RequestBody TdsUserRole tdsUserRole) {
-		BackResult<TdsUserRole> result = new BackResult<TdsUserRole>();
-		try {
-			tdsUserRoleService.saveTdsUserRole(tdsUserRole);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("功能:save功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("系统异常");
-		}
+	public BackResult<TdsUserRoleDomain> saveTdsFunction(@RequestBody TdsUserRoleDomain tdsUserRoleDomain) {
+		BackResult<TdsUserRoleDomain> result = tdsUserRoleService.saveTdsUserRole(tdsUserRoleDomain);
 		return result;
 	}
 
@@ -77,16 +53,8 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserRole> update(@RequestBody TdsUserRole tdsUserRole) {
-		BackResult<TdsUserRole> result = new BackResult<TdsUserRole>();
-		try {
-			tdsUserRoleService.updateTdsUserRole(tdsUserRole);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("功能id：" + tdsUserRole.getId() + "update功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("系统异常");
-		}
+	public BackResult<TdsUserRoleDomain> update(@RequestBody TdsUserRoleDomain tdsUserRoleDomain) {
+		BackResult<TdsUserRoleDomain> result = tdsUserRoleService.updateTdsUserRole(tdsUserRoleDomain);
 		return result;
 	}
 
@@ -97,16 +65,8 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value = "/deleteById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserRole> deleteById(Integer id) {
-		BackResult<TdsUserRole> result = new BackResult<TdsUserRole>();
-		try {
-			tdsUserRoleService.deleteById(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("功能id：" + id + "delete功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("系统异常");
-		}
+	public BackResult<Integer> deleteById(Integer id) {
+		BackResult<Integer> result = tdsUserRoleService.deleteById(id);
 		return result;
 	}
 
@@ -117,17 +77,8 @@ public class TdsUserRoleController {
 	 * @return List<>
 	 */
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<TdsUserRole>> selectAll(@RequestBody TdsUserRole tdsUserRole) {
-		BackResult<List<TdsUserRole>> result = new BackResult<List<TdsUserRole>>();
-		try {
-			List<TdsUserRole> list = tdsUserRoleService.selectAll(tdsUserRole);
-			result.setResultObj(list);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("查询功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("系统异常");
-		}
+	public BackResult<List<TdsUserRoleDomain>> selectAll(@RequestBody TdsUserRoleDomain tdsUserRoleDomain) {
+		BackResult<List<TdsUserRoleDomain>> result = tdsUserRoleService.selectAll(tdsUserRoleDomain);
 		return result;
 	}
 }

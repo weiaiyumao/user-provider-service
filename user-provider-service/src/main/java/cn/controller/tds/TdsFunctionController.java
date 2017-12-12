@@ -3,9 +3,6 @@ package cn.controller.tds;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.entity.TdsFunction;
 import cn.service.TdsFunctionService;
 import main.java.cn.common.BackResult;
-import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
 
@@ -33,9 +28,9 @@ public class TdsFunctionController {
 	   * @return  obj
 	   */
 	  @RequestMapping(value="/loadById",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunction> loadById(Integer id){
-			  BackResult<TdsFunction> result=tdsFunctionService.loadById(id);
-	          return result;
+	  public BackResult<TdsFunctionDomain> loadById(Integer id){
+			 BackResult<TdsFunctionDomain> result=tdsFunctionService.loadById(id);
+	         return result;
 	   }
 	  
 	  

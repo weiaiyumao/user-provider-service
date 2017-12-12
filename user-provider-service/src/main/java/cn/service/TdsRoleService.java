@@ -3,6 +3,8 @@ package cn.service;
 import java.util.List;
 
 import cn.entity.TdsRole;
+import main.java.cn.common.BackResult;
+import main.java.cn.domain.tds.TdsRoleDomain;
 import main.java.cn.service.tds.TdsRoleBusService;
 
 /**
@@ -13,13 +15,13 @@ import main.java.cn.service.tds.TdsRoleBusService;
  */
 public interface TdsRoleService extends TdsRoleBusService{
 	
-	TdsRole loadById(Integer id); 
+	BackResult<TdsRole> loadById(Integer id); 
     
-    Integer saveTdsRole(TdsRole entity);
+	BackResult<TdsRoleDomain> saveTdsRole(TdsRoleDomain entity);
  	
-    Integer deleteById(Integer id);
+	BackResult<Integer> deleteById(Integer id);
   
-    Integer updateTdsRole(TdsRole entity);
+    BackResult<TdsRoleDomain> updateTdsRole(TdsRoleDomain entity);
     
-    List<TdsRole> selectAll(TdsRole entity);
+    BackResult<List<TdsRoleDomain>> selectAll(TdsRoleDomain entity);
 }

@@ -12,7 +12,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 
 import cn.dao.TdsFunctionMapper;
 import cn.entity.TdsFunction;
@@ -25,18 +24,20 @@ import main.java.cn.domain.tds.TdsFunctionDomain;
 @Service
 public class TdsFunctionServiceImpl implements  TdsFunctionService {
     
-	private final static Logger logger = LoggerFactory.getLogger(TdsFunctionService.class);
+	private final static Logger logger = LoggerFactory.getLogger(TdsFunctionServiceImpl.class);
 	
 	@Autowired
 	private TdsFunctionMapper tdsFunctionMapper;
 	
 
 	@Override
-	public BackResult<TdsFunction> loadById(Integer id) {
-		BackResult<TdsFunction> result=new BackResult<TdsFunction>();
+	public BackResult<TdsFunctionDomain> loadById(Integer id) {
+		 BackResult<TdsFunctionDomain> result=new BackResult<TdsFunctionDomain>();
 		try {
+			TdsFunctionDomain  domain=new TdsFunctionDomain();
 			TdsFunction entity=tdsFunctionMapper.loadById(id);
-			result.setResultObj(entity);
+			BeanUtils.copyProperties(entity,domain);
+			result.setResultObj(domain);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
@@ -49,9 +50,10 @@ public class TdsFunctionServiceImpl implements  TdsFunctionService {
 
 	@Override
 	public BackResult<TdsFunctionDomain> saveTdsFunction(TdsFunctionDomain domain) {
-		   BackResult<TdsFunctionDomain> result=new BackResult<TdsFunctionDomain >();
+		   BackResult<TdsFunctionDomain> result=new BackResult<TdsFunctionDomain>();
 		   TdsFunction  tds=new TdsFunction();
 		   domain.setCreateTime(new Date());
+		   domain.setUpdateTime(new Date());
 		try {
 			BeanUtils.copyProperties(domain,tds);
 			tdsFunctionMapper.save(tds);
@@ -70,6 +72,7 @@ public class TdsFunctionServiceImpl implements  TdsFunctionService {
 		BackResult<Integer> result=new BackResult<Integer>();
 		try {
 			tdsFunctionMapper.deleteById(id);
+			result.setResultObj(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("delete功能信息出现系统异常：" + e.getMessage());
@@ -105,14 +108,14 @@ public class TdsFunctionServiceImpl implements  TdsFunctionService {
 		try {
 			BeanUtils.copyProperties(domain,tds);
 			List<TdsFunction> list=tdsFunctionMapper.selectAll(tds);
-			if(list.size()!=0 || list!=null){
+			if(list.size()>0 && list!=null){
 				TdsFunctionDomain tdsDomain=null;
 	          for(TdsFunction obj:list){
 	        	 tdsDomain=new TdsFunctionDomain();
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}
-				result.setResultObj(listDomain);
+	          result.setResultObj(listDomain);
 			}
 			
 		} catch (Exception e) {
