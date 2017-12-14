@@ -1,9 +1,9 @@
-package cn.dao;
+package cn.dao.tds;
 
 
 import org.apache.ibatis.annotations.Mapper;
-import cn.entity.TdsRole;
-import cn.utils.IBaseDao;
+
+import cn.entity.tds.TdsRole;
 
 
 /**

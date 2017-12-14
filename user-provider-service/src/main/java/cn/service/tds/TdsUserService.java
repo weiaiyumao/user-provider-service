@@ -1,8 +1,4 @@
-package cn.service;
-
-
-
-
+package cn.service.tds;
 import main.java.cn.service.tds.TdsUserBusService;
 
 /**
@@ -13,10 +9,5 @@ import main.java.cn.service.tds.TdsUserBusService;
  */
 public interface TdsUserService extends  TdsUserBusService{
 	
-	/**
-	 * 分页
-	 * @param entity
-	 * @return
-	 */
-    //BackResult<List<TdsUserDomain>> PageSelectAll(TdsUserDomain entity);
+	
 }

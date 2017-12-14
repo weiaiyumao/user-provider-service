@@ -1,4 +1,4 @@
-package cn.entity;
+package cn.entity.tds;
 
 import java.io.Serializable;
 

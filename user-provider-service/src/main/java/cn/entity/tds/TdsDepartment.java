@@ -1,32 +1,29 @@
-package cn.entity;
+package cn.entity.tds;
 
 import java.io.Serializable;
 
 /**
- * : tds_function
+ * : tds_department
  * 
  * 
  * @author Gen
  */
-public class TdsFunction implements Serializable{
+public class TdsDepartment implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8772115761370124672L;
+	private static final long serialVersionUID = -4535091220533151548L;
 
-	//功能id : id 	
+	//部门id : id 	
 	private Integer id; 
 	
-	//功能地址 : url 	
-	private String url; 
-	
-	//功能名称 : name 	
+	//部门名称 : Name 	
 	private String name; 
 	
 	//备注 : remarks 	
 	private String remarks; 
 	
-	//父级模块id : parent_id 	
+	//父级部门id : parent_id 	
 	private Integer parentId; 
 	
 	//创建时间 : create_time 	
@@ -46,7 +43,7 @@ public class TdsFunction implements Serializable{
 	
 
 	/**
-	 * 功能id : id
+	 * 部门id : id
 	 * 
 	 * @return 
 	 */
@@ -55,7 +52,7 @@ public class TdsFunction implements Serializable{
 	}
 	
 	/**
-	 * 功能id : id
+	 * 部门id : id
 	 * 
 	 * @return 
 	 */
@@ -63,24 +60,7 @@ public class TdsFunction implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 功能地址 : url
-	 * 
-	 * @return 
-	 */
-	public String getUrl () {
-		return url;
-	}
-	
-	/**
-	 * 功能地址 : url
-	 * 
-	 * @return 
-	 */
-	public void setUrl (String url) {
-		this.url = url;
-	}
-	/**
-	 * 功能名称 : name
+	 * 部门名称 : Name
 	 * 
 	 * @return 
 	 */
@@ -89,7 +69,7 @@ public class TdsFunction implements Serializable{
 	}
 	
 	/**
-	 * 功能名称 : name
+	 * 部门名称 : Name
 	 * 
 	 * @return 
 	 */
@@ -114,7 +94,7 @@ public class TdsFunction implements Serializable{
 		this.remarks = remarks;
 	}
 	/**
-	 * 父级模块id : parent_id
+	 * 父级部门id : parent_id
 	 * 
 	 * @return 
 	 */
@@ -123,7 +103,7 @@ public class TdsFunction implements Serializable{
 	}
 	
 	/**
-	 * 父级模块id : parent_id
+	 * 父级部门id : parent_id
 	 * 
 	 * @return 
 	 */

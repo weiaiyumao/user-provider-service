@@ -3,9 +3,9 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.dao.TdsModularMapper">
+<mapper namespace="cn.dao.tds.TdsModularMapper">
 
-	<resultMap id="BaseResultMap" type="cn.entity.TdsModular">
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsModular">
 		<result column="id" property="id"></result>
 		<result column="name" property="name"></result>
 		<result column="remarks" property="remarks"></result>
@@ -34,7 +34,7 @@
 	
 	
 	
-	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.TdsModular">
+	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsModular">
 	    SELECT 
 	    <include refid="Base_Column_List"/>
 	    FROM tds_modular
@@ -51,7 +51,7 @@
 		</where>
 	</select>
 
-	<insert id="save" parameterType="cn.entity.TdsModular">
+	<insert id="save" parameterType="cn.entity.tds.TdsModular">
 		INSERT INTO tds_modular 
 		<trim prefix="(" suffix=")" suffixOverrides="," >
 		<if test="name != null"> NAME , </if>
@@ -80,7 +80,7 @@
 	    WHERE ID=#{id}
 	</update>
 
-	<update id="update" parameterType="cn.entity.TdsModular">
+	<update id="update" parameterType="cn.entity.tds.TdsModular">
 		UPDATE tds_modular
 		<trim prefix="set" suffixOverrides=",">
 			<if test="name != null"> NAME = #{name}, </if>

@@ -3,9 +3,9 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.dao.TdsRoleMapper">
+<mapper namespace="cn.dao.tds.TdsRoleMapper">
 
-	<resultMap id="BaseResultMap" type="cn.entity.TdsRole">
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsRole">
 		<result column="id" property="id"></result>
 		<result column="role_name" property="roleName"></result>
 		<result column="create_time" property="createTime"></result>
@@ -36,7 +36,7 @@
 	</select>
 	
 	
-	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.TdsRole">
+	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsRole">
 	    SELECT 
 	    <include refid="Base_Column_List"/>
 	    FROM tds_role
@@ -51,7 +51,7 @@
 		</where>
 	</select> 
 
-	<insert id="save" parameterType="cn.entity.TdsRole">
+	<insert id="save" parameterType="cn.entity.tds.TdsRole">
 		INSERT INTO tds_role 
 		<trim prefix="(" suffix=")" suffixOverrides="," >
 		<if test="roleName != null"> ROLE_NAME , </if>
@@ -78,7 +78,7 @@
 	 </update>
 	
 
-	<update id="update" parameterType="cn.entity.TdsRole">
+	<update id="update" parameterType="cn.entity.tds.TdsRole">
 		UPDATE tds_role
 		<trim prefix="set" suffixOverrides=",">
 			<if test="roleName != null"> ROLE_NAME = #{roleName}, </if>

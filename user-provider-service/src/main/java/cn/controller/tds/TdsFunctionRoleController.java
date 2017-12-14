@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.service.TdsFunctionRoleService;
+import cn.service.tds.TdsFunctionRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsFunctionRoleDomain;
 

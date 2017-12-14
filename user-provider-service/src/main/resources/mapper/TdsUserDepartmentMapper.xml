@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsUserDepartmentMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUserDepartment">
+		<result column="id" property="id"></result>
+		<result column="useri_d" property="useriD"></result>
+		<result column="depart_id" property="departId"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		useri_d,
+		depart_id,
+		remarks,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		is_deleted
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_usre_department
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap"
+		parameterType="cn.entity.tds.TdsUserDepartment">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_usre_department
+		<where>
+			<if test="id != null"> id = #{id},</if>
+			<if test="useriD != null"> useri_d = #{useriD},</if>
+			<if test="departId != null"> depart_id = #{departId},</if>
+			<if test="remarks != null"> remarks = #{remarks},</if>
+			<if test="createTime != null"> create_time = #{createTime},</if>
+			<if test="updateTime != null"> update_time = #{updateTime},</if>
+			<if test="creater != null"> creater = #{creater},</if>
+			<if test="updater != null"> updater = #{updater},</if>
+			is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsUserDepartment">
+		INSERT INTO tds_usre_department
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="useriD != null"> useri_d , </if>
+			<if test="departId != null"> depart_id , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			is_deleted 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="useriD != null"> #{useriD} , </if>
+			<if test="departId != null"> #{departId} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			'0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_usre_department SET IS_DELETED='1'
+		WHERE ID={#id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsUserDepartment">
+		UPDATE tds_usre_department
+		<trim prefix="set" suffixOverrides=",">
+			<if test="useriD != null"> useri_d = #{useriD}, </if>
+			<if test="departId != null"> depart_id = #{departId}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+</mapper>

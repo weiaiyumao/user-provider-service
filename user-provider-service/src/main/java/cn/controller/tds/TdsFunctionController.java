@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.service.TdsFunctionService;
+import cn.service.tds.TdsFunctionService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 

@@ -1,4 +1,4 @@
-package cn.service.impl;
+package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import cn.dao.TdsUserRoleMapper;
-import cn.entity.TdsUserRole;
-import cn.service.TdsUserRoleService;
+import cn.dao.tds.TdsUserRoleMapper;
+import cn.entity.tds.TdsUserRole;
+import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
@@ -32,6 +33,9 @@ public class TdsUserRoleServiceImp implements  TdsUserRoleService {
 		BackResult<TdsUserRole> result=new BackResult<TdsUserRole>();
 		try {
 			TdsUserRole entity=tdsUserRoleMapper.loadById(id);
+			if(null==entity){
+				return new BackResult<TdsUserRole>(ResultCode.RESULT_DATA_EXCEPTIONS,"没有查询到信息");
+			}
 			result.setResultObj(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +45,8 @@ public class TdsUserRoleServiceImp implements  TdsUserRoleService {
 		}
 		return result;
 	}
-
+    
+	@Transactional
 	@Override
 	public BackResult<TdsUserRoleDomain> saveTdsUserRole(TdsUserRoleDomain domain) {
 		  BackResult<TdsUserRoleDomain> result=new BackResult<TdsUserRoleDomain>();
@@ -62,6 +67,7 @@ public class TdsUserRoleServiceImp implements  TdsUserRoleService {
 		
 	}
 
+	@Transactional
 	@Override
 	public BackResult<Integer> deleteById(Integer id) {
 		     BackResult<Integer> result=new BackResult<Integer>();
@@ -78,6 +84,7 @@ public class TdsUserRoleServiceImp implements  TdsUserRoleService {
 		
 	}
 
+	@Transactional
 	@Override
 	public BackResult<TdsUserRoleDomain> updateTdsUserRole(TdsUserRoleDomain domain) {
 		BackResult<TdsUserRoleDomain> result=new BackResult<TdsUserRoleDomain>();
@@ -95,7 +102,8 @@ public class TdsUserRoleServiceImp implements  TdsUserRoleService {
 		}
 		return result;
 	}
-
+    
+	@Transactional
 	@Override
 	public BackResult<List<TdsUserRoleDomain>> selectAll(TdsUserRoleDomain domain) {
 		BackResult<List<TdsUserRoleDomain>> result=new BackResult<List<TdsUserRoleDomain>>();

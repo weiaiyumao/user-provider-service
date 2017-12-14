@@ -1,4 +1,4 @@
-package cn.service.impl;
+package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.dao.TdsModularMapper;
-import cn.entity.TdsModular;
-import cn.service.TdsModularService;
+import cn.dao.tds.TdsModularMapper;
+import cn.entity.tds.TdsModular;
+import cn.service.tds.TdsModularService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsModularDomain;

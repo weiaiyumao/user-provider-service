@@ -1,4 +1,4 @@
-package cn.service.impl;
+package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
@@ -10,32 +10,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import cn.dao.TdsFunctionRoleMapper;
-import cn.entity.TdsFunctionRole;
-import cn.service.TdsFunctionRoleService;
+import cn.dao.tds.TdsRoleMapper;
+import cn.entity.tds.TdsRole;
+import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.tds.TdsFunctionRoleDomain;
-
+import main.java.cn.domain.tds.TdsRoleDomain;
 
 @Service
-public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
+public class TdsRoleServiceImp implements  TdsRoleService {
 	
-	private final static Logger logger = LoggerFactory.getLogger(TdsFunctionRoleServiceImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(TdsRoleServiceImp.class);
 
 	@Autowired
-	private TdsFunctionRoleMapper tdsFunctionRoleMapper;
-
+	private TdsRoleMapper  tdsRoleMapper;
 	
 	@Override
-	public BackResult<TdsFunctionRoleDomain> loadById(Integer id) {
-		BackResult<TdsFunctionRoleDomain> result=new BackResult<TdsFunctionRoleDomain>();
+	public BackResult<TdsRole> loadById(Integer id) {
+		BackResult<TdsRole> result=new BackResult<TdsRole>();
 		try {
-			TdsFunctionRoleDomain domain=new TdsFunctionRoleDomain();
-			TdsFunctionRole entity=tdsFunctionRoleMapper.loadById(id);
-			BeanUtils.copyProperties(entity,domain);
-			result.setResultObj(domain);
+			TdsRole entity=tdsRoleMapper.loadById(id);
+			result.setResultObj(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
@@ -45,15 +42,16 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 		return result;
 	}
 
+	@Transactional
 	@Override
-	public BackResult<TdsFunctionRoleDomain> saveTdsFunctionRole(TdsFunctionRoleDomain domain) {
-		   BackResult<TdsFunctionRoleDomain> result=new BackResult<TdsFunctionRoleDomain >();
-		   TdsFunctionRole  tds=new TdsFunctionRole();
+	public BackResult<TdsRoleDomain> saveTdsRole(TdsRoleDomain domain) {
+		   BackResult<TdsRoleDomain> result=new BackResult<TdsRoleDomain>();
+		   TdsRole  tds=new TdsRole();
 		   domain.setCreateTime(new Date());
 		   domain.setUpdateTime(new Date());
 		try {
 			BeanUtils.copyProperties(domain,tds);
-			tdsFunctionRoleMapper.save(tds);
+			tdsRoleMapper.save(tds);
 			result.setResultObj(domain);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,14 +60,14 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 			result.setResultMsg("数据保存失败");
 		}
 		return result;
-		
 	}
 
+	@Transactional
 	@Override
 	public BackResult<Integer> deleteById(Integer id) {
 		 BackResult<Integer> result=new BackResult<Integer>();
 		try {
-			tdsFunctionRoleMapper.deleteById(id);
+			tdsRoleMapper.deleteById(id);
 			result.setResultObj(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,14 +78,15 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 		return result;
 	}
 
+	@Transactional
 	@Override
-	public BackResult<TdsFunctionRoleDomain> updateFunctionRole(TdsFunctionRoleDomain domain) {
-		BackResult<TdsFunctionRoleDomain> result=new BackResult<TdsFunctionRoleDomain>();
+	public BackResult<TdsRoleDomain> updateTdsRole(TdsRoleDomain domain) {
+		BackResult<TdsRoleDomain> result=new BackResult<TdsRoleDomain>();
 		domain.setUpdateTime(new Date());
-		TdsFunctionRole  tds=new TdsFunctionRole();
+		TdsRole  tds=new TdsRole();
 		try {
 			BeanUtils.copyProperties(domain,tds);
-			tdsFunctionRoleMapper.update(tds);
+			tdsRoleMapper.update(tds);
 			result.setResultObj(domain);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -99,17 +98,17 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 	}
 
 	@Override
-	public BackResult<List<TdsFunctionRoleDomain>> selectAll(TdsFunctionRoleDomain domain) {
-		BackResult<List<TdsFunctionRoleDomain>> result=new BackResult<List<TdsFunctionRoleDomain>>();
-		TdsFunctionRole tds=new TdsFunctionRole();
-		List<TdsFunctionRoleDomain>  listDomain=new ArrayList<TdsFunctionRoleDomain>();
+	public BackResult<List<TdsRoleDomain>> selectAll(TdsRoleDomain domain) {
+		BackResult<List<TdsRoleDomain>> result=new BackResult<List<TdsRoleDomain>>();
+		TdsRole tds=new TdsRole();
+		List<TdsRoleDomain>  listDomain=new ArrayList<TdsRoleDomain>();
 		try {
 			BeanUtils.copyProperties(domain,tds);
-			List<TdsFunctionRole> list=tdsFunctionRoleMapper.selectAll(tds);
+			List<TdsRole> list=tdsRoleMapper.selectAll(tds);
 			if(list.size()>0 && list!=null){
-				TdsFunctionRoleDomain tdsDomain=null;
-	          for(TdsFunctionRole obj:list){
-	        	 tdsDomain=new TdsFunctionRoleDomain();
+				TdsRoleDomain tdsDomain=null;
+	          for(TdsRole obj:list){
+	        	 tdsDomain=new TdsRoleDomain();
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}
@@ -124,8 +123,12 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 		}
 		return result;
 	}
+     
+	
 
 
+	
+	
 
 	
 

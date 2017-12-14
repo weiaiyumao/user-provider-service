@@ -1,8 +1,8 @@
-package cn.service;
+package cn.service.tds;
 
 import java.util.List;
 
-import cn.entity.TdsUserRole;
+import cn.entity.tds.TdsUserRole;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 import main.java.cn.service.tds.TdsUserRoleBusService;

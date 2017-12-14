@@ -1,23 +1,26 @@
-package cn.entity;
+package cn.entity.tds;
 
 import java.io.Serializable;
 
 /**
- * : tds_modular
+ * : tds_function
  * 
  * 
  * @author Gen
  */
-public class TdsModular implements Serializable{
+public class TdsFunction implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 114108720646134952L;
+	private static final long serialVersionUID = 8772115761370124672L;
 
-	//模块id : id 	
+	//功能id : id 	
 	private Integer id; 
 	
-	//模块名称 : name 	
+	//功能地址 : url 	
+	private String url; 
+	
+	//功能名称 : name 	
 	private String name; 
 	
 	//备注 : remarks 	
@@ -43,7 +46,7 @@ public class TdsModular implements Serializable{
 	
 
 	/**
-	 * 模块id : id
+	 * 功能id : id
 	 * 
 	 * @return 
 	 */
@@ -52,7 +55,7 @@ public class TdsModular implements Serializable{
 	}
 	
 	/**
-	 * 模块id : id
+	 * 功能id : id
 	 * 
 	 * @return 
 	 */
@@ -60,7 +63,24 @@ public class TdsModular implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 模块名称 : name
+	 * 功能地址 : url
+	 * 
+	 * @return 
+	 */
+	public String getUrl () {
+		return url;
+	}
+	
+	/**
+	 * 功能地址 : url
+	 * 
+	 * @return 
+	 */
+	public void setUrl (String url) {
+		this.url = url;
+	}
+	/**
+	 * 功能名称 : name
 	 * 
 	 * @return 
 	 */
@@ -69,7 +89,7 @@ public class TdsModular implements Serializable{
 	}
 	
 	/**
-	 * 模块名称 : name
+	 * 功能名称 : name
 	 * 
 	 * @return 
 	 */

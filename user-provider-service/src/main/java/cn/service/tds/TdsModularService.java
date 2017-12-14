@@ -1,8 +1,8 @@
-package cn.service;
+package cn.service.tds;
 
 import java.util.List;
 
-import cn.entity.TdsModular;
+import cn.entity.tds.TdsModular;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsModularDomain;
 import main.java.cn.service.tds.TdsModularBusService;

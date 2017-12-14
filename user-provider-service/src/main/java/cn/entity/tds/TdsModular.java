@@ -1,27 +1,30 @@
-package cn.entity;
+package cn.entity.tds;
 
 import java.io.Serializable;
 
 /**
- * : tds_user_role
+ * : tds_modular
  * 
  * 
  * @author Gen
  */
-public class TdsUserRole implements Serializable{
+public class TdsModular implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4066066723373193813L;
+	private static final long serialVersionUID = 114108720646134952L;
 
-	// : id 	
+	//模块id : id 	
 	private Integer id; 
 	
-	//用户id : user_id 	
-	private Integer userId; 
+	//模块名称 : name 	
+	private String name; 
 	
-	//角色id : role_id 	
-	private Integer roleId; 
+	//备注 : remarks 	
+	private String remarks; 
+	
+	//父级模块id : parent_id 	
+	private Integer parentId; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -40,7 +43,7 @@ public class TdsUserRole implements Serializable{
 	
 
 	/**
-	 *  : id
+	 * 模块id : id
 	 * 
 	 * @return 
 	 */
@@ -49,7 +52,7 @@ public class TdsUserRole implements Serializable{
 	}
 	
 	/**
-	 *  : id
+	 * 模块id : id
 	 * 
 	 * @return 
 	 */
@@ -57,38 +60,55 @@ public class TdsUserRole implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 用户id : user_id
+	 * 模块名称 : name
 	 * 
 	 * @return 
 	 */
-	public Integer getUserId () {
-		return userId;
+	public String getName () {
+		return name;
 	}
 	
 	/**
-	 * 用户id : user_id
+	 * 模块名称 : name
 	 * 
 	 * @return 
 	 */
-	public void setUserId (Integer userId) {
-		this.userId = userId;
+	public void setName (String name) {
+		this.name = name;
 	}
 	/**
-	 * 角色id : role_id
+	 * 备注 : remarks
 	 * 
 	 * @return 
 	 */
-	public Integer getRoleId () {
-		return roleId;
+	public String getRemarks () {
+		return remarks;
 	}
 	
 	/**
-	 * 角色id : role_id
+	 * 备注 : remarks
 	 * 
 	 * @return 
 	 */
-	public void setRoleId (Integer roleId) {
-		this.roleId = roleId;
+	public void setRemarks (String remarks) {
+		this.remarks = remarks;
+	}
+	/**
+	 * 父级模块id : parent_id
+	 * 
+	 * @return 
+	 */
+	public Integer getParentId () {
+		return parentId;
+	}
+	
+	/**
+	 * 父级模块id : parent_id
+	 * 
+	 * @return 
+	 */
+	public void setParentId (Integer parentId) {
+		this.parentId = parentId;
 	}
 	/**
 	 * 创建时间 : create_time

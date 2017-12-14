@@ -1,4 +1,4 @@
-package cn.entity;
+package cn.entity.tds;
 
 import java.io.Serializable;
 
@@ -18,10 +18,10 @@ public class TdsFunctionRole implements Serializable{
 	private Integer id; 
 	
 	//功能id : fun_id 	
-	private String funId; 
+	private Integer funId; 
 	
 	//角色id : role_id 	
-	private String roleId; 
+	private Integer roleId; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -61,7 +61,7 @@ public class TdsFunctionRole implements Serializable{
 	 * 
 	 * @return 
 	 */
-	public String getFunId () {
+	public Integer getFunId () {
 		return funId;
 	}
 	
@@ -70,7 +70,7 @@ public class TdsFunctionRole implements Serializable{
 	 * 
 	 * @return 
 	 */
-	public void setFunId (String funId) {
+	public void setFunId (Integer funId) {
 		this.funId = funId;
 	}
 	/**
@@ -78,7 +78,7 @@ public class TdsFunctionRole implements Serializable{
 	 * 
 	 * @return 
 	 */
-	public String getRoleId () {
+	public Integer getRoleId () {
 		return roleId;
 	}
 	
@@ -87,7 +87,7 @@ public class TdsFunctionRole implements Serializable{
 	 * 
 	 * @return 
 	 */
-	public void setRoleId (String roleId) {
+	public void setRoleId (Integer roleId) {
 		this.roleId = roleId;
 	}
 	/**

@@ -1,6 +1,7 @@
 package cn.controller.tds;
 
-import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,18 +9,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.entity.tds.TdsModular;
-import cn.service.tds.TdsModularService;
+import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.tds.TdsModularDomain;
+import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
 
 @RestController
-@RequestMapping("/modular")
-public class TdsModularController {
+@RequestMapping("/tdsUser")
+public class TdsUserController {
 
 
 	@Autowired
-	private TdsModularService tdsModularService;
+	private TdsUserService tdsUserService;
+	
+	
 
 	/**
 	 * 根据id查询
@@ -28,9 +31,9 @@ public class TdsModularController {
 	 * @return obj
 	 */
 	@RequestMapping(value = "/loadById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsModular> loadById(Integer id) {
-			BackResult<TdsModular> result = tdsModularService.loadById(id);
-		    return result;
+	public BackResult<TdsUserDomain> loadById(Integer id) {
+		BackResult<TdsUserDomain> result = tdsUserService.loadById(id);
+		return result;
 	}
 
 	/**
@@ -40,9 +43,9 @@ public class TdsModularController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsModularDomain> saveTdsFunction(@RequestBody TdsModularDomain tdsModularDomain) {
-		  BackResult<TdsModularDomain> result = tdsModularService.saveTdsModular(tdsModularDomain);
-		  return result;
+	public BackResult<TdsUserDomain> save(@RequestBody TdsUserDomain tdsUserDomain) {
+		BackResult<TdsUserDomain> result = tdsUserService.save(tdsUserDomain);
+		return result;
 	}
 
 	/**
@@ -52,8 +55,8 @@ public class TdsModularController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsModularDomain> update(@RequestBody TdsModularDomain tdsModularDomain) {
-		BackResult<TdsModularDomain> result =tdsModularService.updateTdsModular(tdsModularDomain);
+	public BackResult<TdsUserDomain> update(@RequestBody TdsUserDomain tdsUserDomain) {
+		BackResult<TdsUserDomain> result = tdsUserService.update(tdsUserDomain);
 		return result;
 	}
 
@@ -65,7 +68,7 @@ public class TdsModularController {
 	 */
 	@RequestMapping(value = "/deleteById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<Integer> deleteById(Integer id) {
-		BackResult<Integer> result = tdsModularService.deleteById(id);
+		BackResult<Integer> result = tdsUserService.deleteById(id);
 		return result;
 	}
 
@@ -75,10 +78,13 @@ public class TdsModularController {
 	 * @param tdsFunction
 	 * @return List<>
 	 */
-	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<TdsModularDomain>> selectAll(@RequestBody TdsModularDomain tdsModularDomain) {
-		BackResult<List<TdsModularDomain>> result =tdsModularService.selectAll(tdsModularDomain);
+	@RequestMapping(value = "/pageSelectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<PageDomain<TdsUserDomain>> selectAll(@RequestBody TdsUserDomain tdsUserDomain, Integer pageSize,
+			Integer curPage) {
+		BackResult<PageDomain<TdsUserDomain>> result = tdsUserService.pageSelectAll(tdsUserDomain,pageSize,curPage);
 		return result;
 	}
+	
 
+	
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.entity.TdsRole;
-import cn.service.TdsRoleService;
+import cn.entity.tds.TdsRole;
+import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
