@@ -24,4 +24,5 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	 */
 	List<TdsFunction> moduleLoadingByUsreId(Integer userid);
 	
+	
 }

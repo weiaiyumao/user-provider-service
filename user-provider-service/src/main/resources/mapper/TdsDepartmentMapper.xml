@@ -43,15 +43,15 @@
 		<include refid="Base_Column_List" />
 		FROM tds_department
 		<where>
-			<if test="id != null"> id = #{id},</if>
-			<if test="name != null"> Name = #{name},</if>
-			<if test="remarks != null"> remarks = #{remarks},</if>
-			<if test="parentId != null"> parent_id = #{parentId},</if>
-			<if test="createTime != null"> create_time = #{createTime},</if>
-			<if test="updateTime != null"> update_time = #{updateTime},</if>
-			<if test="creater != null"> creater = #{creater},</if>
-			<if test="updater != null"> updater = #{updater},</if>
-			 is_deleted ='0'
+			<if test="id != null">and id = #{id}</if>
+			<if test="name != null">and Name = #{name},</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="parentId != null">andparent_id = #{parentId}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			and is_deleted ='0'
 		</where>
 	</select>
 
@@ -82,7 +82,8 @@
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_department SET IS_DELETED=1
+		UPDATE tds_department SET
+		IS_DELETED=1
 		WHERE ID=#{id}
 	</update>
 
@@ -102,4 +103,62 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
+
+
+
+
+
+	<select id="pageUserRoleDepartmentView" resultType="cn.entity.tds.view.UserRoleDepartmentView"
+		parameterType="cn.entity.tds.view.UserRoleDepartmentView">
+		select u.id,u.contact,r.role_name,d.name,u.com_name,u.com_url,
+		u.create_time,u.source,u.is_deleted
+		from tds_user u inner join tds_user_role ur
+		on u.id=ur.user_id inner join tds_role r
+		on r.id=ur.role_id inner join tds_user_department ud
+		on ud.user_id=u.id inner join tds_department d
+		on d.id=ud.depart_id
+		<where>
+			<if test="role_name != null">AND r.role_name = #{role_name}</if>
+			<if test="name != null">AND d.name = #{name}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="create_time != null">AND u.create_time = #{create_time}</if>
+			AND u.is_deleted ='0' order by u.create_time desc
+		</where>
+		LIMIT #{currentPage},#{numPerPage}
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="cn.entity.tds.view.UserRoleDepartmentView">
+		select count(1)
+		from tds_user u LEFT JOIN tds_user_role ur
+		on
+		u.id=ur.user_id LEFT JOIN tds_role r
+		on r.id=ur.role_id LEFT JOIN
+		tds_user_department ud
+		on ud.user_id=u.id LEFT JOIN tds_department d
+		on
+		d.id=ud.depart_id
+		<where>
+			<if test="role_name != null">AND r.role_name = #{role_name}</if>
+			<if test="name != null">AND d.name = #{name}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="create_time != null">AND u.create_time = #{create_time}</if>
+			AND u.is_deleted ='0'
+		</where>
+	</select>
+	
+	
+	<select id="funByuserId"  parameterType="java.lang.Integer" resultType="cn.entity.tds.TdsFunction">
+		SELECT * FROM tds_function
+		WHERE id IN (
+		SELECT fr.fun_id FROM tds_function_role fr
+		WHERE fr.role_id IN (
+		SELECT tur.role_id FROM tds_user_role tur
+		WHERE tur.user_id =#{userId}
+		AND is_deleted = '0'
+		) AND is_deleted = '0'
+
+		) AND is_deleted = '0';
+	</select>
+
 </mapper>

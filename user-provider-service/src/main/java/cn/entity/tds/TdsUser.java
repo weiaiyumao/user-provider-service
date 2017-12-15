@@ -3,7 +3,7 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * : tds_user
+ * : 用户表实体
  * 
  * 
  * @author Gen
@@ -73,6 +73,16 @@ public class TdsUser implements Serializable{
 	private String hedehref; 
 	
 
+	
+	private String source;
+	
+	
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
+	}
 	/**
 	 * 用户id : id
 	 * 

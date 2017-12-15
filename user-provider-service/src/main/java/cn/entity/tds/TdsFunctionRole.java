@@ -3,7 +3,7 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * : tds_function_role
+ * : 功能与角色实体
  * 
  * 
  * @author Gen

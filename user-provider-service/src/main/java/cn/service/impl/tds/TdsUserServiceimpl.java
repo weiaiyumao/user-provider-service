@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsUserMapper;
-import cn.dto.TdsUserDto;
 import cn.entity.tds.TdsUser;
+import cn.entity.tds.view.TdsUserView;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -128,14 +128,15 @@ public class TdsUserServiceimpl implements TdsUserService {
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS,"该用户没有订单信息");
 			}
-			TdsUserDto dto = new TdsUserDto(curPage, pageSize);
-			List<TdsUser> pageList = tdsUserMapper.pageSelectAll(dto);
+			//TODO
+			//new TdsUserView(curPage, pageSize)增加条件查询 new 
+			List<TdsUser> pageList = tdsUserMapper.pageSelectAll(new TdsUserView(curPage, pageSize));
 			for (TdsUser tds : pageList) {
 				TdsUserDomain obj = new TdsUserDomain();
 				BeanUtils.copyProperties(tds, obj);
 				list.add(obj);
 			}
-			listDomain = new PageDomain<TdsUserDomain>(dto.getCurrentPage(), dto.getNumPerPage(), count);
+			listDomain = new PageDomain<TdsUserDomain>(curPage,pageSize, count);
 			listDomain.setTlist(list);
 			result.setResultObj(listDomain);
 

@@ -1,5 +1,7 @@
 package cn.user.provider.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -12,15 +14,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.UserProviderServiceApp;
 import cn.entity.tds.TdsModular;
+import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsFunctionService;
 import cn.service.tds.TdsUserRoleService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
-import main.java.cn.hhtp.util.MD5Util;
+import main.java.cn.domain.tds.UserRoleDepartmentViewDomain;
 
 @RunWith(SpringJUnit4ClassRunner.class)  
 @SpringBootTest(classes=UserProviderServiceApp.class)// 指定spring-boot的启动类   
@@ -42,6 +46,22 @@ public class TdsRoot {
 	  @Autowired
 	  private TdsUserService tdsUserService;
 	  
+	  @Autowired
+	  private TdsDepartmentService tdsDepartmentService;
+	  
+	  
+	  @Test
+	  public void test1(){
+		// tdsDepartmentService.pageUserRoleDepartmentView("总部","管理员",null,null,0,0);
+		  tdsDepartmentService.funByuserId(1);
+	  }
+	  
+	  @Test
+	  public void list(){
+		   TdsDepartmentDomain tds=new TdsDepartmentDomain();
+		   BackResult<List<TdsDepartmentDomain>>  list=tdsDepartmentService.selectAll(tds);
+		   System.out.println(list);
+	  }
 	   
 	  @Test
 	  public void login(){

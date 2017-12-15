@@ -2,7 +2,7 @@ package cn.service.tds;
 import main.java.cn.service.tds.TdsUserBusService;
 
 /**
- * : tds_user_role
+ * : 用户服务接口
  * 
  * 
  * @author Gen

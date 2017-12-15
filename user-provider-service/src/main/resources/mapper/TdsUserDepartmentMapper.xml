@@ -45,15 +45,15 @@
 		<include refid="Base_Column_List" />
 		FROM tds_usre_department
 		<where>
-			<if test="id != null"> id = #{id},</if>
-			<if test="useriD != null"> useri_d = #{useriD},</if>
-			<if test="departId != null"> depart_id = #{departId},</if>
-			<if test="remarks != null"> remarks = #{remarks},</if>
-			<if test="createTime != null"> create_time = #{createTime},</if>
-			<if test="updateTime != null"> update_time = #{updateTime},</if>
-			<if test="creater != null"> creater = #{creater},</if>
-			<if test="updater != null"> updater = #{updater},</if>
-			is_deleted ='0'
+			<if test="id != null">and id = #{id}</if>
+			<if test="useriD != null">and useri_d = #{useriD}</if>
+			<if test="departId != null">and depart_id = #{departId}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			and is_deleted ='0'
 		</where>
 	</select>
 

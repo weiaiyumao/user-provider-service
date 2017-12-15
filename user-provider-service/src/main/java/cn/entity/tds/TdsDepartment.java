@@ -3,7 +3,7 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * : tds_department
+ * : 部门实体
  * 
  * 
  * @author Gen

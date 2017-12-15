@@ -25,6 +25,7 @@
 		<result column="last_login_time" property="lastLoginTime"></result>
 		<result column="version" property="version"></result>
 		<result column="hedehref" property="hedehref"></result>
+		<result column="source" property="source"></result>
 	</resultMap>
 
 
@@ -47,7 +48,8 @@
 		LOGIN_IP,
 		LAST_LOGIN_TIME,
 		VERSION,
-		HEDEHREF
+		HEDEHREF,
+		SOURCE
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -96,6 +98,7 @@
 			<if test="lastLoginTime != null">AND LAST_LOGIN_TIME = #{lastLoginTime}</if>
 			<if test="version != null">AND VERSION = #{version}</if>
 			<if test="hedehref != null">AND HEDEHREF = #{hedehref}</if>
+			<if test="source != null">AND SOURCE = #{source}</if>
 			AND IS_DELETED=0
 		</where>
 	</select>
@@ -120,6 +123,7 @@
 			<if test="lastLoginTime != null"> LAST_LOGIN_TIME , </if>
 			<if test="version != null"> VERSION , </if>
 			<if test="hedehref != null"> HEDEHREF , </if>
+			<if test="source != null"> SOURCE , </if>
 			IS_DELETED
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -140,6 +144,7 @@
 			<if test="lastLoginTime != null"> #{lastLoginTime} , </if>
 			<if test="version != null"> #{version} , </if>
 			<if test="hedehref != null"> #{hedehref} , </if>
+		    <if test="source != null"> #{source} , </if>
 			0
 		</trim>
 
@@ -174,11 +179,12 @@
 			<if test="lastLoginTime != null"> LAST_LOGIN_TIME = #{lastLoginTime}, </if>
 			<if test="version != null"> VERSION = #{version}, </if>
 			<if test="hedehref != null"> HEDEHREF = #{hedehref},</if>
+			<if test="source != null"> SOURCE = #{source},</if>
 		</trim>
 		WHERE id=#{id} 
 	</update>
 
-	<select id="pageSelectAll" resultMap="BaseResultMap" parameterType="cn.dto.TdsUserDto">
+	<select id="pageSelectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.view.TdsUserView">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_user
@@ -202,6 +208,7 @@
 			<if test="lastLoginTime != null">AND LAST_LOGIN_TIME = #{lastLoginTime},</if>
 			<if test="version != null">AND VERSION = #{version},</if>
 			<if test="hedehref != null">AND HEDEHREF = #{hedehref},</if>
+			<if test="source != null">AND SOURCE = #{source},</if>
 			AND IS_DELETED =0 ORDER BY ID DESC
 		</where>
 		LIMIT #{currentPage},#{numPerPage}
@@ -211,28 +218,8 @@
 	<select id="quertCount" resultType="java.lang.Integer"
 		parameterType="cn.entity.tds.TdsUser">
 		SELECT count(1) FROM tds_user
-		<where>
-			<if test="id != null">AND ID = #{id}</if>
-			<if test="name != null">AND NAME = #{name}</if>
-			<if test="comName != null">AND COM_NAME = #{comName}</if>
-			<if test="comUrl != null">AND COM_URL = #{comUrl}</if>
-			<if test="contact != null">AND CONTACT = #{contact}</if>
-			<if test="phone != null">AND PHONE = #{phone}</if>
-			<if test="password != null">AND PASSWORD = #{password}</if>
-			<if test="invitedcode != null">AND INVITEDCODE = #{invitedcode}</if>
-			<if test="remarks != null">AND REMARKS = #{remarks}</if>
-			<if test="creater != null">AND CREATER = #{creater}</if>
-			<if test="updater != null">AND UPDATER = #{updater}</if>
-			<if test="isDeleted != null">AND IS_DELETED = #{isDeleted}</if>
-			<if test="updateTime != null">AND UPDATE_TIME = #{updateTime}</if>
-			<if test="createTime != null">AND CREATE_TIME = #{createTime}</if>
-			<if test="token != null">AND TOKEN = #{token}</if>
-			<if test="loginIp != null">AND LOGIN_IP = #{loginIp}</if>
-			<if test="lastLoginTime != null">AND LAST_LOGIN_TIME = #{lastLoginTime}</if>
-			<if test="version != null">AND VERSION = #{version}</if>
-			<if test="hedehref != null">AND HEDEHREF = #{hedehref}</if>
-			AND IS_DELETED =0 ORDER BY ID DESC
-		</where>
+		where IS_DELETED =0 ORDER BY ID DESC
+	
 	</select>
 	
 	<select id="login" resultMap="BaseResultMap" parameterType="java.lang.String">

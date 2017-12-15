@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import cn.dto.TdsUserDto;
 import cn.entity.tds.TdsUser;
+import cn.entity.tds.view.TdsUserView;
 
 
 /**
@@ -27,7 +27,7 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
 	 * @param numPerPage   每页显示多行
 	 * @return
 	 */
-    List<TdsUser> pageSelectAll(TdsUserDto dto);
+    List<TdsUser> pageSelectAll(TdsUserView dto);
     
     /**
      * 根据参数查询总条数
@@ -37,7 +37,11 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
     Integer quertCount(TdsUser tds);
     
     
-    
+    /**
+     * 根据手机号码查询用户信息
+     * @param phone
+     * @return
+     */
     TdsUser loadByPhone(String phone);
     
     /**
