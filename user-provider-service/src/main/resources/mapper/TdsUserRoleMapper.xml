@@ -14,6 +14,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
+		<result column="status" property="status"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -24,7 +25,8 @@
 		UPDATE_TIME,
 		CREATER,
 		UPDATER,
-		IS_DELETED
+		IS_DELETED,
+		status
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -50,6 +52,7 @@
 		<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
 		<if test="creater != null">AND CREATER=#{creater}</if>
 		<if test="updater != null">AND UPDATER=#{updater}</if>
+		<if test="updater != null">AND STATUS=#{status}</if>
 		AND IS_DELETED=0
 		</where>
 	</select> 
@@ -63,6 +66,7 @@
 		<if test="updateTime != null"> UPDATE_TIME , </if>
 		<if test="creater != null"> CREATER , </if>
 		<if test="updater != null"> UPDATER , </if>
+		STATUS,
 	    IS_DELETED 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -72,13 +76,14 @@
 		<if test="updateTime != null"> #{updateTime} , </if>
 		<if test="creater != null"> #{creater} , </if>
 		<if test="updater != null"> #{updater} , </if>
-		0
+		'0',
+		'0'
 		</trim>
 	</insert>
    
      <!-- 逻辑删除  -->
 	<update id="deleteById"  parameterType="java.lang.Integer" >
-	    UPDATE tds_user_role SET IS_DELETED=1
+	    UPDATE tds_user_role SET IS_DELETED='1'
 	    WHERE ID=#{id}
 	</update>
 
@@ -93,14 +98,52 @@
 			<if test="creater != null"> CREATER = #{creater}, </if>
 			<if test="updater != null"> UPDATER = #{updater}, </if>
 			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+			<if test="status != null"> STATUS = #{status}, </if>
 		</trim>
 		WHERE ID=#{id}
 	</update>
 	
 	
-<!-- 	<select id="selectByUsreId" resultMap="BaseResultMap" parameterMap="HashMap">
-	   
+	<update id="upStatusById" parameterType="Hashmap">
+		UPDATE tds_user_role
+		<trim prefix="set" suffixOverrides=",">
+		    <if test="userId != null"> USERID = #{userId}, </if>
+			<if test="roleId != null"> ROLE_ID = #{roleId}, </if>
+			<if test="updateTime != null"> UPDATE_TIME = #{updateTime}, </if>
+			<if test="updater != null"> UPDATER = #{updater}, </if>
+			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+			<if test="status != null"> STATUS = #{status}, </if>
+		</trim>
+		WHERE ID=#{id} and IS_DELETED='0'
+	</update>
 	
-	</select> -->
+	
+	<insert id="saveRoleByUser" parameterType="Hashmap">
+     insert into tds_user_role(user_id, role_id,create_time,creater,is_deleted,status)
+     values
+	 <foreach collection="arr" item="item" index="index" separator=",">
+            (#{item.userId},#{item.roleId},#{item.createTime},#{item.creater},0,0)
+     </foreach>
+     
+	</insert> 
+	
+	
+	 <!-- 账号配置列表查询 -->
+	 <select id="queryRoleIsStatus"  resultType="main.java.cn.domain.page.PageAuto" parameterType="HashMap">
+        select ur.id,u.name,r.role_name as roleName,d.name as departName,
+        ur.status,ur.is_deleted from 
+		tds_user u,tds_user_role ur,
+		tds_role r,tds_department d,
+		tds_user_department ud
+		where u.id=ur.user_id 
+		and ur.role_id=r.id 
+		and ud.depart_id=d.id  
+		and ud.user_id=u.id
+		and ur.is_deleted='0' 
+		<if test="status != null">and ur.status=#{status}</if>
+		<if test="name != null"> and u.name=#{name}</if>
+    </select>
+	
+	
 	
 </mapper>

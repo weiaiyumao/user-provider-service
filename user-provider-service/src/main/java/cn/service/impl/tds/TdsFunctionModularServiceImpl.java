@@ -20,9 +20,9 @@ import main.java.cn.domain.tds.TdsModularDomain;
 
 
 @Service
-public class TdsFunctionModularServiceImp implements  TdsModularService {
+public class TdsFunctionModularServiceImpl implements  TdsModularService {
      
-	private final static Logger logger = LoggerFactory.getLogger(TdsFunctionModularServiceImp.class);
+	private final static Logger logger = LoggerFactory.getLogger(TdsFunctionModularServiceImpl.class);
 	
 	
 	@Autowired

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.dao.tds.TdsFunctionMapper;
 import cn.entity.tds.TdsFunction;
 import cn.service.tds.TdsFunctionService;
+import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsFunctionDomain;
@@ -133,8 +134,8 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
 			List<TdsFunction> list = tdsFunctionMapper.moduleLoadingByUsreId(userId);
 
-			if (list.size() <= 0) {
-				return new BackResult<List<TdsFunctionDomain>>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有模块加载列表");
+			if (CommonUtils.isNotEmpty(list)) {
+				return new BackResult<List<TdsFunctionDomain>>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户id没有模块加载列表");
 			}
 
 			TdsFunctionDomain tdsDomain = null;

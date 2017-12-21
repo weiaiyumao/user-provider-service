@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 @RestController
@@ -81,4 +82,26 @@ public class TdsUserRoleController {
 		BackResult<List<TdsUserRoleDomain>> result = tdsUserRoleService.selectAll(tdsUserRoleDomain);
 		return result;
 	}
+	
+	/**
+	 * 根据用户id修改账号状态
+	 * @param tdsUserRoleDomain
+	 * @return
+	 */
+	@RequestMapping(value="/upStatusById",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> upStatusById(TdsUserRoleDomain tdsUserRoleDomain,Integer loginUserId){
+	    return tdsUserRoleService.upStatusById(tdsUserRoleDomain,loginUserId);
+	}
+	
+	
+	/**
+	 * 账号配置列表显示
+	 * @param tdsUserRoleDomain
+	 * @return
+	 */
+	@RequestMapping(value="/queryRoleIsStatus",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<PageAuto>> queryRoleIsStatus(@RequestBody PageAuto auto){
+		return tdsUserRoleService.queryRoleIsStatus(auto);
+	}
+	
 }

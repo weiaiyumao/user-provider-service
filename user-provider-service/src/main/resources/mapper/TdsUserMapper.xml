@@ -7,9 +7,8 @@
 
 	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUser">
 		<result column="id" property="id"></result>
+		<result column="com_id" property="comId"></result>
 		<result column="name" property="name"></result>
-		<result column="com_name" property="comName"></result>
-		<result column="com_url" property="comUrl"></result>
 		<result column="contact" property="contact"></result>
 		<result column="phone" property="phone"></result>
 		<result column="password" property="password"></result>
@@ -26,14 +25,15 @@
 		<result column="version" property="version"></result>
 		<result column="hedehref" property="hedehref"></result>
 		<result column="source" property="source"></result>
+		<result column="status" property="status"></result>
+		<result column="register_source" property="registerSource"></result>
 	</resultMap>
 
 
 	<sql id="Base_Column_List">
 		ID,
+		COM_ID,
 		NAME,
-		COM_NAME,
-		COM_URL,
 		CONTACT,
 		PHONE,
 		PASSWORD,
@@ -49,7 +49,9 @@
 		LAST_LOGIN_TIME,
 		VERSION,
 		HEDEHREF,
-		SOURCE
+		SOURCE,
+		STATUS,
+		REGISTER_SOURCE
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -70,10 +72,10 @@
 		FROM tds_user
 		WHERE
 		PHONE=#{phone}
-		AND IS_DELETED=0
+		AND IS_DELETED='0'
 	</select>
-	
-	
+
+
 
 	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUser">
 		SELECT
@@ -82,8 +84,7 @@
 		<where>
 			<if test="id != null">AND ID = #{id}</if>
 			<if test="name != null">AND NAME = #{name}</if>
-			<if test="comName != null">AND COM_NAME = #{comName}</if>
-			<if test="comUrl != null">AND COM_URL = #{comUrl}</if>
+			<if test="comId != null">and com_id = #{comId}</if>
 			<if test="contact != null">AND CONTACT = #{contact}</if>
 			<if test="phone != null">AND PHONE = #{phone}</if>
 			<if test="password != null">AND PASSWORD = #{password}</if>
@@ -99,16 +100,17 @@
 			<if test="version != null">AND VERSION = #{version}</if>
 			<if test="hedehref != null">AND HEDEHREF = #{hedehref}</if>
 			<if test="source != null">AND SOURCE = #{source}</if>
-			AND IS_DELETED=0
+			<if test="status != null">and status = #{status}</if>
+		    <if test="registerSource != null">and register_source = #{registerSource}</if>
+			AND IS_DELETED='0'
 		</where>
 	</select>
 
-	<insert id="save" parameterType="cn.entity.tds.TdsUser">
+	<insert id="save" parameterType="cn.entity.tds.TdsUser" >
 		INSERT INTO tds_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="name != null"> NAME , </if>
-			<if test="comName != null"> COM_NAME , </if>
-			<if test="comUrl != null"> COM_URL , </if>
+		    <if test="comId != null"> com_id , </if>
 			<if test="contact != null"> CONTACT , </if>
 			<if test="phone != null"> PHONE , </if>
 			<if test="password != null"> PASSWORD , </if>
@@ -124,12 +126,13 @@
 			<if test="version != null"> VERSION , </if>
 			<if test="hedehref != null"> HEDEHREF , </if>
 			<if test="source != null"> SOURCE , </if>
+			<if test="registerSource != null"> REGISTER_SOURCE , </if>
+			STATUS,
 			IS_DELETED
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null"> #{name} , </if>
-			<if test="comName != null"> #{comName} , </if>
-			<if test="comUrl != null"> #{comUrl} , </if>
+			<if test="comId != null"> #{comId} , </if>
 			<if test="contact != null"> #{contact} , </if>
 			<if test="phone != null"> #{phone} , </if>
 			<if test="password != null"> #{password} , </if>
@@ -144,15 +147,17 @@
 			<if test="lastLoginTime != null"> #{lastLoginTime} , </if>
 			<if test="version != null"> #{version} , </if>
 			<if test="hedehref != null"> #{hedehref} , </if>
-		    <if test="source != null"> #{source} , </if>
-			0
+			<if test="source != null"> #{source} , </if>
+			<if test="registerSource != null"> #{registerSource} , </if>
+			'0',
+			'0'
 		</trim>
 
 	</insert>
 
 	<update id="deleteById" parameterType="java.lang.Integer">
 		UPDATE tds_user SET
-		IS_DELETED=1 
+		IS_DELETED=1
 		WHERE ID=#{id}
 	</update>
 
@@ -162,8 +167,7 @@
 		UPDATE tds_user
 		<trim prefix="set" suffixOverrides=",">
 			<if test="name != null"> name = #{name}, </if>
-			<if test="comName != null"> COM_NAME = #{comName}, </if>
-			<if test="comUrl != null"> COM_URL = #{comUrl}, </if>
+		    <if test="comId != null"> COM_ID = #{comId}, </if>
 			<if test="contact != null"> CONTACT = #{contact}, </if>
 			<if test="phone != null"> PHONE = #{phone}, </if>
 			<if test="password != null"> PASSWORD = #{password}, </if>
@@ -180,61 +184,96 @@
 			<if test="version != null"> VERSION = #{version}, </if>
 			<if test="hedehref != null"> HEDEHREF = #{hedehref},</if>
 			<if test="source != null"> SOURCE = #{source},</if>
+			<if test="status != null"> STATUS = #{status},</if>
+			<if test="registerSource != null"> REGISTER_SOURCE = #{registerSource}, </if>
 		</trim>
-		WHERE id=#{id} 
+		WHERE id=#{id}
 	</update>
 
-	<select id="pageSelectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.view.TdsUserView">
+
+
+	<update id="updateStatus" parameterType="cn.entity.tds.TdsUser">
+		UPDATE tds_user
+		<trim prefix="set" suffixOverrides=",">
+			<if test="updater != null"> UPDATER = #{updater}, </if>
+			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+			<if test="loginIp != null"> LOGIN_IP = #{loginIp}, </if>
+			<if test="updateTime != null"> UPDATE_TIME = #{updateTime},</if>
+			<if test="status != null"> STATUS = #{status},</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+
+	<select id="pageSelectAll" resultMap="BaseResultMap"
+		parameterType="Hashmap">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_user
-		<where>
-			<if test="id != null">AND ID = #{id},</if>
-			<if test="name != null">AND NAME = #{name},</if>
-			<if test="comName != null">AND COM_NAME = #{comName},</if>
-			<if test="comUrl != null">AND COM_URL = #{comUrl},</if>
-			<if test="contact != null">AND CONTACT = #{contact},</if>
-			<if test="phone != null">AND PHONE = #{phone},</if>
-			<if test="password != null">AND PASSWORD = #{password},</if>
-			<if test="invitedcode != null">AND INVITEDCODE = #{invitedcode},</if>
-			<if test="remarks != null">AND REMARKS = #{remarks},</if>
-			<if test="creater != null">AND CREATER = #{creater},</if>
-			<if test="updater != null">AND UPDATER = #{updater},</if>
-			<if test="isDeleted != null">AND IS_DELETED = #{isDeleted},</if>
-			<if test="updateTime != null">AND UPDATE_TIME = #{updateTime},</if>
-			<if test="createTime != null">AND CREATE_TIME = #{createTime},</if>
-			<if test="token != null">AND TOKEN = #{token},</if>
-			<if test="loginIp != null">AND LOGIN_IP = #{loginIp},</if>
-			<if test="lastLoginTime != null">AND LAST_LOGIN_TIME = #{lastLoginTime},</if>
-			<if test="version != null">AND VERSION = #{version},</if>
-			<if test="hedehref != null">AND HEDEHREF = #{hedehref},</if>
-			<if test="source != null">AND SOURCE = #{source},</if>
-			AND IS_DELETED =0 ORDER BY ID DESC
-		</where>
-		LIMIT #{currentPage},#{numPerPage}
+	    where IS_DELETED ='0' ORDER BY ID DESC
+		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
 
 	<select id="quertCount" resultType="java.lang.Integer"
 		parameterType="cn.entity.tds.TdsUser">
 		SELECT count(1) FROM tds_user
-		where IS_DELETED =0 ORDER BY ID DESC
-	
+		where IS_DELETED =0 ORDER
+		BY ID DESC
+
 	</select>
-	
+
 	<select id="login" resultMap="BaseResultMap" parameterType="java.lang.String">
-	  SELECT 
-	  <include refid="Base_Column_List" /> 
-	  FROM tds_user
-	  where name=#{name} 
-	  and password=#{password}
-	  and is_deleted='0'
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user
+		where name=#{name}
+		and password=#{password}
+		and is_deleted='0'
 	</select>
-	
-     <select id="isUserName" resultType="java.lang.Integer"  parameterType="java.lang.String">
-	  SELECT COUNT(NAME) 
-	  FROM tds_user
-	  where name=#{name} 
-	  and is_deleted='0'
+
+	<select id="isUserName" resultType="java.lang.Integer"
+		parameterType="java.lang.String">
+		SELECT COUNT(NAME)
+		FROM tds_user
+		where name=#{name}
+		and is_deleted='0'
 	</select>
+
+     
+     <insert id="addBackAdminiUser"  parameterType="HashMap" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO tds_user
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null"> name ,</if>
+		    <if test="comId != null"> com_id , </if>
+			<if test="phone != null"> PHONE , </if>
+			<if test="password != null"> PASSWORD , </if>
+			<if test="creater != null"> CREATER , </if>
+			<if test="updater != null"> UPDATER , </if>
+			<if test="updateTime != null"> UPDATE_TIME , </if>
+			<if test="createTime != null"> CREATE_TIME , </if>
+			<if test="hedehref != null"> HEDEHREF , </if>
+			<if test="source != null"> SOURCE , </if>
+			<if test="registerSource != null"> REGISTER_SOURCE , </if>
+			STATUS,
+			IS_DELETED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null"> #{name} , </if>
+			<if test="comId != null"> #{comId} , </if>
+			<if test="phone != null"> #{phone} , </if>
+			<if test="password != null"> #{password} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="hedehref != null"> #{hedehref} , </if>
+			<if test="source != null"> #{source} , </if>
+			<if test="registerSource != null"> #{registerSource} ,</if>
+			'0',
+			'0'
+		</trim>
+   </insert>
+
+
+
 </mapper>

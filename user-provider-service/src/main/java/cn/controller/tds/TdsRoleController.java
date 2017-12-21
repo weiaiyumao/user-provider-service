@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.entity.tds.TdsRole;
 import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
 
@@ -80,6 +81,19 @@ public class TdsRoleController {
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<List<TdsRoleDomain>> selectAll(@RequestBody TdsRoleDomain tdsRoleDomain) {
 		BackResult<List<TdsRoleDomain>> result =tdsRoleService.selectAll(tdsRoleDomain);
+		return result;
+	}
+	
+	
+	/**
+	 * 查询
+	 * 
+	 * @param tdsFunction
+	 * @return List<>
+	 */
+	@RequestMapping(value = "/queryfunByRoleId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsFunctionDomain>> queryfunByRoleId(Integer roleId) {
+		BackResult<List<TdsFunctionDomain>> result =tdsRoleService.queryfunByRoleId(roleId);
 		return result;
 	}
 	

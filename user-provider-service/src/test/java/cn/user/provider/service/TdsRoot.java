@@ -1,7 +1,5 @@
 package cn.user.provider.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -13,15 +11,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import cn.UserProviderServiceApp;
+import cn.dao.tds.TdsStateInfoMapper;
 import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsFunctionService;
+import cn.service.tds.TdsStateInfoSerrvice;
 import cn.service.tds.TdsUserRoleService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
+import main.java.cn.domain.tds.TdsStateInfoDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 import main.java.cn.domain.tds.UserRoleDepartmentViewDomain;
@@ -49,6 +50,9 @@ public class TdsRoot {
 	  @Autowired
 	  private TdsDepartmentService tdsDepartmentService;
 	  
+	  @Autowired
+	  private TdsStateInfoSerrvice tdsStateInfoSerrvice;
+	  
 	  
 	  @Test
 	  public void test1(){
@@ -62,6 +66,22 @@ public class TdsRoot {
 		   BackResult<List<TdsDepartmentDomain>>  list=tdsDepartmentService.selectAll(tds);
 		   System.out.println(list);
 	  }
+	  
+	  @Test
+	  public void list2(){
+		   Integer[] arr={};
+		   tdsDepartmentService.addCustomPermissions("123",2,arr);
+	  }
+	  
+	  @Test
+	  public void list3(){
+		  TdsStateInfoDomain domai=new TdsStateInfoDomain();
+		  domai.setStateOpe("OPE003");
+		  domai.setStatePro("PRO002");
+		 // tdsStateInfoSerrvice.pageTdsStateInfo(domai,1,2,"2017-12-20");
+	  }
+	   
+	   
 	   
 	  @Test
 	  public void login(){
@@ -70,22 +90,29 @@ public class TdsRoot {
 	  
 	  @Test
 	  public void page(){
-		  TdsUserDomain entity=new TdsUserDomain();
-		  entity.setName("xx");
-		  BackResult<PageDomain<TdsUserDomain>> page=tdsUserService.pageSelectAll(entity,2,3);
-		  System.out.println(page);
 	  }
 	  
 	  
 	  @Test
 	  public void save(){
 		  TdsUserDomain entity=new TdsUserDomain();
-		  entity.setName("xx");
+		  entity.setName("111122");
 		 // entity.setIp("127.0.0.1");
 		  entity.setPassword("12345678a");
-		  BackResult<TdsUserDomain> obj=tdsUserService.save(entity);
+		  BackResult<TdsUserDomain> obj=tdsUserService.save(entity,"公司名称7","wwww.baidu.com4");
 		  System.out.println(obj);
 	  }
+	  
+	  @Test
+	  public void save1(){
+		  Integer[] arr={1,2};
+		  TdsUserDomain t=new TdsUserDomain();
+		  t.setName("张44");
+		  t.setPassword("1234567");
+	//	 BackResult<Integer> obj=tdsDepartmentService.addUserConfig(t, 1,1, 1,arr,1);
+		//  System.out.println(obj);
+	  }
+	  
 	  
 	 @Test
 	  public void queryTdsUser(){

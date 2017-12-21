@@ -43,8 +43,8 @@ public class TdsUserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserDomain> save(@RequestBody TdsUserDomain tdsUserDomain) {
-		BackResult<TdsUserDomain> result = tdsUserService.save(tdsUserDomain);
+	public BackResult<TdsUserDomain> save(@RequestBody TdsUserDomain tdsUserDomain,String comName, String comUrl) {
+		BackResult<TdsUserDomain> result = tdsUserService.save(tdsUserDomain,comName,comUrl);
 		return result;
 	}
 
@@ -85,6 +85,12 @@ public class TdsUserController {
 		return result;
 	}
 	
+	
+	
+	@RequestMapping(value = "/loadByPhone", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsUserDomain> loadByPhone(String phone){
+		return tdsUserService.loadByPhone(phone);
+	}
 
 	
 }

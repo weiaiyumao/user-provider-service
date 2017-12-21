@@ -1,6 +1,7 @@
 package cn.service.tds;
 
 
+
 import cn.entity.tds.TdsRole;
 import main.java.cn.common.BackResult;
 import main.java.cn.service.tds.TdsRoleBusService;
@@ -18,6 +19,8 @@ public interface TdsRoleService extends TdsRoleBusService{
 	
  	
 	BackResult<Integer> deleteById(Integer id);
+	
+	
 	
 	
 }

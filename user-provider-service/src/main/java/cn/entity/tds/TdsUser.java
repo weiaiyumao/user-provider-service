@@ -3,7 +3,7 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * : 用户表实体
+ * : 用户表
  * 
  * 
  * @author Gen
@@ -12,20 +12,16 @@ public class TdsUser implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6041883130162625575L;
-
+	private static final long serialVersionUID = -4341215329087743136L;
 
 	//用户id : id 	
 	private Integer id; 
 	
+	//公司id : com_id 	
+	private Integer comId; 
+	
 	//名称，昵称 : name 	
 	private String name; 
-	
-	//公司名称 : com_name 	
-	private String comName; 
-	
-	//公司网址 : com_url 	
-	private String comUrl; 
 	
 	//联系人 : contact 	
 	private String contact; 
@@ -60,7 +56,7 @@ public class TdsUser implements Serializable{
 	// : token 	
 	private String token; 
 	
-	//IP地址 : ip 	
+	//IP地址 : login_ip 	
 	private String loginIp; 
 	
 	//最近登录时间 : last_login_time 	
@@ -72,17 +68,16 @@ public class TdsUser implements Serializable{
 	//头像图片地址 : hedehref 	
 	private String hedehref; 
 	
-
+	//来源 : source 	
+	private String source; 
 	
-	private String source;
+	//账号状态 0：正常 1：禁用 : status 	
+	private String status; 
 	
+	//注册来源 0:用户注册添加  1：管理员添加 : register_source 	
+	private String registerSource; 
 	
-	public String getSource() {
-		return source;
-	}
-	public void setSource(String source) {
-		this.source = source;
-	}
+ 
 	/**
 	 * 用户id : id
 	 * 
@@ -101,6 +96,23 @@ public class TdsUser implements Serializable{
 		this.id = id;
 	}
 	/**
+	 * 公司id : com_id
+	 * 
+	 * @return 
+	 */
+	public Integer getComId () {
+		return comId;
+	}
+	
+	/**
+	 * 公司id : com_id
+	 * 
+	 * @return 
+	 */
+	public void setComId (Integer comId) {
+		this.comId = comId;
+	}
+	/**
 	 * 名称，昵称 : name
 	 * 
 	 * @return 
@@ -116,40 +128,6 @@ public class TdsUser implements Serializable{
 	 */
 	public void setName (String name) {
 		this.name = name;
-	}
-	/**
-	 * 公司名称 : com_name
-	 * 
-	 * @return 
-	 */
-	public String getComName () {
-		return comName;
-	}
-	
-	/**
-	 * 公司名称 : com_name
-	 * 
-	 * @return 
-	 */
-	public void setComName (String comName) {
-		this.comName = comName;
-	}
-	/**
-	 * 公司网址 : com_url
-	 * 
-	 * @return 
-	 */
-	public String getComUrl () {
-		return comUrl;
-	}
-	
-	/**
-	 * 公司网址 : com_url
-	 * 
-	 * @return 
-	 */
-	public void setComUrl (String comUrl) {
-		this.comUrl = comUrl;
 	}
 	/**
 	 * 联系人 : contact
@@ -338,13 +316,22 @@ public class TdsUser implements Serializable{
 	public void setToken (String token) {
 		this.token = token;
 	}
-  
-	
-	public void setLoginIp(String loginIp) {
-		this.loginIp = loginIp;
-	}
-	public String getLoginIp() {
+	/**
+	 * IP地址 : login_ip
+	 * 
+	 * @return 
+	 */
+	public String getLoginIp () {
 		return loginIp;
+	}
+	
+	/**
+	 * IP地址 : login_ip
+	 * 
+	 * @return 
+	 */
+	public void setLoginIp (String loginIp) {
+		this.loginIp = loginIp;
 	}
 	/**
 	 * 最近登录时间 : last_login_time
@@ -396,6 +383,57 @@ public class TdsUser implements Serializable{
 	 */
 	public void setHedehref (String hedehref) {
 		this.hedehref = hedehref;
+	}
+	/**
+	 * 来源 : source
+	 * 
+	 * @return 
+	 */
+	public String getSource () {
+		return source;
+	}
+	
+	/**
+	 * 来源 : source
+	 * 
+	 * @return 
+	 */
+	public void setSource (String source) {
+		this.source = source;
+	}
+	/**
+	 * 账号状态 0：正常 1：禁用 : status
+	 * 
+	 * @return 
+	 */
+	public String getStatus () {
+		return status;
+	}
+	
+	/**
+	 * 账号状态 0：正常 1：禁用 : status
+	 * 
+	 * @return 
+	 */
+	public void setStatus (String status) {
+		this.status = status;
+	}
+	/**
+	 * 注册来源 0:用户注册添加  1：管理员添加 : register_source
+	 * 
+	 * @return 
+	 */
+	public String getRegisterSource () {
+		return registerSource;
+	}
+	
+	/**
+	 * 注册来源 0:用户注册添加  1：管理员添加 : register_source
+	 * 
+	 * @return 
+	 */
+	public void setRegisterSource (String registerSource) {
+		this.registerSource = registerSource;
 	}
 
 

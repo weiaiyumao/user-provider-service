@@ -94,4 +94,6 @@
 		</trim>
 		WHERE ID=#{id}
 	</update>
+	
+	
 </mapper>

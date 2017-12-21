@@ -1,8 +1,11 @@
 package cn.service.tds;
 
 
+import java.util.List;
+
 import cn.entity.tds.TdsUserRole;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.PageAuto;
 import main.java.cn.service.tds.TdsUserRoleBusService;
 
 /**
@@ -26,5 +29,13 @@ public interface TdsUserRoleService extends  TdsUserRoleBusService{
 	 * @return
 	 */
 	BackResult<Integer> deleteById(Integer id);
+	
+	
+	/**
+	 * 账号配置列表显示
+	 * @param auto
+	 * @return
+	 */
+	BackResult<List<PageAuto>> queryRoleIsStatus(PageAuto auto);
   
 }

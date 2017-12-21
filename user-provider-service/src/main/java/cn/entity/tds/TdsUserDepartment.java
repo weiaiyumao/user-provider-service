@@ -41,6 +41,20 @@ public class TdsUserDepartment implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
+	private Integer positionId;
+	/**
+	 * 职位
+	 * @return
+	 */
+	public Integer getPositionId() {
+		return positionId;
+	}
+	
+	public void setPositionId(Integer positionId) {
+		this.positionId = positionId;
+	}
+	
+	
 
 	/**
 	 * id : id
@@ -197,5 +211,17 @@ public class TdsUserDepartment implements Serializable{
 	}
 
 
-  
+	
+	 public TdsUserDepartment(){
+			
+	  }
+
+//	public TdsUserDepartment(Integer useriD, Integer departId,Date createTime,Integer creater){
+//		this.useriD = useriD;
+//		this.departId = departId;
+//		this.createTime = createTime;
+//		this.creater = creater;
+//	}
+//    
+	 
 }

@@ -1,8 +1,8 @@
 package cn.entity.tds.view;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import main.java.cn.domain.page.PageDto;
 
 
 /**
@@ -10,10 +10,14 @@ import main.java.cn.domain.page.PageDto;
  * @author ChuangLan
  *
  */
-public class UserRoleDepartmentView  extends PageDto {
+public class UserRoleDepartmentView  implements Serializable{
 
 	
-	private static final long serialVersionUID = 5554843031611156941L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6743165669793135618L;
+	
 	private Integer id;
 	private String contact;
 	private String role_name;
@@ -97,14 +101,5 @@ public class UserRoleDepartmentView  extends PageDto {
 	}
     
 	
-	public UserRoleDepartmentView(Integer a,Integer b){
-		 super(a,b);
-		
-	}
-	
-	
-   public UserRoleDepartmentView(){
-		
-	}
 
 }

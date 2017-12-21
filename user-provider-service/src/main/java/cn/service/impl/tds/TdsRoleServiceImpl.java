@@ -13,16 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsRoleMapper;
+import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsRole;
 import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
 @Service
-public class TdsRoleServiceImp implements  TdsRoleService {
+public class TdsRoleServiceImpl implements  TdsRoleService {
 	
-	private final static Logger logger = LoggerFactory.getLogger(TdsRoleServiceImp.class);
+	private final static Logger logger = LoggerFactory.getLogger(TdsRoleServiceImpl.class);
 
 	@Autowired
 	private TdsRoleMapper  tdsRoleMapper;
@@ -67,8 +69,11 @@ public class TdsRoleServiceImp implements  TdsRoleService {
 	public BackResult<Integer> deleteById(Integer id) {
 		 BackResult<Integer> result=new BackResult<Integer>();
 		try {
-			tdsRoleMapper.deleteById(id);
-			result.setResultObj(id);
+			Integer i=tdsRoleMapper.deleteById(id);
+			if(i<=0){
+				new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS,"没有信息");
+			}
+			result.setResultObj(i);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("delete功能信息出现系统异常：" + e.getMessage());
@@ -121,6 +126,31 @@ public class TdsRoleServiceImp implements  TdsRoleService {
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
 		}
+		return result;
+	}
+
+	@Override
+	public BackResult<List<TdsFunctionDomain>> queryfunByRoleId(Integer roleId) {
+		BackResult<List<TdsFunctionDomain>> result=new BackResult<List<TdsFunctionDomain>>();
+		List<TdsFunctionDomain>  listDomain=new ArrayList<TdsFunctionDomain>();
+		try {
+			List<TdsFunction> list=tdsRoleMapper.queryfunByRoleId(roleId);
+			if(list.size()>0 && list!=null){
+				TdsFunctionDomain tdsDomain=null;
+	          for(TdsFunction obj:list){
+	        	 tdsDomain=new TdsFunctionDomain();
+	        	 BeanUtils.copyProperties(obj,tdsDomain);
+	        	 listDomain.add(tdsDomain);
+				}
+	          result.setResultObj(listDomain);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("根据角色查询权限信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		
 		return result;
 	}
      

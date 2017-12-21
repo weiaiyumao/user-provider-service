@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import cn.entity.tds.TdsDepartment;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.view.UserRoleDepartmentView;
+import main.java.cn.domain.page.PageAuto;
 
 
 
@@ -20,13 +21,13 @@ public interface TdsDepartmentMapper extends IBaseDao<TdsDepartment, Integer>{
 	 * @param entity
 	 * @return
 	 */
-	List<UserRoleDepartmentView> pageUserRoleDepartmentView(UserRoleDepartmentView pageDto);
+	List<UserRoleDepartmentView> pageUserRoleDepartmentView(PageAuto pageDto);
 	
 	/**
 	 * 获取总数
 	 * @return
 	 */
-	Integer queryCount(UserRoleDepartmentView pageDto);
+	Integer queryCount(PageAuto pageDto);
 	
 	
 	/**

@@ -130,5 +130,10 @@
 
 
 
-
+   <select id="queryfunByParentId" parameterType="HashMap"  resultType="java.lang.Integer">
+      SELECT ID FROM tds_function
+	  WHERE PARENT_ID=#{parentId} 
+	  AND IS_DELETED='0'
+   </select>
+    
 </mapper>

@@ -1,6 +1,7 @@
 package cn.entity.tds;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * : 功能与角色实体
@@ -8,174 +9,189 @@ import java.io.Serializable;
  * 
  * @author Gen
  */
-public class TdsFunctionRole implements Serializable{
+public class TdsFunctionRole implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1721506749029644804L;
 
-	// : id 	
-	private Integer id; 
-	
-	//功能id : fun_id 	
-	private Integer funId; 
-	
-	//角色id : role_id 	
-	private Integer roleId; 
-	
-	//创建时间 : create_time 	
-	private java.util.Date createTime; 
-	
-	//修改时间 : update_time 	
-	private java.util.Date updateTime; 
-	
-	//创建者 : creater 	
-	private Integer creater; 
-	
-	//修改者 : updater 	
-	private Integer updater; 
-	
-	//删除状态：0正常，1已删除 : is_deleted 	
-	private String isDeleted; 
-	
+	// : id
+	private Integer id;
+
+	// 功能id : fun_id
+	private Integer funId;
+
+	// 角色id : role_id
+	private Integer roleId;
+
+	// 创建时间 : create_time
+	private java.util.Date createTime;
+
+	// 修改时间 : update_time
+	private java.util.Date updateTime;
+
+	// 创建者 : creater
+	private Integer creater;
+
+	// 修改者 : updater
+	private Integer updater;
+
+	// 删除状态：0正常，1已删除 : is_deleted
+	private String isDeleted;
 
 	/**
-	 *  : id
+	 * : id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getId () {
+	public Integer getId() {
 		return id;
 	}
-	
+
 	/**
-	 *  : id
+	 * : id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setId (Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	/**
 	 * 功能id : fun_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getFunId () {
+	public Integer getFunId() {
 		return funId;
 	}
-	
+
 	/**
 	 * 功能id : fun_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setFunId (Integer funId) {
+	public void setFunId(Integer funId) {
 		this.funId = funId;
 	}
+
 	/**
 	 * 角色id : role_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getRoleId () {
+	public Integer getRoleId() {
 		return roleId;
 	}
-	
+
 	/**
 	 * 角色id : role_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setRoleId (Integer roleId) {
+	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
+
 	/**
 	 * 创建时间 : create_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public java.util.Date getCreateTime () {
+	public java.util.Date getCreateTime() {
 		return createTime;
 	}
-	
+
 	/**
 	 * 创建时间 : create_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setCreateTime (java.util.Date createTime) {
+	public void setCreateTime(java.util.Date createTime) {
 		this.createTime = createTime;
 	}
+
 	/**
 	 * 修改时间 : update_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public java.util.Date getUpdateTime () {
+	public java.util.Date getUpdateTime() {
 		return updateTime;
 	}
-	
+
 	/**
 	 * 修改时间 : update_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUpdateTime (java.util.Date updateTime) {
+	public void setUpdateTime(java.util.Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
 	/**
 	 * 创建者 : creater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getCreater () {
+	public Integer getCreater() {
 		return creater;
 	}
-	
+
 	/**
 	 * 创建者 : creater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setCreater (Integer creater) {
+	public void setCreater(Integer creater) {
 		this.creater = creater;
 	}
+
 	/**
 	 * 修改者 : updater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getUpdater () {
+	public Integer getUpdater() {
 		return updater;
 	}
-	
+
 	/**
 	 * 修改者 : updater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUpdater (Integer updater) {
+	public void setUpdater(Integer updater) {
 		this.updater = updater;
 	}
+
 	/**
 	 * 删除状态：0正常，1已删除 : is_deleted
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getIsDeleted () {
+	public String getIsDeleted() {
 		return isDeleted;
 	}
-	
+
 	/**
 	 * 删除状态：0正常，1已删除 : is_deleted
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setIsDeleted (String isDeleted) {
+	public void setIsDeleted(String isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
+	public TdsFunctionRole() {
 
-  
+	}
+
+	public TdsFunctionRole(Integer id,Integer roleId,Date createTime,Integer creater) {
+		this.funId = id;
+		this.roleId=roleId;
+		this.createTime=createTime;
+		this.creater=creater;
+	}
+
 }

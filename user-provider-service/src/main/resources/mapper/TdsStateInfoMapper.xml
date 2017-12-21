@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsStateInfoMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsStateInfo">
+		<result column="id" property="id"></result>
+		<result column="userid" property="userid"></result>
+		<result column="sname" property="sname"></result>
+		<result column="state_ope" property="stateOpe"></result>
+		<result column="state_pro" property="statePro"></result>
+		<result column="rinput" property="rinput"></result>
+		<result column="creater" property="creater"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="remarks" property="remarks"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,
+		USERID,
+		SNAME,
+		STATE_OPE,
+		STATE_PRO,
+		RINPUT,
+		CREATER,
+		CREATE_TIME,
+		UPDATE_TIME,
+		UPDATER,
+		IS_DELETED,
+		REMARKS
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_state_info
+		WHERE
+		ID=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsStateInfo">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_state_info
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userid != null">and userid = #{userid}</if>
+			<if test="sname != null">and sname = #{sname}</if>
+			<if test="stateOpe != null">and state_ope = #{stateOpe}</if>
+			<if test="statePro != null">and state_pro = #{statePro}</if>
+			<if test="rinput != null">and rinput = #{rinput}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="isDeleted != null">and is_deleted = #{isDeleted}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsStateInfo">
+		INSERT INTO tds_state_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userid != null"> userid , </if>
+			<if test="sname != null"> sname , </if>
+			<if test="stateOpe != null"> state_ope , </if>
+			<if test="statePro != null"> state_pro , </if>
+			<if test="rinput != null"> rinput , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="updater != null"> updater , </if>
+			<if test="remarks != null"> remarks , </if>
+			is_deleted
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userid != null"> #{userid} , </if>
+			<if test="sname != null"> #{sname} , </if>
+			<if test="stateOpe != null"> #{stateOpe} , </if>
+			<if test="statePro != null"> #{statePro} , </if>
+			<if test="rinput != null"> #{rinput} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			'0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_state_info SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsStateInfo">
+		UPDATE tds_state_info
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userid != null"> userid = #{userid}, </if>
+			<if test="sname != null"> sname = #{sname}, </if>
+			<if test="stateOpe != null"> state_ope = #{stateOpe}, </if>
+			<if test="statePro != null"> state_pro = #{statePro}, </if>
+			<if test="rinput != null"> rinput = #{rinput}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	<select id="pageTdsStateInfo" resultMap="BaseResultMap" parameterType="HashMap">
+	     SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_state_info
+		<where>
+		    <if test="userId != null">and userid = #{userId}</if>
+			<if test="sname != null">and sname = #{sname}</if>
+			<if test="stateOpe != null">and state_ope = #{stateOpe}</if>
+			<if test="statePro != null">and state_pro = #{statePro}</if>
+			<if test="rinput != null">and rinput = #{rinput}</if>
+			<if test="statTime != null">AND create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND create_time &lt;= #{endTime}</if>
+			AND is_deleted ='0' order by create_time desc
+		</where>
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+	
+	
+	<select id="queryCount"  resultType="java.lang.Integer"  parameterType="Hashmap">
+	     SELECT count(1)
+	     FROM tds_state_info
+		<where>
+			<if test="userId != null">and userid = #{userId}</if>
+			<if test="sname != null">and sname = #{sname}</if>
+			<if test="stateOpe != null">and state_ope = #{stateOpe}</if>
+			<if test="statePro != null">and state_pro = #{statePro}</if>
+			<if test="rinput != null">and rinput = #{rinput}</if>
+			<if test="statTime != null">AND create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND create_time &lt;= #{endTime}</if>
+			AND is_deleted ='0' 
+		</where>
+	</select>
+
+</mapper>

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsUser;
-import cn.entity.tds.view.TdsUserView;
+import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -27,7 +27,7 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
 	 * @param numPerPage   每页显示多行
 	 * @return
 	 */
-    List<TdsUser> pageSelectAll(TdsUserView dto);
+    List<TdsUser> pageSelectAll(PageAuto dto);
     
     /**
      * 根据参数查询总条数
@@ -58,4 +58,13 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
      * @return
      */
     Integer  isUserName(@Param("name")String name);
+    
+    
+    /**
+     * 内部角色添加注册
+     * @param tdsUser
+     * @return
+     */
+    Integer addBackAdminiUser(TdsUser tdsUser);
+    
 }

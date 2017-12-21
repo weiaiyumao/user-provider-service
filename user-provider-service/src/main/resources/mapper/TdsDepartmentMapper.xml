@@ -109,26 +109,32 @@
 
 
 	<select id="pageUserRoleDepartmentView" resultType="cn.entity.tds.view.UserRoleDepartmentView"
-		parameterType="cn.entity.tds.view.UserRoleDepartmentView">
-		select u.id,u.contact,r.role_name,d.name,u.com_name,u.com_url,
-		u.create_time,u.source,u.is_deleted
-		from tds_user u inner join tds_user_role ur
+		parameterType="Hashmap">
+		select u.id,u.contact,r.role_name,d.name,c.com_name,c.com_url,u.phone,
+		u.create_time,u.source,ur.is_deleted,ur.status
+		from tds_user u inner
+		join tds_user_role ur
 		on u.id=ur.user_id inner join tds_role r
-		on r.id=ur.role_id inner join tds_user_department ud
-		on ud.user_id=u.id inner join tds_department d
-		on d.id=ud.depart_id
+		on
+		r.id=ur.role_id inner join tds_user_department ud
+		on ud.user_id=u.id
+		inner join tds_department d
+		on d.id=ud.depart_id INNER JOIN tds_company
+		c
+		on c.id=u.com_id
 		<where>
-			<if test="role_name != null">AND r.role_name = #{role_name}</if>
-			<if test="name != null">AND d.name = #{name}</if>
+			<if test="roleName != null">AND r.role_name = #{roleName}</if>
+			<if test="departName != null">AND d.name = #{departName}</if>
 			<if test="contact != null">AND u.contact = #{contact}</if>
-			<if test="create_time != null">AND u.create_time = #{create_time}</if>
-			AND u.is_deleted ='0' order by u.create_time desc
+			<if test="statTime != null">AND u.create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND u.create_time &lt;= #{endTime}</if>
+			AND ur.is_deleted ='0'  order by u.create_time desc
 		</where>
-		LIMIT #{currentPage},#{numPerPage}
+		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
 	<select id="queryCount" resultType="java.lang.Integer"
-		parameterType="cn.entity.tds.view.UserRoleDepartmentView">
+		parameterType="Hashmap">
 		select count(1)
 		from tds_user u LEFT JOIN tds_user_role ur
 		on
@@ -139,26 +145,33 @@
 		on
 		d.id=ud.depart_id
 		<where>
-			<if test="role_name != null">AND r.role_name = #{role_name}</if>
-			<if test="name != null">AND d.name = #{name}</if>
+			<if test="roleName != null">AND r.role_name = #{roleName}</if>
+			<if test="departName != null">AND d.name = #{departName}</if>
 			<if test="contact != null">AND u.contact = #{contact}</if>
-			<if test="create_time != null">AND u.create_time = #{create_time}</if>
+			<if test="statTime != null">AND u.create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND u.create_time &lt;= #{endTime}</if>
 			AND u.is_deleted ='0'
 		</where>
 	</select>
-	
-	
-	<select id="funByuserId"  parameterType="java.lang.Integer" resultType="cn.entity.tds.TdsFunction">
+
+
+	<select id="funByuserId" parameterType="java.lang.Integer"
+		resultType="cn.entity.tds.TdsFunction">
 		SELECT * FROM tds_function
 		WHERE id IN (
-		SELECT fr.fun_id FROM tds_function_role fr
+		SELECT fr.fun_id
+		FROM tds_function_role fr
 		WHERE fr.role_id IN (
-		SELECT tur.role_id FROM tds_user_role tur
+		SELECT tur.role_id FROM
+		tds_user_role tur
 		WHERE tur.user_id =#{userId}
 		AND is_deleted = '0'
-		) AND is_deleted = '0'
+		) AND
+		is_deleted = '0'
 
 		) AND is_deleted = '0';
 	</select>
 
+
+    
 </mapper>

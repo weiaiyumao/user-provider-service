@@ -3,22 +3,26 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * : 角色实体
+ * : 公司表
  * 
  * 
  * @author Gen
  */
-public class TdsRole implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 182550496161285184L;
+public class TdsCompany implements Serializable{
+	
+	private static final long serialVersionUID = 4814417450194760357L;
 
-	//角色id : id 	
+	//公司id : id 	
 	private Integer id; 
 	
-	//角色名称 : role_name 	
-	private String roleName; 
+	//公司名称 : com_name 	
+	private String comName; 
+	
+	//公司网址 : com_url 	
+	private String comUrl; 
+	
+	//备注 : remarks 	
+	private String remarks; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -35,22 +39,9 @@ public class TdsRole implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
-	//添加状态 0：默认 1：自定义
-	private String isDefault;
 
 	/**
-	 * 添加状态 0：默认 1：自定义
-	 * @return
-	 */
-	public String getIsDefault() {
-		return isDefault;
-	}
-	
-	public void setIsDefault(String isDefault) {
-		this.isDefault = isDefault;
-	}
-	/**
-	 * 角色id : id
+	 * 公司id : id
 	 * 
 	 * @return 
 	 */
@@ -59,7 +50,7 @@ public class TdsRole implements Serializable{
 	}
 	
 	/**
-	 * 角色id : id
+	 * 公司id : id
 	 * 
 	 * @return 
 	 */
@@ -67,21 +58,55 @@ public class TdsRole implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 角色名称 : role_name
+	 * 公司名称 : com_name
 	 * 
 	 * @return 
 	 */
-	public String getRoleName () {
-		return roleName;
+	public String getComName () {
+		return comName;
 	}
 	
 	/**
-	 * 角色名称 : role_name
+	 * 公司名称 : com_name
 	 * 
 	 * @return 
 	 */
-	public void setRoleName (String roleName) {
-		this.roleName = roleName;
+	public void setComName (String comName) {
+		this.comName = comName;
+	}
+	/**
+	 * 公司网址 : com_url
+	 * 
+	 * @return 
+	 */
+	public String getComUrl () {
+		return comUrl;
+	}
+	
+	/**
+	 * 公司网址 : com_url
+	 * 
+	 * @return 
+	 */
+	public void setComUrl (String comUrl) {
+		this.comUrl = comUrl;
+	}
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public String getRemarks () {
+		return remarks;
+	}
+	
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public void setRemarks (String remarks) {
+		this.remarks = remarks;
 	}
 	/**
 	 * 创建时间 : create_time
