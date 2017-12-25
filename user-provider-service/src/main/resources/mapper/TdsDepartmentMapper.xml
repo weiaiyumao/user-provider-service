@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsDepartmentMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsDepartment">
+		<result column="id" property="id"></result>
+		<result column="Name" property="name"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="parent_id" property="parentId"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="type" property="type"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		Name,
+		remarks,
+		parent_id,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		is_deleted,
+		type
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_department
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsDepartment">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_department
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="name != null">and Name = #{name},</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="parentId != null">andparent_id = #{parentId}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="type != null">and type = #{type}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsDepartment">
+		INSERT INTO tds_department
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null"> Name , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="parentId != null"> parent_id , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			 <if test="type != null"> type , </if>
+			is_deleted
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null"> #{name} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="parentId != null"> #{parentId} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+		    <if test="type != null"> #{type} , </if>
+			'0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_department SET
+		IS_DELETED=1
+		WHERE ID=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsDepartment">
+		UPDATE tds_department
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null"> Name = #{name}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="parentId != null"> parent_id = #{parentId}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="type != null"> type=#{type} , </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+
+
+
+
+
+	<select id="pageUserRoleDepartmentView" resultType="cn.entity.tds.view.UserRoleDepartmentView"
+		parameterType="Hashmap">
+		select u.id,u.contact,r.role_name,d.name,c.com_name,c.com_url,u.phone,
+		u.create_time,u.source,ur.is_deleted,ur.status
+		from tds_user u inner
+		join tds_user_role ur
+		on u.id=ur.user_id inner join tds_role r
+		on
+		r.id=ur.role_id inner join tds_user_department ud
+		on ud.user_id=u.id
+		inner join tds_department d
+		on d.id=ud.depart_id INNER JOIN tds_company
+		c
+		on c.id=u.com_id
+		<where>
+			<if test="roleName != null">AND r.role_name = #{roleName}</if>
+			<if test="departName != null">AND d.name = #{departName}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">AND u.create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND u.create_time &lt;= #{endTime}</if>
+			AND ur.is_deleted ='0'  order by u.create_time desc
+		</where>
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Hashmap">
+		select count(1)
+		from tds_user u LEFT JOIN tds_user_role ur
+		on
+		u.id=ur.user_id LEFT JOIN tds_role r
+		on r.id=ur.role_id LEFT JOIN
+		tds_user_department ud
+		on ud.user_id=u.id LEFT JOIN tds_department d
+		on
+		d.id=ud.depart_id
+		<where>
+			<if test="roleName != null">AND r.role_name = #{roleName}</if>
+			<if test="departName != null">AND d.name = #{departName}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">AND u.create_time &gt;= #{statTime}</if>
+			<if test="endTime != null">AND u.create_time &lt;= #{endTime}</if>
+			AND u.is_deleted ='0'
+		</where>
+	</select>
+
+
+	<select id="funByuserId" parameterType="java.lang.Integer"
+		resultType="cn.entity.tds.TdsFunction">
+		SELECT * FROM tds_function
+		WHERE id IN (
+		SELECT fr.fun_id
+		FROM tds_function_role fr
+		WHERE fr.role_id IN (
+		SELECT tur.role_id FROM
+		tds_user_role tur
+		WHERE tur.user_id =#{userId}
+		AND is_deleted = '0'
+		) AND
+		is_deleted = '0'
+
+		) AND is_deleted = '0';
+	</select>
+
+
+    
+</mapper>

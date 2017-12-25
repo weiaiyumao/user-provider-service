@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsCompanyMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsCompany">
+		<result column="id" property="id"></result>
+		<result column="com_name" property="comName"></result>
+		<result column="com_url" property="comUrl"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,
+		COM_NAME,
+		COM_URL,
+		REMARKS,
+		CREATE_TIME,
+		UPDATE_TIME,
+		CREATER,
+		UPDATER,
+		IS_DELETED
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_company
+		WHERE
+		ID=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsCompany">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_company
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="comName != null">and com_name = #{comName}</if>
+			<if test="comUrl != null">and com_url = #{comUrl}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="isDeleted != null">and is_deleted = #{isDeleted}</if>
+		</where>
+		AND IS_DELETED='0'
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsCompany" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tds_company
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="comName != null"> com_name , </if>
+			<if test="comUrl != null"> com_url , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+		   IS_DELETED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="comName != null"> #{comName} , </if>
+			<if test="comUrl != null"> #{comUrl} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+		   '0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_company SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsCompany">
+		UPDATE tds_company
+		<trim prefix="set" suffixOverrides=",">
+			<if test="comName != null"> com_name = #{comName}, </if>
+			<if test="comUrl != null"> com_url = #{comUrl}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	
+    <select id="getComName" parameterType="Hashmap" resultType="cn.entity.tds.TdsCompany">
+       SELECT id,com_url,com_name FROM tds_company
+       where com_name = #{comName}
+	   and IS_DELETED='0'
+    </select>
+    
+    
+    <insert id="addCom" parameterType="cn.entity.tds.TdsCompany" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tds_company
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="comName != null"> com_name , </if>
+			<if test="comUrl != null"> com_url , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+		   IS_DELETED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="comName != null"> #{comName} , </if>
+			<if test="comUrl != null"> #{comUrl} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+		   '0'
+		</trim>
+	</insert>
+    
+</mapper>
