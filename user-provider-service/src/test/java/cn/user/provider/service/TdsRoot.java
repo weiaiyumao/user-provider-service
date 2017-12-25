@@ -12,7 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.UserProviderServiceApp;
 import cn.dao.tds.TdsStateInfoMapper;
+import cn.entity.tds.TdsAccountBank;
 import cn.entity.tds.TdsModular;
+import cn.service.tds.TdsAccountBankService;
 import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsFunctionService;
 import cn.service.tds.TdsStateInfoSerrvice;
@@ -20,6 +22,7 @@ import cn.service.tds.TdsUserRoleService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsAccountBankDomain;
 import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsStateInfoDomain;
@@ -53,11 +56,14 @@ public class TdsRoot {
 	  @Autowired
 	  private TdsStateInfoSerrvice tdsStateInfoSerrvice;
 	  
+	  @Autowired
+	  private TdsAccountBankService tdsAccountBankService;
+	  
 	  
 	  @Test
 	  public void test1(){
-		// tdsDepartmentService.pageUserRoleDepartmentView("总部","管理员",null,null,0,0);
-		  tdsDepartmentService.funByuserId(1);
+		  TdsAccountBankDomain tab=new TdsAccountBankDomain();
+		
 	  }
 	  
 	  @Test

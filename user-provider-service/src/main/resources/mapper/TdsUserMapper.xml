@@ -106,7 +106,7 @@
 		</where>
 	</select>
 
-	<insert id="save" parameterType="cn.entity.tds.TdsUser" >
+	<insert id="save" parameterType="cn.entity.tds.TdsUser">
 		INSERT INTO tds_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="name != null"> NAME , </if>

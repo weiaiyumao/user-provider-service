@@ -7,7 +7,7 @@
 
 	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUserDepartment">
 		<result column="id" property="id"></result>
-		<result column="user_id" property="useriD"></result>
+		<result column="user_id" property="userId"></result>
 		<result column="depart_id" property="departId"></result>
 		<result column="remarks" property="remarks"></result>
 		<result column="create_time" property="createTime"></result>
@@ -48,7 +48,7 @@
 		FROM tds_user_department
 		<where>
 			<if test="id != null">and id = #{id}</if>
-			<if test="useriD != null">and user_id = #{useriD}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
 			<if test="departId != null">and depart_id = #{departId}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
 			<if test="createTime != null">and create_time = #{createTime}</if>
@@ -63,7 +63,7 @@
 	<insert id="save" parameterType="cn.entity.tds.TdsUserDepartment">
 		INSERT INTO tds_user_department
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="useriD != null"> user_id , </if>
+			<if test="userId != null"> user_id , </if>
 			<if test="departId != null"> depart_id , </if>
 			<if test="positionId != null"> position_id , </if>
 			<if test="remarks != null"> remarks , </if>
@@ -74,7 +74,7 @@
 			is_deleted 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="useriD != null"> #{useriD} , </if>
+			<if test="userId != null"> #{userId} , </if>
 			<if test="departId != null"> #{departId} , </if>
 			<if test="positionId != null"> #{positionId} ,</if>
 			<if test="remarks != null"> #{remarks} , </if>
@@ -98,7 +98,7 @@
 	<update id="update" parameterType="cn.entity.tds.TdsUserDepartment">
 		UPDATE tds_user_department
 		<trim prefix="set" suffixOverrides=",">
-			<if test="useriD != null"> user_id = #{useriD}, </if>
+			<if test="userId != null"> user_id = #{userId}, </if>
 			<if test="departId != null"> depart_id = #{departId}, </if>
 			<if test="positionId != null"> position_id = #{positionId}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
@@ -110,4 +110,22 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
+	
+	
+	<update id="updateByUserId" parameterType="HashMap">
+	   UPDATE tds_user_department
+		<trim prefix="set" suffixOverrides=",">
+			<if test="departId != null"> depart_id = #{departId}, </if>
+			<if test="positionId != null"> position_id = #{positionId}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+		</trim>
+		WHERE user_id=#{userId}
+	
+	</update>
+	
 </mapper>

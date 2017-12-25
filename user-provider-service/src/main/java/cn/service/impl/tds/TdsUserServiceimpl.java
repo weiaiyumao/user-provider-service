@@ -34,6 +34,9 @@ public class TdsUserServiceimpl implements TdsUserService {
 
 	@Autowired
 	private TdsCompanyMapper tdsCompanyMapper;
+	
+	
+	
 
 	@Override
 	public BackResult<TdsUserDomain> loadById(Integer id) {
@@ -60,10 +63,8 @@ public class TdsUserServiceimpl implements TdsUserService {
 	public BackResult<TdsUserDomain> save(TdsUserDomain domain, String comName, String comUrl) {
 		BackResult<TdsUserDomain> result = new BackResult<TdsUserDomain>();
 		TdsUser tds = new TdsUser();
-		TdsUser tdsUser = tdsUserMapper.loadByPhone(domain.getPhone());
-		if (null != tdsUser) {
-			return new BackResult<TdsUserDomain>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户手机号码已存在");
-		}
+		//TdsUser tdsUser = tdsUserMapper.loadByPhone(domain.getPhone());
+		
 		// 注册加密
 		if (null != domain.getPassword() || "".equals(domain.getPassword()))
 			domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
@@ -112,31 +113,28 @@ public class TdsUserServiceimpl implements TdsUserService {
 		return result;
 	}
 
+	
+	//TODO
 	@Transactional
 	@Override
 	public BackResult<TdsUserDomain> update(TdsUserDomain domain) {
-		BackResult<TdsUserDomain> result = new BackResult<TdsUserDomain>();
-		domain.setUpdateTime(new Date());
-		TdsUser tds = new TdsUser();
-		// 是否已经删除
-		TdsUser isDeUser = tdsUserMapper.loadById(domain.getId());
-		try {
-			if (null != isDeUser && isDeUser.getIsDeleted().equals("1")) {
-				return new BackResult<TdsUserDomain>(ResultCode.RESULT_DATA_EXCEPTIONS, "你修改的用户已删除");
-			}
-			// 如果修改的是密码，进行加密
-			if (!"".equals(domain.getPassword()) || null != domain.getPassword()) {
-				domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
-			}
-			BeanUtils.copyProperties(domain, tds);
-			tdsUserMapper.update(tds);
-			result.setResultObj(domain);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("update功能信息出现系统异常：" + e.getMessage());
-			return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "数据落地异常");
-		}
-		return result;
+//		BackResult<TdsUserDomain> result = new BackResult<TdsUserDomain>();
+//		domain.setUpdateTime(new Date());
+//		TdsUser tds = new TdsUser();
+//		try {
+//			// 如果修改的是密码，进行加密
+//			if (!"".equals(domain.getPassword()) || null != domain.getPassword()) {
+//				domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
+//			}
+//			BeanUtils.copyProperties(domain, tds);
+//			tdsUserMapper.update(tds); //用户信息保存
+//			result.setResultObj(domain);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error("update功能信息出现系统异常：" + e.getMessage());
+//			return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "数据落地异常");
+//		}
+		return null;
 	}
 
 	@Override

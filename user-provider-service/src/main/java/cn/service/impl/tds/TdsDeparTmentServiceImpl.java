@@ -10,11 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -46,7 +44,7 @@ import main.java.cn.domain.tds.UserRoleDepartmentViewDomain;
 import main.java.cn.hhtp.util.MD5Util;
 
 @Service
-public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
+public class TdsDeparTmentServiceImpl extends BaseTransactService implements TdsDepartmentService {
 
 	private final static Logger logger = LoggerFactory.getLogger(TdsDeparTmentServiceImpl.class);
 
@@ -70,9 +68,6 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 
 	@Autowired
 	private TdsFunctionRoleMapper tdsFunctionRoleMapper;
-
-	@Autowired
-	private DataSourceTransactionManager transactionManager;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -176,20 +171,17 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 		return result;
 	}
 
-	@SuppressWarnings("unused")
 	@Transactional
 	@Override
 	public BackResult<Integer> addUserConfig(String name,String passWord,String phone, Integer departmentId, Integer positionId,
 			Integer comId, Integer[] arrRoles, Integer loginUserId) {
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus transactionStatus = transactionManager.getTransaction(def);
+		TransactionStatus status=this.begin();
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUser tds = new TdsUser();
-		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
-		if (null != isUserPhone) {
-			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户手机号码已存在");
-		}
-		Integer flag = 0; // 0 失败 1成功
+//		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
+//		if (null != isUserPhone) {
+//			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户手机号码已存在");
+//		}
 		try {
 			tds.setCreateTime(new Date());
 			tds.setComId(comId);
@@ -198,16 +190,16 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 			tds.setRegisterSource(StatusType.ADD_ADMIN);
 			tds.setName(name);
 			tds.setPhone(phone);
-			flag = tdsUserMapper.addBackAdminiUser(tds); // 用户信息保存
+			tdsUserMapper.addBackAdminiUser(tds); // 用户信息保存
 
 			// 部门信息保存
 			TdsUserDepartment tdsUserDepartment = new TdsUserDepartment();
-			tdsUserDepartment.setUseriD(tds.getId());
+			tdsUserDepartment.setUserId(tds.getId());
 			tdsUserDepartment.setCreateTime(new Date());
 			tdsUserDepartment.setDepartId(departmentId);
 			tdsUserDepartment.setCreater(loginUserId);
 			tdsUserDepartment.setPositionId(positionId);
-			flag = tdsUserDepartmentMapper.save(tdsUserDepartment);
+			tdsUserDepartmentMapper.save(tdsUserDepartment);
 
 			// 角色信息保存
 			// TODO //保存角色
@@ -221,12 +213,12 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 				list.add(tdsUserRole);
 			}
 		
-			flag = tdsUserRoleMapper.saveRoleByUser(list);
+			tdsUserRoleMapper.saveRoleByUser(list);
 			result.setResultObj(1);
-			transactionManager.commit(transactionStatus);// 事务提交
+			this.commit(status);// 事务提交
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(transactionStatus); // 回滚
+			this.rollback(status); // 回滚
 			logger.error("添加账号查功能出现系统异常" + e.getMessage());
 			return new BackResult<>(ResultCode.RESULT_FAILED, "数据落地异常");
 
@@ -238,16 +230,14 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 	@Override
 	public BackResult<Integer> addCustomPermissions(String soleName,Integer loginUserId,Integer[] arrfuns) {
 		 BackResult<Integer> result=new BackResult<Integer>();
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		TransactionStatus transactionStatus = transactionManager.getTransaction(def);
-		Integer flag = 0;
+		 TransactionStatus status=this.begin();
 		try {
 			TdsRole trole = new TdsRole();
 			trole.setCreater(loginUserId);
 			trole.setCreateTime(new Date());
 			trole.setIsDefault(StatusType.CUSTOM_ROLES);
 			trole.setRoleName(soleName);
-			flag = tdsRoleMapper.save(trole);
+			tdsRoleMapper.save(trole);
 			
 		   List<TdsFunctionRole> listFunRole = new ArrayList<TdsFunctionRole>();
 			//子级数组是否存入id，直接从子级赋值
@@ -258,13 +248,12 @@ public class TdsDeparTmentServiceImpl implements TdsDepartmentService {
 					}
 
 			 }	
-		    flag = tdsFunctionRoleMapper.addArrByfunId(listFunRole);
+		    tdsFunctionRoleMapper.addArrByfunId(listFunRole);
 		    result.setResultObj(1);
-			logger.info("=======插入：" + flag + "条=========");
-			transactionManager.commit(transactionStatus);// 事务提交
+		    this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
-			transactionManager.rollback(transactionStatus); // 回滚
+			this.rollback(status);
 			logger.error("自定义角色添加功能出现系统异常" + e.getMessage());
 			return new BackResult<>(ResultCode.RESULT_FAILED, "数据落地异常");
 		}

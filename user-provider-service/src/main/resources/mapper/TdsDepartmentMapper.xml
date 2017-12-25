@@ -15,6 +15,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
+		<result column="type" property="type"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -26,7 +27,8 @@
 		update_time,
 		creater,
 		updater,
-		is_deleted
+		is_deleted,
+		type
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -51,6 +53,7 @@
 			<if test="updateTime != null">and update_time = #{updateTime}</if>
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
+			<if test="type != null">and type = #{type}</if>
 			and is_deleted ='0'
 		</where>
 	</select>
@@ -65,6 +68,7 @@
 			<if test="updateTime != null"> update_time , </if>
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
+			 <if test="type != null"> type , </if>
 			is_deleted
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -75,6 +79,7 @@
 			<if test="updateTime != null"> #{updateTime} , </if>
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
+		    <if test="type != null"> #{type} , </if>
 			'0'
 		</trim>
 
@@ -100,6 +105,7 @@
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="type != null"> type=#{type} , </if>
 		</trim>
 		WHERE id=#{id}
 	</update>

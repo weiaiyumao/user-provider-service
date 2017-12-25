@@ -41,6 +41,17 @@ public class TdsDepartment implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
+	
+	//部门类 : type 	
+    private String type; 
+	
+    
+    public String getType() {
+		return type;
+	}
+    public void setType(String type) {
+		this.type = type;
+	}
 
 	/**
 	 * 部门id : id
