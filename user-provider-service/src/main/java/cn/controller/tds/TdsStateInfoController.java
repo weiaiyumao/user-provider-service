@@ -55,4 +55,11 @@ public class TdsStateInfoController {
 		BackResult<PageDomain<TdsStateInfoDomain>> result = tdsStateInfoService.pageTdsStateInfo(auto);
 		return result;
 	}
+	
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> save(Integer userId,@RequestBody TdsStateInfoDomain tdsStateInfoDomain){
+		BackResult<Integer> result = tdsStateInfoService.addState(userId,tdsStateInfoDomain);
+		return result;
+	}
 }

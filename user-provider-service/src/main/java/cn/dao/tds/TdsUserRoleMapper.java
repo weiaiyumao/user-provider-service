@@ -22,11 +22,11 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	
 	
 	/**
-	 * 根据id 修改角色与用户的信息 
+	 * 根据用户id 禁用，解禁
 	 * @param tur
 	 * @return
 	 */
-	Integer upStatusById(TdsUserRole tur);
+	Integer upStatusById(@Param("id")Integer id,@Param("status")String status);
 	
 	/**
 	 * 批量插入
@@ -37,11 +37,26 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	Integer saveRoleByUser(@Param("arr") List<TdsUserRole> checkboxRole);
 	
 	
+	
+	
 	/**
 	 * 账号配置列表
 	 * @param auto
 	 * @return
 	 */
     List<PageAuto> queryRoleIsStatus(PageAuto auto);
+    
+    
+    /**
+     * 获取总数
+     */
+	Integer queryCount(PageAuto auto);
 	
+	
+	/**
+	 * 根据用户id删除角色
+	 * @param userId
+	 * @return
+	 */
+	Integer deleteByUserId(@Param("userId")Integer userId);
 }

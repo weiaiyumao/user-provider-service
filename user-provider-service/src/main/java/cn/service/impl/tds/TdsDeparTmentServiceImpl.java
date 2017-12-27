@@ -108,8 +108,8 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		List<UserRoleDepartmentViewDomain> list = new ArrayList<UserRoleDepartmentViewDomain>();
 		try {
 
-//			// TODO
-//			// yyyy-mm-dd 天数加1
+			// // TODO
+			// // yyyy-mm-dd 天数加1
 			if (null != auto.getStatTime() || "".equals(auto.getStatTime())) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间
@@ -119,8 +119,8 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
 			}
-			Integer cur=auto.getCurrentPage()<=0?1:auto.getCurrentPage();
-			auto.setPageNumber((cur-1)*auto.getNumPerPage());
+			Integer cur = auto.getCurrentPage() <= 0 ? 1 : auto.getCurrentPage();
+			auto.setPageNumber((cur - 1) * auto.getNumPerPage());
 			List<UserRoleDepartmentView> pageList = tdsDepartmentMapper.pageUserRoleDepartmentView(auto);
 			if (pageList.size() <= 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
@@ -131,7 +131,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 				BeanUtils.copyProperties(item, obj);
 				list.add(obj);
 			}
-			
+
 			listDomain = new PageDomain<UserRoleDepartmentViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(),
 					count);
 			listDomain.setTlist(list);
@@ -173,21 +173,25 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 	@Transactional
 	@Override
-	public BackResult<Integer> addUserConfig(String name,String passWord,String phone, Integer departmentId, Integer positionId,
-			Integer comId, Integer[] arrRoles, Integer loginUserId) {
-		TransactionStatus status=this.begin();
+	public BackResult<Integer> addUserConfig(String name, String passWord, String phone, Integer departmentId,
+			Integer positionId, Integer comId, Integer[] arrRoles, Integer loginUserId) {
+		TransactionStatus status = this.begin();
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUser tds = new TdsUser();
-//		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
-//		if (null != isUserPhone) {
-//			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户手机号码已存在");
-//		}
+		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
+		if (null != isUserPhone && phone.equals(isUserPhone.getPhone())) {
+			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的手机号码已经存在");
+		}
+		if (null != isUserPhone && name.equals(isUserPhone.getName())) {
+			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的用户名已经存在");
+		}
+
 		try {
 			tds.setCreateTime(new Date());
 			tds.setComId(comId);
 			tds.setCreater(loginUserId); // TODO 测试数据
 			tds.setPassword(MD5Util.getInstance().getMD5Code(passWord));
-			tds.setRegisterSource(StatusType.ADD_ADMIN);
+			tds.setSource(StatusType.ADD_ADMIN);
 			tds.setName(name);
 			tds.setPhone(phone);
 			tdsUserMapper.addBackAdminiUser(tds); // 用户信息保存
@@ -212,7 +216,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 				tdsUserRole.setRoleId(item);
 				list.add(tdsUserRole);
 			}
-		
+
 			tdsUserRoleMapper.saveRoleByUser(list);
 			result.setResultObj(1);
 			this.commit(status);// 事务提交
@@ -228,9 +232,9 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 	@Transactional
 	@Override
-	public BackResult<Integer> addCustomPermissions(String soleName,Integer loginUserId,Integer[] arrfuns) {
-		 BackResult<Integer> result=new BackResult<Integer>();
-		 TransactionStatus status=this.begin();
+	public BackResult<Integer> addCustomPermissions(String soleName, Integer loginUserId, Integer[] arrfuns) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		TransactionStatus status = this.begin();
 		try {
 			TdsRole trole = new TdsRole();
 			trole.setCreater(loginUserId);
@@ -238,19 +242,19 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			trole.setIsDefault(StatusType.CUSTOM_ROLES);
 			trole.setRoleName(soleName);
 			tdsRoleMapper.save(trole);
-			
-		   List<TdsFunctionRole> listFunRole = new ArrayList<TdsFunctionRole>();
-			//子级数组是否存入id，直接从子级赋值
-			if(arrfuns.length>0 || null!=arrfuns){
-				for (Integer item : arrfuns) {
-						//保存至Liat<>
-					listFunRole.add(new TdsFunctionRole(item, trole.getId(),new Date(), loginUserId));
-					}
 
-			 }	
-		    tdsFunctionRoleMapper.addArrByfunId(listFunRole);
-		    result.setResultObj(1);
-		    this.commit(status);
+			List<TdsFunctionRole> listFunRole = new ArrayList<TdsFunctionRole>();
+			// 子级数组是否存入id，直接从子级赋值
+			if (arrfuns.length > 0 || null != arrfuns) {
+				for (Integer item : arrfuns) {
+					// 保存至Liat<>
+					listFunRole.add(new TdsFunctionRole(item, trole.getId(), new Date(), loginUserId));
+				}
+
+			}
+			tdsFunctionRoleMapper.addArrByfunId(listFunRole);
+			result.setResultObj(1);
+			this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.rollback(status);
@@ -261,10 +265,9 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		return result;
 	}
 
-	
 	@Transactional
 	@Override
-	public BackResult<Integer> addModularFun(TdsFunctionDomain domain,Integer parentId) {
+	public BackResult<Integer> addModularFun(TdsFunctionDomain domain, Integer parentId) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsFunction tds = new TdsFunction();
 		domain.setCreateTime(new Date());
@@ -280,7 +283,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据保存失败");
 		}
-		 return result;
+		return result;
 	}
 
 }

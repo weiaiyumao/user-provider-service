@@ -27,4 +27,7 @@ public class CommonUtils {
 		System.out.println(CommonUtils.isNotString("null"));
 		System.out.println(CommonUtils.isNotString(""));
 	}
+	
+	
+
 }

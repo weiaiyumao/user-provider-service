@@ -14,11 +14,11 @@ import cn.entity.tds.TdsUserDepartment;
 public interface TdsUserDepartmentMapper extends IBaseDao<TdsUserDepartment,Integer>{
 	
 	  
-	/**
-	 * 根据userId 修改部门
-	 * @param tdsUserDepartment
-	 * @return
-	 */
+		/**
+		 * 根据userId 修改部门
+		 * @param tdsUserDepartment
+		 * @return
+		 */
 	  public Integer updateByUserId(TdsUserDepartment tdsUserDepartment);
 	
 }

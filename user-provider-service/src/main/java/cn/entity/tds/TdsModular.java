@@ -41,7 +41,19 @@ public class TdsModular implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
-
+  
+	//排序 : sort 	
+	private Integer sort; 
+	
+	
+	public Integer getSort() {
+		return sort;
+	}
+	
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	
 	/**
 	 * 模块id : id
 	 * 
@@ -50,6 +62,8 @@ public class TdsModular implements Serializable{
 	public Integer getId () {
 		return id;
 	}
+	
+	
 	
 	/**
 	 * 模块id : id

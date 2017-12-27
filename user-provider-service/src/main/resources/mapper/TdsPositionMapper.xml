@@ -109,4 +109,14 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
+	
+	
+	
+	<select id="selectByDeparId" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_position
+        where department_id = #{departmentId}
+		and is_deleted ='0'
+	</select>
 </mapper>

@@ -105,8 +105,8 @@ public class TdsRoot {
 		  entity.setName("111122");
 		 // entity.setIp("127.0.0.1");
 		  entity.setPassword("12345678a");
-		  BackResult<TdsUserDomain> obj=tdsUserService.save(entity,"公司名称7","wwww.baidu.com4");
-		  System.out.println(obj);
+		 // BackResult<TdsUserDomain> obj=tdsUserService.save(entity,"公司名称7","wwww.baidu.com4");
+		  //System.out.println(obj);
 	  }
 	  
 	  @Test

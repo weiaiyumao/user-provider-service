@@ -105,16 +105,8 @@
 	
 	
 	<update id="upStatusById" parameterType="Hashmap">
-		UPDATE tds_user_role
-		<trim prefix="set" suffixOverrides=",">
-		    <if test="userId != null"> USERID = #{userId}, </if>
-			<if test="roleId != null"> ROLE_ID = #{roleId}, </if>
-			<if test="updateTime != null"> UPDATE_TIME = #{updateTime}, </if>
-			<if test="updater != null"> UPDATER = #{updater}, </if>
-			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
-			<if test="status != null"> STATUS = #{status}, </if>
-		</trim>
-		WHERE ID=#{id} and IS_DELETED='0'
+		 update tds_user  set status=#{status}
+		 WHERE ID=#{id} and IS_DELETED='0'
 	</update>
 	
 	
@@ -130,8 +122,8 @@
 	
 	 <!-- 账号配置列表查询 -->
 	 <select id="queryRoleIsStatus"  resultType="main.java.cn.domain.page.PageAuto" parameterType="HashMap">
-        select ur.id,u.name,r.role_name as roleName,d.name as departName,
-        ur.status,ur.is_deleted from 
+        select ur.id,u.name,r.role_name as roleName,d.name as departName,u.create_time,
+        u.status,ur.is_deleted from 
 		tds_user u,tds_user_role ur,
 		tds_role r,tds_department d,
 		tds_user_department ud
@@ -142,8 +134,27 @@
 		and ur.is_deleted='0' 
 		<if test="status != null">and ur.status=#{status}</if>
 		<if test="name != null"> and u.name=#{name}</if>
+		order by u.create_time desc
+		LIMIT #{pageNumber},#{numPerPage}
     </select>
 	
-	
+	 <!-- 账号配置列表查询 -->
+	 <select id="queryCount"  resultType="java.lang.Integer"  parameterType="HashMap">
+        select count(1) from 
+		tds_user u,tds_user_role ur,
+		tds_role r,tds_department d,
+		tds_user_department ud
+		where u.id=ur.user_id 
+		and ur.role_id=r.id 
+		and ud.depart_id=d.id  
+		and ud.user_id=u.id
+		and ur.is_deleted='0' 
+		<if test="name != null"> and u.name=#{name}</if>
+    </select>
+    
+    <delete id="deleteByUserId" parameterType="HashMap">
+        delete from tds_user_role
+		where user_id=#{userId}
+    </delete>
 	
 </mapper>

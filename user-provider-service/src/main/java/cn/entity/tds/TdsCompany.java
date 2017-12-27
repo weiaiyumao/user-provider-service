@@ -9,8 +9,10 @@ import java.io.Serializable;
  * @author Gen
  */
 public class TdsCompany implements Serializable{
-	
-	private static final long serialVersionUID = 4814417450194760357L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6882297040264996678L;
 
 	//公司id : id 	
 	private Integer id; 
@@ -21,8 +23,14 @@ public class TdsCompany implements Serializable{
 	//公司网址 : com_url 	
 	private String comUrl; 
 	
-	//备注 : remarks 	
-	private String remarks; 
+	//营业执照 : com_business 	
+	private String comBusiness; 
+	
+	//公司地址 : com_address 	
+	private String comAddress; 
+	
+	//公司邮箱 : com_email 	
+	private String comEmail; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -38,6 +46,9 @@ public class TdsCompany implements Serializable{
 	
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
+	
+	//备注 : remarks 	
+	private String remarks; 
 	
 
 	/**
@@ -92,21 +103,55 @@ public class TdsCompany implements Serializable{
 		this.comUrl = comUrl;
 	}
 	/**
-	 * 备注 : remarks
+	 * 营业执照 : com_business
 	 * 
 	 * @return 
 	 */
-	public String getRemarks () {
-		return remarks;
+	public String getComBusiness () {
+		return comBusiness;
 	}
 	
 	/**
-	 * 备注 : remarks
+	 * 营业执照 : com_business
 	 * 
 	 * @return 
 	 */
-	public void setRemarks (String remarks) {
-		this.remarks = remarks;
+	public void setComBusiness (String comBusiness) {
+		this.comBusiness = comBusiness;
+	}
+	/**
+	 * 公司地址 : com_address
+	 * 
+	 * @return 
+	 */
+	public String getComAddress () {
+		return comAddress;
+	}
+	
+	/**
+	 * 公司地址 : com_address
+	 * 
+	 * @return 
+	 */
+	public void setComAddress (String comAddress) {
+		this.comAddress = comAddress;
+	}
+	/**
+	 * 公司邮箱 : com_email
+	 * 
+	 * @return 
+	 */
+	public String getComEmail () {
+		return comEmail;
+	}
+	
+	/**
+	 * 公司邮箱 : com_email
+	 * 
+	 * @return 
+	 */
+	public void setComEmail (String comEmail) {
+		this.comEmail = comEmail;
 	}
 	/**
 	 * 创建时间 : create_time
@@ -192,6 +237,23 @@ public class TdsCompany implements Serializable{
 	 */
 	public void setIsDeleted (String isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public String getRemarks () {
+		return remarks;
+	}
+	
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public void setRemarks (String remarks) {
+		this.remarks = remarks;
 	}
 
 
