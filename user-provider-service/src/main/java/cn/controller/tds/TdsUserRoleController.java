@@ -13,6 +13,7 @@ import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 @RestController
@@ -89,8 +90,8 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value="/upStatusById",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> upStatusById(TdsUserRoleDomain tdsUserRoleDomain,Integer loginUserId){
-	    return tdsUserRoleService.upStatusById(tdsUserRoleDomain,loginUserId);
+	public BackResult<Integer> upStatusById(Integer id,String status){
+	    return tdsUserRoleService.upStatusById(id,status);
 	}
 	
 	
@@ -100,7 +101,7 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value="/queryRoleIsStatus",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<PageAuto>> queryRoleIsStatus(@RequestBody PageAuto auto){
+	public BackResult<PageDomain<PageAuto>> queryRoleIsStatus(@RequestBody PageAuto auto){
 		return tdsUserRoleService.queryRoleIsStatus(auto);
 	}
 	

@@ -104,4 +104,22 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		return result;
 	}
 
+	@Override
+	public BackResult<Integer> addState(Integer userId, TdsStateInfoDomain domain) {
+		   BackResult<Integer> result=new BackResult<Integer>();
+		   TdsStateInfo  tds=new TdsStateInfo();
+		try {
+			BeanUtils.copyProperties(domain,tds);
+			tds.setUserid(userId);
+			tdsStateInfoMapper.save(tds);
+			result.setResultObj(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("状态库新增功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据保存失败");
+		}
+		return result;
+	}
+
 }

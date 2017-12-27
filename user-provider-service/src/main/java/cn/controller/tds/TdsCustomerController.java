@@ -12,7 +12,6 @@ import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
-import main.java.cn.domain.tds.TdsUserDomain;
 
 @RestController
 @RequestMapping("/customer")
@@ -22,8 +21,8 @@ public class TdsCustomerController {
 	private TdsCustomerService tdsCustomerService;
 	
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserDomain> update(@RequestBody TdsUserDomain tdsUserDomain,Integer departmentId,String comUrl){
-		return tdsCustomerService.update(tdsUserDomain,departmentId,comUrl);
+	public BackResult<Integer> update(Integer loginUserId,@RequestBody PageAuto auto,Integer upUserId,Integer[] arrRoles){
+		return tdsCustomerService.update(loginUserId,auto,upUserId,arrRoles);
 	}
 
 	
@@ -36,5 +35,11 @@ public class TdsCustomerController {
 	@RequestMapping(value = "/attorn", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<PageAuto> attorn(PageAuto auto){
 		return tdsCustomerService.attorn(auto);
+	}
+	
+	
+	@RequestMapping(value = "/addTdsCustomer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> addTdsCustomer(@RequestBody PageAuto auto, Integer loginUserId,Integer[] arrRoles){
+		return tdsCustomerService.addTdsCustomer(auto,loginUserId,arrRoles);
 	}
 }

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsApprovalMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsApprovalLog">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="app_status" property="appStatus"></result>
+		<result column="app_remarks" property="appRemarks"></result>
+		<result column="spare1" property="spare1"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		app_status,
+		app_remarks,
+		spare1,
+		is_deleted,
+		create_time
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_approval
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsApprovalLog">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_approval
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="appStatus != null">and app_status = #{appStatus}</if>
+			<if test="appRemarks != null">and app_remarks = #{appRemarks}</if>
+			<if test="spare1 != null">and spare1 = #{spare1}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			and is_deleted = '0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsApprovalLog">
+		INSERT INTO tds_approval
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="appStatus != null"> app_status , </if>
+			<if test="appRemarks != null"> app_remarks , </if>
+			<if test="spare1 != null"> spare1 , </if>
+			<if test="createTime != null"> create_time , </if>
+			is_deleted ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="appStatus != null"> #{appStatus} , </if>
+			<if test="appRemarks != null"> #{appRemarks} , </if>
+			<if test="spare1 != null"> #{spare1} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+		   '0' , 
+		</trim>
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_approval SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsApprovalLog">
+		UPDATE tds_approval
+		<trim prefix="set" suffixOverrides=",">
+			<if test="id != null"> id = #{id}, </if>
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="appStatus != null"> app_status = #{appStatus}, </if>
+			<if test="appRemarks != null"> app_remarks = #{appRemarks}, </if>
+			<if test="spare1 != null"> spare1 = #{spare1}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+
+     <!-- parent_id=2 为父级部门类  u.is_deleted=2 注册审核-->
+	<select id="pageTdsApproval" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsCustomerView">
+		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		departName,u.contact,u.phone,u.create_time,
+		u.source,com.com_url as
+		comUrl,u.is_deleted
+		from tds_user u,
+		tds_user_department
+		ud,tds_department d,
+		tds_company com
+		where u.id=ud.user_id and
+		d.id=ud.depart_id and com.id=u.com_id
+		and d.parent_id=2
+			<if test="departId != null">AND d.id = #{departId}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='2' order by u.create_time desc
+	
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
+		select count(1)
+		from tds_user u,
+		tds_user_department ud,tds_department
+		d,
+		tds_company com
+		where u.id=ud.user_id and d.id=ud.depart_id and
+		com.id=u.com_id
+		and d.parent_id=2
+			<if test="departId != null">AND d.id = #{departId}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='2' order by u.create_time desc
+	</select>
+	
+</mapper>

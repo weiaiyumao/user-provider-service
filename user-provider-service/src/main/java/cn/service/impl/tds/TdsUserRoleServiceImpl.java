@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.dao.tds.TdsUserRoleMapper;
 import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
-import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageAuto;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 
@@ -136,17 +136,11 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
     
 	@Transactional
 	@Override
-	public BackResult<Integer> upStatusById(TdsUserRoleDomain domain,Integer loginUserId) {
+	public BackResult<Integer> upStatusById(Integer id,String status){
 		BackResult<Integer> result=new BackResult<Integer>();
-		//获取登录用户信息
-		TdsUserRole thisUser=new TdsUserRole();
-		
 		try {
-			BeanUtils.copyProperties(domain,thisUser);
-			thisUser.setCreater(loginUserId);  //更新人
-			thisUser.setUpdateTime(new Date());   //更新时间
-			Integer isStatus=tdsUserRoleMapper.upStatusById(thisUser);
-			result.setResultObj(isStatus);
+		    tdsUserRoleMapper.upStatusById(id,status);
+			result.setResultObj(1);
 		} catch (BeansException e) {
 			e.printStackTrace();
 			logger.error("修改功能信息出现系统异常：" + e.getMessage());
@@ -159,15 +153,29 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 	
 	
 	@Override
-	public BackResult<List<PageAuto>> queryRoleIsStatus(PageAuto auto) {
-		BackResult<List<PageAuto>> result=new BackResult<List<PageAuto>>();
+	public BackResult<PageDomain<PageAuto>> queryRoleIsStatus(PageAuto auto) {
+		BackResult<PageDomain<PageAuto>> result=new BackResult<PageDomain<PageAuto>>();
 		try {
+			PageDomain<PageAuto> listDomain = null;
+	//		List<PageAuto> list = new ArrayList<PageAuto>();
 			Integer cur=auto.getCurrentPage()<=0?1:auto.getCurrentPage();
 			auto.setPageNumber((cur-1)*auto.getNumPerPage());
-			List<PageAuto> list=tdsUserRoleMapper.queryRoleIsStatus(auto);
-			if(!CommonUtils.isNotEmpty(list)){
-		        result.setResultObj(list);
+			Integer count=tdsUserRoleMapper.queryCount(auto);
+			if (count == 0) {
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前没有用户信息");
 			}
+			List<PageAuto> pageList = tdsUserRoleMapper.queryRoleIsStatus(auto);
+			if (pageList.size() <= 0) {
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前没有用户信息");
+			}
+//			for (PageAuto item : pageList) {
+//				item = new PageAuto();
+//				list.add(item);
+//			}
+			listDomain = new PageDomain<PageAuto>(auto.getCurrentPage(), auto.getNumPerPage(),count);
+			listDomain.setTlist(pageList);
+			result.setResultObj(listDomain);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());

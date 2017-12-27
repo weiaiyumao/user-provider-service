@@ -111,6 +111,13 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}
+	          //排序
+//	          Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
+//				@Override
+//				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
+//					return o1.getSort()-o2.getSort();
+//				 }  
+//	          });  
 	          result.setResultObj(listDomain);
 			}
 		} catch (Exception e) {
