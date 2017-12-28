@@ -132,7 +132,6 @@
 		and ud.depart_id=d.id  
 		and ud.user_id=u.id
 		and ur.is_deleted='0' 
-		<if test="status != null">and ur.status=#{status}</if>
 		<if test="name != null"> and u.name=#{name}</if>
 		order by u.create_time desc
 		LIMIT #{pageNumber},#{numPerPage}

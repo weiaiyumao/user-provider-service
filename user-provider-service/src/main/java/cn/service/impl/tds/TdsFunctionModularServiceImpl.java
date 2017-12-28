@@ -50,6 +50,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		   TdsModular  tds=new TdsModular();
 		   domain.setCreateTime(new Date());
 		   domain.setUpdateTime(new Date());
+		   
 		try {
 			BeanUtils.copyProperties(domain,tds);
 			tdsModularMapper.save(tds);
