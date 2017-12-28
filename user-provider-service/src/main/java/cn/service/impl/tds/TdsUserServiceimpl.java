@@ -62,14 +62,14 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	 */
 	@Transactional
 	@Override
-	public BackResult<TdsUserDomain> save(TdsUserDomain domain) {
-		BackResult<TdsUserDomain> result = new BackResult<TdsUserDomain>();
+	public BackResult<Integer> save(TdsUserDomain domain) {
+		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUser tds = new TdsUser();
 
 		Integer isUserName = 0;
 		isUserName = tdsUserMapper.isUserName(domain.getPhone());
 		if (isUserName >= 1) {
-			return new BackResult<TdsUserDomain>(ResultCode.RESULT_DATA_EXCEPTIONS, "你手机号已注册");
+			return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "你手机号已注册");
 		}
 		// 注册加密
 		if (null != domain.getPassword() || "".equals(domain.getPassword()))
@@ -80,11 +80,11 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			domain.setUpdateTime(new Date());
 			BeanUtils.copyProperties(domain, tds);
 			tdsUserMapper.save(tds);
-			result.setResultObj(domain);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
-			return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "数据落地异常");
+			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
 		}
 		return result;
 	}
@@ -175,11 +175,11 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			Integer isUserName = 0;
 			isUserName = tdsUserMapper.isUserName(tdsUserDomain.getPhone());
 			if (isUserName < 1) {
-				return new BackResult<TdsUserDomain>(ResultCode.RESULT_DATA_EXCEPTIONS, "你还没有注册账号");
+				return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "你还没有注册账号");
 			}
 			TdsUser isUser = tdsUserMapper.login(tdsUserDomain.getPhone(), tdsUserDomain.getPassword());
 			if (null == isUser)
-				return new BackResult<TdsUserDomain>(ResultCode.RESULT_DATA_EXCEPTIONS, "登录失败");
+				return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "登录失败");
 			// 最近登录时间
 			isUser.setLastLoginTime(new Date());
 			// 最近登录ip

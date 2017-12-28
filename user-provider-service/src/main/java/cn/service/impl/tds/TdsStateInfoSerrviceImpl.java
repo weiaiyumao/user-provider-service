@@ -110,7 +110,7 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		   TdsStateInfo  tds=new TdsStateInfo();
 		try {
 			BeanUtils.copyProperties(domain,tds);
-			tds.setUserid(userId);
+			tds.setRinput("录入人");//TODO
 			tdsStateInfoMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -118,6 +118,23 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 			logger.error("状态库新增功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据保存失败");
+		}
+		return result;
+	}
+
+	@Override
+	public BackResult<TdsStateInfoDomain> loadById(Integer id) {
+		BackResult<TdsStateInfoDomain> result = new BackResult<TdsStateInfoDomain>();
+		try {
+			TdsStateInfoDomain domain = new TdsStateInfoDomain();
+			TdsStateInfo entity = tdsStateInfoMapper.loadById(id);
+			BeanUtils.copyProperties(entity, domain);
+			result.setResultObj(domain);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据查询失败");
 		}
 		return result;
 	}

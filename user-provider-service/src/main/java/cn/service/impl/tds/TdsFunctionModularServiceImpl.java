@@ -2,6 +2,8 @@ package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -45,16 +47,20 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	}
 
 	@Override
-	public BackResult<TdsModularDomain> saveTdsModular(TdsModularDomain domain) {
-		  BackResult<TdsModularDomain> result=new BackResult<TdsModularDomain>();
+	public BackResult<Integer> saveTdsModular(TdsModularDomain domain) {
+		  BackResult<Integer> result=new BackResult<Integer>();
 		   TdsModular  tds=new TdsModular();
-		   domain.setCreateTime(new Date());
-		   domain.setUpdateTime(new Date());
-		   
 		try {
-			BeanUtils.copyProperties(domain,tds);
+			TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
+			tds.setName(domain.getName());
+			tds.setCreateTime(new Date());
+			tds.setUpdateTime(new Date());
+			tds.setParentId(domain.getId());
+			if(null!=tdsModula && "第一级".equals(tdsModula.getName())){
+				tds.setParentId(0);  //标记为父类
+			}
 			tdsModularMapper.save(tds);
-			result.setResultObj(domain);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
@@ -112,13 +118,16 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}
+	          
 	          //排序
-//	          Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
-//				@Override
-//				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
-//					return o1.getSort()-o2.getSort();
-//				 }  
-//	          });  
+	         if(null!=domain.getParentId() && 0==domain.getParentId()){
+	             Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
+	 				@Override
+	 				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
+	 					return o1.getSort()-o2.getSort();
+	 				 }  
+	 	          });  
+	         }
 	          result.setResultObj(listDomain);
 			}
 		} catch (Exception e) {

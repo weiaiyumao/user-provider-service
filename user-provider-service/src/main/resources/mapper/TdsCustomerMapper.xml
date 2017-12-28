@@ -40,7 +40,7 @@
 		tds_company com
 		where u.id=ud.user_id and d.id=ud.depart_id and
 		com.id=u.com_id
-		and d.parent_id=2
+		and d.parent_id=2 and u.parent_userId=#{parentUserId}
 			<if test="departId != null">AND d.id = #{departId}</if>
 			<if test="contact != null">AND u.contact = #{contact}</if>
 			<if test="statTime != null">
@@ -52,7 +52,7 @@
 	
 	
 	<!-- 角色id查询姓名公司 -->
-	<select id="queryByRoleId" parameterType="HashMap" resultType="main.java.cn.domain.page.PageAuto">
+	<!-- <select id="queryByRoleId" parameterType="HashMap" resultType="main.java.cn.domain.page.PageAuto">
 	    select * from tds_user u,tds_company com,tds_user_role ur
 		where u.com_id=com.id and u.id=ur.user_id
 		<if test="roleId != null">
@@ -63,7 +63,7 @@
 		</if>
 		order by u.create_time desc
 		LIMIT 10
-	</select>
+	</select> -->
 	
 	
 	

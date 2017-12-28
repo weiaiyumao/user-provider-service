@@ -32,6 +32,6 @@ public interface TdsCustomerMapper {
 	 * @param userName
 	 * @return
 	 */
-	PageAuto queryByRoleId(Integer roleId,String userName);
+	//PageAuto queryByRoleId(Integer roleId,String userName);
 	
 }

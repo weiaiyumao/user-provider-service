@@ -267,12 +267,11 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 	@Transactional
 	@Override
-	public BackResult<Integer> addModularFun(TdsFunctionDomain domain, Integer parentId) {
+	public BackResult<Integer> addFun(TdsFunctionDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsFunction tds = new TdsFunction();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
-		domain.setParentId(parentId);
 		try {
 			BeanUtils.copyProperties(domain, tds);
 			tdsFunctionMapper.save(tds);

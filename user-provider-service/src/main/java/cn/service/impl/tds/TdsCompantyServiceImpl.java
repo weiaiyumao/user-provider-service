@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,23 @@ public class TdsCompantyServiceImpl implements TdsCompanyService{
 			result.setResultMsg("数据集合查询失败");
 		}
 		return result;
+	}
+
+	@Override
+	public BackResult<TdsCompanyDomain> loadComById(Integer id) {
+		 BackResult<TdsCompanyDomain> result=new BackResult<TdsCompanyDomain>();
+		 TdsCompanyDomain comDomain=new TdsCompanyDomain();
+		 try {
+			 TdsCompany obj=tdsCompanyMapper.loadById(id);
+			 BeanUtils.copyProperties(obj,comDomain);
+			 result.setResultObj(comDomain);
+		} catch (BeansException e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		 return result;
 	}
 
 

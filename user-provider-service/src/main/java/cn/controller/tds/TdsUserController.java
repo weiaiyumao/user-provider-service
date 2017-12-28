@@ -44,8 +44,8 @@ public class TdsUserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserDomain> save(@RequestBody TdsUserDomain tdsUserDomain) {
-		BackResult<TdsUserDomain> result = tdsUserService.save(tdsUserDomain);
+	public BackResult<Integer> save(@RequestBody TdsUserDomain tdsUserDomain) {
+		BackResult<Integer> result = tdsUserService.save(tdsUserDomain);
 		return result;
 	}
 
@@ -156,5 +156,8 @@ public class TdsUserController {
 		return tdsUserService.editComInfo(domain, userId, userName, phone, contact);
 	}
 
+	
+	
+	
 	
 }

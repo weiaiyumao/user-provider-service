@@ -62,4 +62,10 @@ public class TdsStateInfoController {
 		BackResult<Integer> result = tdsStateInfoService.addState(userId,tdsStateInfoDomain);
 		return result;
 	}
+	
+	@RequestMapping(value = "/loadById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsStateInfoDomain> loadById(Integer id){
+		BackResult<TdsStateInfoDomain> result = tdsStateInfoService.loadById(id);
+		return result;
+	}
 }

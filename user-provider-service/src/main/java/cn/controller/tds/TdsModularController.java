@@ -40,8 +40,8 @@ public class TdsModularController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsModularDomain> saveTdsFunction(@RequestBody TdsModularDomain tdsModularDomain) {
-		  BackResult<TdsModularDomain> result = tdsModularService.saveTdsModular(tdsModularDomain);
+	public BackResult<Integer> saveTdsFunction(@RequestBody TdsModularDomain tdsModularDomain) {
+		  BackResult<Integer> result = tdsModularService.saveTdsModular(tdsModularDomain);
 		  return result;
 	}
 

@@ -73,9 +73,9 @@ public class TdsDeparTmentController {
 		return tdsDepartmentService.addCustomPermissions(soleName,loginUserId,arrfuns);
 	}
 	
-	@RequestMapping(value = "/addModularFun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> addModularFun(@RequestBody TdsFunctionDomain domain,Integer parentId){
-		return tdsDepartmentService.addModularFun(domain,parentId);
+	@RequestMapping(value = "/addFun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> addFun(@RequestBody TdsFunctionDomain domain){
+		return tdsDepartmentService.addFun(domain);
 	}
 
 }

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.service.tds.TdsCompanyService;
 import cn.service.tds.TdsFunctionService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.tds.TdsCompanyDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 
@@ -28,6 +30,9 @@ public class TdsUserLoginController {
 	
 	@Autowired
 	private TdsFunctionService tdsFunctionService;
+	
+	@Autowired
+	private TdsCompanyService tdsCompanyService;
 	
 	/**
 	 * 登录
@@ -48,6 +53,17 @@ public class TdsUserLoginController {
 	@RequestMapping("/moduleLoadingByUsreId")
 	public BackResult<List<TdsFunctionDomain>> moduleLoadingByUsreId(@RequestParam("userId")Integer userId){
 		  return tdsFunctionService.moduleLoadingByUsreId(userId);
+	}
+	
+	/**
+	 * 根据公司id获取信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/loadComById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsCompanyDomain> loadComById(Integer id){
+		return tdsCompanyService.loadComById(id);
+		
 	}
 	
 }

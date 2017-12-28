@@ -1,6 +1,7 @@
 package cn.entity.tds.view;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -28,7 +29,7 @@ public class TdsCustomerView  implements Serializable {
 	
 	private String phone;
 	
-	private String create_time;
+	private Date create_time;
 	
 	private String com_url; 
 	
@@ -82,11 +83,11 @@ public class TdsCustomerView  implements Serializable {
 		this.phone = phone;
 	}
 
-	public String getCreate_time() {
+	public Date getCreate_time() {
 		return create_time;
 	}
 
-	public void setCreate_time(String create_time) {
+	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
 	}
 
