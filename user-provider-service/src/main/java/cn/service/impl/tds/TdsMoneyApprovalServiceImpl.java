@@ -11,8 +11,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsApprovalLogMapper;
+import cn.dao.tds.TdsCommissionMapper;
 import cn.dao.tds.TdsMoneyApprovalMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
+import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsSerualInfo;
 import cn.service.tds.TdsMoneyApprovalService;
@@ -22,7 +24,7 @@ import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsMoneyApprovalDomain;
 
 @Service
-public class TdsMoneyApprovalServiceImpl  extends BaseTransactService  implements TdsMoneyApprovalService {
+public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements TdsMoneyApprovalService {
 
 	private final static Logger logger = LoggerFactory.getLogger(TdsMoneyApprovalServiceImpl.class);
 
@@ -31,9 +33,12 @@ public class TdsMoneyApprovalServiceImpl  extends BaseTransactService  implement
 
 	@Autowired
 	private TdsApprovalLogMapper tdsApprovalLogMapper;
-	
+
 	@Autowired
 	private TdsSerualInfoMapper tdsSerualInfoMapper;
+
+	@Autowired
+	private TdsCommissionMapper tdsCommissionMapper;
 
 	/**
 	 * 1进账审核 2出账审核 3退款审核
@@ -78,7 +83,10 @@ public class TdsMoneyApprovalServiceImpl  extends BaseTransactService  implement
 		String ordrr = OrderNo.getOrderNo16();
 		// 流水
 		String serial = OrderNo.getSerial16();
-		TransactionStatus status=this.begin();
+		
+		Integer yonjing=0; //佣金
+		
+		TransactionStatus status = this.begin();
 		try {
 			domain.setApprovalType("1"); // 进入进账审核
 			domain.setApprovalStatus("0"); // 未审核
@@ -87,20 +95,28 @@ public class TdsMoneyApprovalServiceImpl  extends BaseTransactService  implement
 			domain.setSerialNumber(serial);
 			domain.setCreateTiem(new Date()); // 下单 订单时间
 			BeanUtils.copyProperties(domain, tds);
-			//保存进账审核
-			tdsMoneyApprovalMapper.save(tds); 
-			
-			//进入流水明细保存
-			TdsSerualInfo  tdsSerual=new  TdsSerualInfo();
+			// 保存进账审核
+			tdsMoneyApprovalMapper.save(tds);
+
+			// 进入流水明细保存
+			TdsSerualInfo tdsSerual = new TdsSerualInfo();
 			tdsSerual.setCreateTime(new Date());
 			tdsSerual.setOrderNumber(ordrr);
 			tdsSerual.setSerialNumber(serial);
-			tdsSerual.setSerialStatus("1"); //处理中
-			tdsSerual.setSerialType("5");//进账
-			tdsSerual.setSerialMoney("测试流水金额");//TODO
-			tdsSerual.setBeforeMoney("测试之前金额");
+			tdsSerual.setSerialStatus("1"); // 处理中
+			tdsSerual.setSerialType("5");// 进账
+			tdsSerual.setSerialMoney("流水金额");// TODO
+			tdsSerual.setBeforeMoney("之前金额");
 			tdsSerualInfoMapper.save(tdsSerual);
-			
+			// 佣金列表保存
+			TdsCommission tdsComm = new TdsCommission();
+			tdsComm.setCreateTime(new Date());
+			tdsComm.setOrderNumber(ordrr);
+			tdsComm.setSerialNumber(serial);
+			tdsComm.setCommStatus("1"); // 处理中
+			tdsComm.setSerialMoney("到账金额");
+			tdsComm.setBeforeMoney("之前金额");
+			tdsCommissionMapper.save(tdsComm);
 			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
