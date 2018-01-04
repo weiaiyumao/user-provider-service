@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsAccountBankMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsAccountBank">
+		<result column="id" property="id"></result>
+		<result column="less_name" property="lessName"></result>
+		<result column="account_name" property="accountName"></result>
+		<result column="bank_type" property="bankType"></result>
+		<result column="bank_name" property="bankName"></result>
+		<result column="open_account" property="openAccount"></result>
+		<result column="is_disable" property="isDisable"></result>
+		<result column="userid" property="userid"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="spare1" property="spare1"></result>
+		<result column="spare2" property="spare2"></result>
+		<result column="spare3" property="spare3"></result>
+		<result column="spare4" property="spare4"></result>
+		<result column="spare5" property="spare5"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		less_name,
+		account_name,
+		bank_type,
+		bank_name,
+		open_account,
+		is_disable,
+		userid,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		is_deleted,
+		remarks,
+		spare1,
+		spare2,
+		spare3,
+		spare4,
+		spare5
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_account_bank
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsAccountBank">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_account_bank
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="lessName != null">and less_name = #{lessName}</if>
+			<if test="accountName != null">and account_name = #{accountName}</if>
+			<if test="bankType != null">and bank_type = #{bankType}</if>
+			<if test="bankName != null">and bank_name = #{bankName}</if>
+			<if test="openAccount != null">and open_account = #{openAccount}</if>
+			<if test="isDisable != null">and is_disable = #{isDisable}</if>
+			<if test="userid != null">and userid = #{userid}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="spare1 != null">and spare1 = #{spare1}</if>
+			<if test="spare2 != null">and spare2 = #{spare2}</if>
+			<if test="spare3 != null">and spare3 = #{spare3}</if>
+			<if test="spare4 != null">and spare4 = #{spare4}</if>
+			<if test="spare5 != null">and spare5 = #{spare5}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsAccountBank">
+		INSERT INTO tds_account_bank
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lessName != null"> less_name , </if>
+			<if test="accountName != null"> account_name , </if>
+			<if test="bankType != null"> bank_type , </if>
+			<if test="bankName != null"> bank_name , </if>
+			<if test="openAccount != null"> open_account , </if>
+			<if test="userid != null"> userid , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="spare1 != null"> spare1 , </if>
+			<if test="spare2 != null"> spare2 , </if>
+			<if test="spare3 != null"> spare3 , </if>
+			<if test="spare4 != null"> spare4 , </if>
+			<if test="spare5 != null"> spare5 , </if>
+		   is_disable, 
+		   is_deleted 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null"> #{id} , </if>
+			<if test="lessName != null"> #{lessName} , </if>
+			<if test="accountName != null"> #{accountName} , </if>
+			<if test="bankType != null"> #{bankType} , </if>
+			<if test="bankName != null"> #{bankName} , </if>
+			<if test="openAccount != null"> #{openAccount} , </if>
+			<if test="userid != null"> #{userid} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="spare1 != null"> #{spare1} , </if>
+			<if test="spare2 != null"> #{spare2} , </if>
+			<if test="spare3 != null"> #{spare3} , </if>
+			<if test="spare4 != null"> #{spare4} , </if>
+			<if test="spare5 != null"> #{spare5} , </if>
+			'0',
+			'0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_account_bank SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsAccountBank">
+		UPDATE tds_account_bank
+		<trim prefix="set" suffixOverrides=",">
+			<if test="lessName != null"> less_name = #{lessName}, </if>
+			<if test="accountName != null"> account_name = #{accountName}, </if>
+			<if test="bankType != null"> bank_type = #{bankType}, </if>
+			<if test="bankName != null"> bank_name = #{bankName}, </if>
+			<if test="openAccount != null"> open_account = #{openAccount}, </if>
+			<if test="isDisable != null"> is_disable = #{isDisable}, </if>
+			<if test="userid != null"> userid = #{userid}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="spare1 != null"> spare1 = #{spare1}, </if>
+			<if test="spare2 != null"> spare2 = #{spare2}, </if>
+			<if test="spare3 != null"> spare3 = #{spare3}, </if>
+			<if test="spare4 != null"> spare4 = #{spare4}, </if>
+			<if test="spare5 != null"> spare5 = #{spare5}, </if>
+			<if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	<select id="pageTdsAccountBank" parameterType="HashMap" resultMap="BaseResultMap">
+	    SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_account_bank
+	    <where>
+			<if test="selected == 1">less_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2">account_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3">bank_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4">open_account like concat(concat('%',#{likeName}),'%')</if> 
+			<if test="selected == 0">
+		    less_name like concat(concat('%',#{likeName}),'%') 
+		    or account_name like concat(concat('%',#{likeName}),'%')
+			or bank_name like concat(concat('%',#{likeName}),'%')
+		    or open_account like concat(concat('%',#{likeName}),'%')
+			</if>
+	        and is_deleted ='0'
+		</where>
+		LIMIT #{pageNumber},#{numPerPage} 
+	</select>
+	
+	<select id="queryCount" parameterType="HashMap" resultType="java.lang.Integer">
+	    SELECT count(1)
+		FROM tds_account_bank
+	    <where>
+			<if test="selected == 1">less_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2">account_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3">bank_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4">open_account like concat(concat('%',#{likeName}),'%')</if> 
+			<if test="selected == 0">
+		    less_name like concat(concat('%',#{likeName}),'%') 
+		    or account_name like concat(concat('%',#{likeName}),'%')
+			or bank_name like concat(concat('%',#{likeName}),'%')
+		    or open_account like concat(concat('%',#{likeName}),'%')
+			</if>
+	        and is_deleted ='0'
+		</where>
+	</select>
+	
+	
+	<update id="isDisableById" parameterType="HashMap">
+	 	update tds_account_bank set is_disable='1',is_deleted='1'
+		where is_deleted='0' and id=#{id}
+	</update>
+</mapper>

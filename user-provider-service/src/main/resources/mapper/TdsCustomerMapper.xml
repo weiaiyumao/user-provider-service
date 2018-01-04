@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsCustomerMapper">
+
+
+	<!-- parent_id=2 为父级部门类 -->
+	<select id="pageTdsCustomer" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsCustomerView">
+		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		departName,u.contact,u.phone,u.create_time,u.parent_userId,
+		u.source,com.com_url as
+		comUrl,u.is_deleted
+		from tds_user u,
+		tds_user_department
+		ud,tds_department d,
+		tds_company com
+		where u.id=ud.user_id and
+		d.id=ud.depart_id and com.id=u.com_id
+		and d.parent_id=2 and u.parent_userId=#{parentUserId}
+			<if test="departId != null">AND d.id = #{departId}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='0' order by u.create_time desc
+	
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
+		select count(1)
+		from tds_user u,
+		tds_user_department ud,tds_department
+		d,
+		tds_company com
+		where u.id=ud.user_id and d.id=ud.depart_id and
+		com.id=u.com_id
+		and d.parent_id=2 and u.parent_userId=#{parentUserId}
+			<if test="departId != null">AND d.id = #{departId}</if>
+			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="statTime != null">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='0' order by u.create_time desc
+	</select>
+	
+	
+	<!-- 角色id查询姓名公司 -->
+	<!-- <select id="queryByRoleId" parameterType="HashMap" resultType="main.java.cn.domain.page.PageAuto">
+	    select * from tds_user u,tds_company com,tds_user_role ur
+		where u.com_id=com.id and u.id=ur.user_id
+		<if test="roleId != null">
+	    	and ur.role_id=#{roleId}
+		</if> 
+		<if test="userName != null and userName !='' ">
+	    	and u.name like concat(concat('%',#{userName}),'%')
+		</if>
+		order by u.create_time desc
+		LIMIT 10
+	</select> -->
+	
+	
+	
+</mapper>
