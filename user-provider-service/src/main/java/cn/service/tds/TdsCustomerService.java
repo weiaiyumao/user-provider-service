@@ -1,6 +1,8 @@
 package cn.service.tds;
 
 
+
+import main.java.cn.common.BackResult;
 import main.java.cn.service.tds.TdsCustomerBusService;
 
 /**
@@ -9,8 +11,16 @@ import main.java.cn.service.tds.TdsCustomerBusService;
  *
  */
 public interface TdsCustomerService  extends TdsCustomerBusService{
-
 	
 	
+	
+    
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	BackResult<Integer> deleteById(Integer id);
 	
 }

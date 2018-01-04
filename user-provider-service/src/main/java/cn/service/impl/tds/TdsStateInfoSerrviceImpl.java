@@ -11,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.tds.TdsEnumMapper;
+import cn.dao.tds.TdsProductMoneyMapper;
 import cn.dao.tds.TdsStateInfoMapper;
+import cn.entity.tds.TdsEnum;
+import cn.entity.tds.TdsProductMoney;
 import cn.entity.tds.TdsStateInfo;
 import cn.service.tds.TdsStateInfoSerrvice;
 import cn.utils.DateUtils;
@@ -19,6 +23,8 @@ import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsEnumDomain;
+import main.java.cn.domain.tds.TdsProductMoneyDomain;
 import main.java.cn.domain.tds.TdsStateInfoDomain;
 
 @Service
@@ -28,6 +34,12 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 
 	@Autowired
 	private TdsStateInfoMapper tdsStateInfoMapper;
+	
+	@Autowired
+	private TdsProductMoneyMapper tdsProductMoneyMapper;
+	
+	@Autowired
+	private TdsEnumMapper tdsEnumMapper;
 	
 	@Transactional
 	@Override
@@ -109,8 +121,9 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		   BackResult<Integer> result=new BackResult<Integer>();
 		   TdsStateInfo  tds=new TdsStateInfo();
 		try {
+			domain.setCreateTime(new Date());
+			domain.setUpdateTime(new Date());
 			BeanUtils.copyProperties(domain,tds);
-			tds.setRinput("录入人");//TODO
 			tdsStateInfoMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -138,5 +151,56 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		}
 		return result;
 	}
+
+	@Override
+	public BackResult<Integer> addProductTable(TdsProductMoneyDomain domain) {
+		   BackResult<Integer> result=new BackResult<Integer>();
+		   TdsProductMoney  tds=new TdsProductMoney();
+		   domain.setCreateTime(new Date());
+		   domain.setUpdateTime(new Date());
+		try {
+			BeanUtils.copyProperties(domain,tds);
+			tdsProductMoneyMapper.save(tds);
+			result.setResultObj(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("状态库新增功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据保存失败");
+		}
+		return result;
+	}
+
+	
+	
+	@Override
+	public BackResult<List<TdsEnumDomain>> queryByTypeCode(String codeName) {
+		
+		BackResult<List<TdsEnumDomain>> result=new BackResult<List<TdsEnumDomain>>();
+		List<TdsEnumDomain>  listDomain=new ArrayList<TdsEnumDomain>();
+		try {
+			//获取价格管理项目列表
+			List<TdsEnum> list=tdsEnumMapper.queryByTypeCode(codeName);
+			if(list.size()>0 && list!=null){
+				TdsEnumDomain tdsDomain=null;
+	          for(TdsEnum obj:list){
+	        	 tdsDomain=new TdsEnumDomain();
+	        	 BeanUtils.copyProperties(obj,tdsDomain);
+	        	 listDomain.add(tdsDomain);
+				}
+	          result.setResultObj(listDomain);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("项目列表信息查询出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		
+		return result;
+	}
+	
+	
+	
 
 }

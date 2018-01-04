@@ -49,16 +49,17 @@ public class TdsUserController {
 		return result;
 	}
 
+	
 	/**
-	 * 修改
+	 * 修改编辑头像
 	 * 
 	 * @param tdsFunction
 	 * @return
 	 */
-	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsUserDomain> update(@RequestBody TdsUserDomain tdsUserDomain) {
-	//	BackResult<TdsUserDomain> result = tdsUserService.update(tdsUserDomain);
-		return null;
+	@RequestMapping(value = "/updateHeadImg", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> updateHeadImg(Integer id,String hedehref) {
+	    BackResult<Integer> result = tdsUserService.updateHeadImg(id,hedehref);
+		return result;
 	}
 
 	/**

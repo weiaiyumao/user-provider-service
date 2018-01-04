@@ -73,6 +73,12 @@ public class TdsAccounBankController {
 		BackResult<PageDomain<TdsAccountBankDomain>> result=tdsAccountBankService.pageTdsAccountBank(likeName, currentPage, numPerPage, selected);
         return result;
 	}
+
 	
+	@RequestMapping(value = "/loadById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsAccountBankDomain> loadById(Integer id){
+		BackResult<TdsAccountBankDomain> result=tdsAccountBankService.loadById(id);
+        return result;
+	}
 	
 }

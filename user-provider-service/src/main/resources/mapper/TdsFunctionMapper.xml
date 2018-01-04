@@ -101,7 +101,7 @@
 	</update>
 
 
-	<select id="moduleLoadingByUsreId" resultMap="BaseResultMap"
+	<!-- <select id="moduleLoadingByUsreId" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		SELECT
 		*
@@ -126,7 +126,7 @@
 		is_deleted = '0'
 
 		) AND is_deleted = '0';
-	</select>
+	</select> -->
 
 
 

@@ -76,4 +76,13 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
      */
     Integer upPassWord(@Param("userId")Integer userId,@Param("newPass")String newPass);
     
+    
+    /**
+     * 头像更新地址
+     * @param id
+     * @param hedehref
+     * @return
+     */
+    Integer updateHeadImg(@Param("id")Integer id,@Param("hedehref")String hedehref);
+    
 }

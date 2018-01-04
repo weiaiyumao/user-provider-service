@@ -105,11 +105,32 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 				result.setResultObj(1);
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.error("《入账银行管理》新增功能功能出现系统异常：" + e.getMessage());
+				logger.error("《入账银行管理》新增功能出现系统异常：" + e.getMessage());
 				result.setResultCode(ResultCode.RESULT_FAILED);
 				result.setResultMsg("新增失败");
 			}
 			return result;
+	}
+   
+	/**
+	 * 编辑银行入账管理
+	 * id
+	 */
+	@Override
+	public BackResult<TdsAccountBankDomain> loadById(Integer id) {
+		 BackResult<TdsAccountBankDomain> result=new BackResult<TdsAccountBankDomain>();
+		try {
+			TdsAccountBankDomain tdsDomain=new TdsAccountBankDomain();
+			TdsAccountBank tdsAccountBank=tdsAccountBankMapper.loadById(id);
+			BeanUtils.copyProperties(tdsAccountBank, tdsDomain);
+			result.setResultObj(tdsDomain);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("入账银行管理停用功能出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("获取对象失败");
+		}
+		return result;
 	}
 	
 	

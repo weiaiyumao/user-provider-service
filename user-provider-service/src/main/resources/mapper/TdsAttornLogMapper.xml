@@ -14,6 +14,7 @@
 		<result column="spare1" property="spare1"></result>
 		<result column="attorn_user_id" property="attornUserId"></result>
 		<result column="attorn_user_name" property="attornUserName"></result>
+		<result column="creater" property="creater"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -24,7 +25,8 @@
 		create_time,
 		spare1,
 		attorn_user_id,
-		attorn_user_name
+		attorn_user_name,
+		creater
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -49,6 +51,7 @@
 			<if test="spare1 != null">and spare1 = #{spare1}</if>
 			<if test="attornUserId != null">and attorn_user_id = #{attornUserId}</if>
 			<if test="attornUserName != null">and attorn_user_name = #{attornUserName}</if>
+			<if test="creater != null">and creater = #{creater}</if>
 		  and is_deleted ='0'
 		</where>
 	</select>
@@ -62,6 +65,7 @@
 			<if test="spare1 != null"> spare1 , </if>
 			<if test="attornUserId != null"> attorn_user_id , </if>
 			<if test="attornUserName != null"> attorn_user_name , </if>
+			<if test="creater != null"> creater , </if>
 			is_deleted, 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -71,6 +75,7 @@
 			<if test="spare1 != null"> #{spare1} , </if>
 			<if test="attornUserId != null"> #{attornUserId} , </if>
 			<if test="attornUserName != null"> #{attornUserName} , </if>
+			<if test="creater != null"> #{creater} , </if>
 		  '0', 
 		</trim>
 
@@ -94,6 +99,7 @@
 			<if test="spare1 != null"> spare1 = #{spare1}, </if>
 			<if test="attornUserId != null"> attorn_user_id = #{attornUserId}, </if>
 			<if test="attornUserName != null"> attorn_user_name = #{attornUserName}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
 		</trim>
 		WHERE id=#{id}
 	</update>
@@ -115,4 +121,7 @@
 		and d.parent_id=2
 		and u.is_deleted ='0' 
 	</select>
+	
+	
+	
 </mapper>

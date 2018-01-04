@@ -16,72 +16,116 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="sort" property="sort"></result>
+
 	</resultMap>
 
-    
-    <sql id="Base_Column_List">
-     	ID,NAME,REMARKS,PARENT_ID,CREATE_TIME,UPDATE_TIME,
+
+	<resultMap id="BaseResultCollection" extends="BaseResultMap"
+		type="cn.entity.tds.TdsModular">
+
+
+
+		<collection property="listFun" ofType="cn.entity.tds.TdsFunction"
+			column="parent_id">
+			<result column="fid" property="id"></result>
+			<result column="url" property="url"></result>
+			<result column="fname" property="name"></result>
+			<result column="remarks" property="remarks"></result>
+			<result column="fparentId" property="parentId"></result>
+			<result column="create_time" property="createTime"></result>
+			<result column="update_time" property="updateTime"></result>
+			<result column="creater" property="creater"></result>
+			<result column="updater" property="updater"></result>
+			<result column="is_deleted" property="isDeleted"></result>
+		</collection>
+
+	</resultMap>
+
+
+	<select id="moduleLoadingByUsreId" resultMap="BaseResultCollection" parameterType="HashMap">
+		select m.*,f.id as fid,f.name as fname,f.url,f.parent_id as fparentId
+		from
+		tds_modular m,tds_function f
+		where f.id in(
+		select fun_id from
+		tds_function_role
+		where role_id in (
+		select role_id from tds_user_role
+		where user_id=#{userId}
+		and is_deleted='0'
+		)and is_deleted='0'
+		)and m.id=f.parent_id
+		and m.is_deleted='0'
+		and f.is_deleted='0'
+
+	</select>
+
+
+	<sql id="Base_Column_List">
+		ID,NAME,REMARKS,PARENT_ID,CREATE_TIME,UPDATE_TIME,
 		CREATER,UPDATER,IS_DELETED,SORT
-    </sql>
-    
-	<select id="loadById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
 		SELECT
-	    <include refid="Base_Column_List"></include>
+		<include refid="Base_Column_List"></include>
 		FROM tds_modular
 		WHERE
 		ID=#{id}
-		AND  IS_DELETED=0
-	</select>
-	
-	
-	
-	<select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsModular">
-	    SELECT 
-	    <include refid="Base_Column_List"/>
-	    FROM tds_modular
-	    <where>
-	    <if test="id != null"> AND ID=#{id}</if>
-		<if test="name != null">AND NAME=#{name}</if>
-		<if test="remarks != null">AND REMARKS=#{remarks}</if>
-		<if test="parentId != null">AND PARENT_ID=#{parentId}</if>
-		<if test="createTime != null">AND CREATE_TIME=#{createTime}</if>
-		<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
-		<if test="creater != null">AND CREATER=#{creater}</if>
-		<if test="updater != null">AND UPDATER=#{updater}</if>
-		<if test="sort != null">and sort = #{sort}</if>
 		AND IS_DELETED=0
+	</select>
+
+
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsModular">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_modular
+		<where>
+			<if test="id != null"> AND ID=#{id}</if>
+			<if test="name != null">AND NAME=#{name}</if>
+			<if test="remarks != null">AND REMARKS=#{remarks}</if>
+			<if test="parentId != null">AND PARENT_ID=#{parentId}</if>
+			<if test="createTime != null">AND CREATE_TIME=#{createTime}</if>
+			<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
+			<if test="creater != null">AND CREATER=#{creater}</if>
+			<if test="updater != null">AND UPDATER=#{updater}</if>
+			<if test="sort != null">and sort = #{sort}</if>
+			AND IS_DELETED=0
 		</where>
 	</select>
 
 	<insert id="save" parameterType="cn.entity.tds.TdsModular">
-		INSERT INTO tds_modular 
-		<trim prefix="(" suffix=")" suffixOverrides="," >
-		<if test="name != null"> NAME , </if>
-		<if test="remarks != null"> REMARKS , </if>
-		<if test="parentId != null"> PARENT_ID , </if>
-		<if test="createTime != null"> CREATE_TIME , </if>
-		<if test="updateTime != null"> UPDATE_TIME , </if>
-		<if test="creater != null"> CREATER , </if>
-		<if test="updater != null"> UPDATER , </if>
-	    <if test="sort != null"> sort , </if>
-		IS_DELETED
+		INSERT INTO tds_modular
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null"> NAME , </if>
+			<if test="remarks != null"> REMARKS , </if>
+			<if test="parentId != null"> PARENT_ID , </if>
+			<if test="createTime != null"> CREATE_TIME , </if>
+			<if test="updateTime != null"> UPDATE_TIME , </if>
+			<if test="creater != null"> CREATER , </if>
+			<if test="updater != null"> UPDATER , </if>
+			<if test="sort != null"> sort , </if>
+			IS_DELETED
 		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides="," >
-		<if test="name != null"> #{name} , </if>
-		<if test="remarks != null"> #{remarks} , </if>
-		<if test="parentId != null"> #{parentId} , </if>
-		<if test="createTime != null"> #{createTime} , </if>
-		<if test="updateTime != null"> #{updateTime} , </if>
-		<if test="creater != null"> #{creater} , </if>
-		<if test="updater != null"> #{updater} , </if>
-		 <if test="sort != null"> #{sort} , </if>
-		 0
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null"> #{name} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="parentId != null"> #{parentId} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="sort != null"> #{sort} , </if>
+			0
 		</trim>
 	</insert>
-	
-	<update id="deleteById"  parameterType="java.lang.Integer" >
-	    UPDATE tds_modular SET IS_DELETED=1
-	    WHERE ID=#{id}
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_modular SET
+		IS_DELETED=1
+		WHERE ID=#{id}
 	</update>
 
 	<update id="update" parameterType="cn.entity.tds.TdsModular">
@@ -99,6 +143,6 @@
 		</trim>
 		WHERE ID=#{id}
 	</update>
-	
-	
+
+
 </mapper>

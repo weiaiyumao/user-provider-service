@@ -35,4 +35,6 @@ public interface TdsAccountBankMapper extends IBaseDao<TdsAccountBank, Integer>{
 	 * 根据条件查询所有
 	 */
    Integer queryCount(@Param("likeName")String likeName,@Param("selected")Integer selected);
+   
+   
 }

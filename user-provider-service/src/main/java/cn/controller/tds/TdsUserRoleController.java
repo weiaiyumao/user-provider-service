@@ -14,6 +14,7 @@ import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 @RestController
@@ -105,4 +106,15 @@ public class TdsUserRoleController {
 		return tdsUserRoleService.queryRoleIsStatus(auto);
 	}
 	
+	
+	
+	/**
+	 *  根据角色名 or 联系人 获取用户信息
+	 * @param roleId
+	 * @return
+	 */
+	@RequestMapping(value="/queryUserByRoleName",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsUserDomain>> queryUserByRoleName(String roleName,String contact){
+		return tdsUserRoleService.queryUserByRoleName(roleName,contact);
+	}
 }

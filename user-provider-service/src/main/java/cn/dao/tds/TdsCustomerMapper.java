@@ -3,6 +3,7 @@ package cn.dao.tds;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.view.TdsCustomerView;
 import main.java.cn.domain.page.PageAuto;
@@ -26,12 +27,12 @@ public interface TdsCustomerMapper {
 	Integer queryCount(PageAuto auto);
 	
 	
-	/**
-	 * 根据角色id获取姓名
-	 * @param roleId
-	 * @param userName
-	 * @return
-	 */
-	//PageAuto queryByRoleId(Integer roleId,String userName);
+
+    /**
+     * 根据客服id查询客服列表信息
+     * @param id
+     * @return
+     */
+    TdsCustomerView loadById(@Param("id") Integer id);
 	
 }

@@ -22,5 +22,5 @@ public interface IBaseDao<T extends Serializable,PK extends Serializable> {
 	Integer update(T entity);
     
     List<T> selectAll(T entity);
-
+    
 }

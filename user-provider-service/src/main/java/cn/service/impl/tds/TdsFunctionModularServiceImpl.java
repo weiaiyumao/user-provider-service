@@ -2,8 +2,6 @@ package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -51,14 +49,22 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		  BackResult<Integer> result=new BackResult<Integer>();
 		   TdsModular  tds=new TdsModular();
 		try {
+			
 			TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
-			tds.setName(domain.getName());
-			tds.setCreateTime(new Date());
-			tds.setUpdateTime(new Date());
 			tds.setParentId(domain.getId());
+			//如果选择的是第一级模块名则为父级模块
 			if(null!=tdsModula && "第一级".equals(tdsModula.getName())){
 				tds.setParentId(0);  //标记为父类
 			}
+			tds.setName(domain.getName());
+			tds.setCreateTime(new Date());
+			tds.setUpdateTime(new Date());
+			
+			//如果不选，则默认为父级模块
+			if(null==domain.getId() || "".equals(domain.getId())){
+				tds.setParentId(0);  //标记为父类
+			}
+			
 			tdsModularMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -120,14 +126,18 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 				}
 	          
 	          //排序
-	         if(null!=domain.getParentId() && 0==domain.getParentId()){
-	             Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
-	 				@Override
-	 				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
-	 					return o1.getSort()-o2.getSort();
-	 				 }  
-	 	          });  
-	         }
+//	         if(null!=domain.getParentId() && 0==domain.getParentId()){
+//	             Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
+//	 				@Override
+//	 				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
+//	 					int o=0;
+//	 					if(null!=o1.getSort()){
+//	 						o=o1.getSort()-o2.getSort();
+//	 					}
+//	 					return o;
+//	 				 }  
+//	 	          });  
+//	         }
 	          result.setResultObj(listDomain);
 			}
 		} catch (Exception e) {

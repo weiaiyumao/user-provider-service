@@ -1,31 +1,30 @@
 package cn.entity.tds;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * : 模块实体
+ * : 价格管理表
  * 
  * 
  * @author Gen
  */
-public class TdsModular implements Serializable{
+public class TdsProductMoney implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 114108720646134952L;
+	private static final long serialVersionUID = -5425447206263652412L;
 
-	//模块id : id 	
+	//id : id 	
 	private Integer id; 
 	
-	//模块名称 : name 	
-	private String name; 
+	//产品关联id : product_id 	
+	private Integer productId; 
 	
-	//备注 : remarks 	
-	private String remarks; 
+	//起充量金额(元) : start_money 	
+	private Integer startMoney; 
 	
-	//父级模块id : parent_id 	
-	private Integer parentId; 
+	//售价每条价格 : number_money 	
+	private String numberMoney; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -42,35 +41,18 @@ public class TdsModular implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
-  
-	//排序 : sort 	
-	private Integer sort; 
+	//备注 : remarks 	
+	private String remarks; 
 	
+	// : spare1 	
+	private String spare1; 
 	
+	// : spare2 	
+	private String spare2; 
 	
-	private List<TdsFunction> listFun;
-	
-	
-	
-	public List<TdsFunction> getListFun() {
-		return listFun;
-	}
-	
-	public void setListFun(List<TdsFunction> listFun) {
-		this.listFun = listFun;
-	}
-	
-	
-	public Integer getSort() {
-		return sort;
-	}
-	
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-	
+
 	/**
-	 * 模块id : id
+	 * id : id
 	 * 
 	 * @return 
 	 */
@@ -78,10 +60,8 @@ public class TdsModular implements Serializable{
 		return id;
 	}
 	
-	
-	
 	/**
-	 * 模块id : id
+	 * id : id
 	 * 
 	 * @return 
 	 */
@@ -89,55 +69,55 @@ public class TdsModular implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 模块名称 : name
+	 * 产品关联id : product_id
 	 * 
 	 * @return 
 	 */
-	public String getName () {
-		return name;
+	public Integer getProductId () {
+		return productId;
 	}
 	
 	/**
-	 * 模块名称 : name
+	 * 产品关联id : product_id
 	 * 
 	 * @return 
 	 */
-	public void setName (String name) {
-		this.name = name;
+	public void setProductId (Integer productId) {
+		this.productId = productId;
 	}
 	/**
-	 * 备注 : remarks
+	 * 起充量金额(元) : start_money
 	 * 
 	 * @return 
 	 */
-	public String getRemarks () {
-		return remarks;
-	}
-	
-	/**
-	 * 备注 : remarks
-	 * 
-	 * @return 
-	 */
-	public void setRemarks (String remarks) {
-		this.remarks = remarks;
-	}
-	/**
-	 * 父级模块id : parent_id
-	 * 
-	 * @return 
-	 */
-	public Integer getParentId () {
-		return parentId;
+	public Integer getStartMoney () {
+		return startMoney;
 	}
 	
 	/**
-	 * 父级模块id : parent_id
+	 * 起充量金额(元) : start_money
 	 * 
 	 * @return 
 	 */
-	public void setParentId (Integer parentId) {
-		this.parentId = parentId;
+	public void setStartMoney (Integer startMoney) {
+		this.startMoney = startMoney;
+	}
+	/**
+	 * 售价每条价格 : number_money
+	 * 
+	 * @return 
+	 */
+	public String getNumberMoney () {
+		return numberMoney;
+	}
+	
+	/**
+	 * 售价每条价格 : number_money
+	 * 
+	 * @return 
+	 */
+	public void setNumberMoney (String numberMoney) {
+		this.numberMoney = numberMoney;
 	}
 	/**
 	 * 创建时间 : create_time
@@ -223,6 +203,57 @@ public class TdsModular implements Serializable{
 	 */
 	public void setIsDeleted (String isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public String getRemarks () {
+		return remarks;
+	}
+	
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public void setRemarks (String remarks) {
+		this.remarks = remarks;
+	}
+	/**
+	 *  : spare1
+	 * 
+	 * @return 
+	 */
+	public String getSpare1 () {
+		return spare1;
+	}
+	
+	/**
+	 *  : spare1
+	 * 
+	 * @return 
+	 */
+	public void setSpare1 (String spare1) {
+		this.spare1 = spare1;
+	}
+	/**
+	 *  : spare2
+	 * 
+	 * @return 
+	 */
+	public String getSpare2 () {
+		return spare2;
+	}
+	
+	/**
+	 *  : spare2
+	 * 
+	 * @return 
+	 */
+	public void setSpare2 (String spare2) {
+		this.spare2 = spare2;
 	}
 
 
