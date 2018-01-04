@@ -15,7 +15,7 @@ import cn.service.tds.TdsFunctionService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsCompanyDomain;
-import main.java.cn.domain.tds.TdsFunctionDomain;
+import main.java.cn.domain.tds.TdsModularDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 
 
@@ -51,7 +51,7 @@ public class TdsUserLoginController {
 	 * @return
 	 */
 	@RequestMapping("/moduleLoadingByUsreId")
-	public BackResult<List<TdsFunctionDomain>> moduleLoadingByUsreId(@RequestParam("userId")Integer userId){
+	public BackResult<List<TdsModularDomain>> moduleLoadingByUsreId(@RequestParam("userId")Integer userId){
 		  return tdsFunctionService.moduleLoadingByUsreId(userId);
 	}
 	

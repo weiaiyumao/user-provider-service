@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsFunctionMapper;
+import cn.dao.tds.TdsModularMapper;
 import cn.entity.tds.TdsFunction;
+import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.tds.TdsFunctionDomain;
+import main.java.cn.domain.tds.TdsModularDomain;
 
 @Service
 public class TdsFunctionServiceImpl implements TdsFunctionService {
@@ -26,6 +29,9 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 
 	@Autowired
 	private TdsFunctionMapper tdsFunctionMapper;
+	
+	@Autowired
+	private TdsModularMapper tdsModularMapper;
 
 	@Override
 	public BackResult<TdsFunctionDomain> loadById(Integer id) {
@@ -127,26 +133,25 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
+	
+	
 	@Override
-	public BackResult<List<TdsFunctionDomain>> moduleLoadingByUsreId(Integer userId) {
-		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
+	public BackResult<List<TdsModularDomain>> moduleLoadingByUsreId(Integer userId) {
+		BackResult<List<TdsModularDomain>> result = new BackResult<List<TdsModularDomain>>();
 		try {
-			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
-			List<TdsFunction> list = tdsFunctionMapper.moduleLoadingByUsreId(userId);
-
+			List<TdsModularDomain> listDomain = new ArrayList<TdsModularDomain>();
+			List<TdsModular> list=tdsModularMapper.moduleLoadingByUsreId(userId);
 			if (CommonUtils.isNotEmpty(list)) {
-				return new BackResult<List<TdsFunctionDomain>>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户id没有模块加载列表");
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户id没有模块加载列表");
 			}
 
-			TdsFunctionDomain tdsDomain = null;
-			for (TdsFunction obj : list) {
-				tdsDomain = new TdsFunctionDomain();
+			TdsModularDomain tdsDomain = null;
+			for (TdsModular obj : list) {
+				tdsDomain = new TdsModularDomain();
 				BeanUtils.copyProperties(obj, tdsDomain);
 				listDomain.add(tdsDomain);
 			}
-
 			result.setResultObj(listDomain);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("模块加载系统异常：" + e.getMessage());

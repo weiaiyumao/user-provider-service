@@ -2,10 +2,13 @@ package cn.service.tds;
 
 
 
+import java.util.List;
+
 import cn.entity.tds.TdsUserRole;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.service.tds.TdsUserRoleBusService;
 
 /**
@@ -37,5 +40,13 @@ public interface TdsUserRoleService extends  TdsUserRoleBusService{
 	 * @return
 	 */
 	BackResult<PageDomain<PageAuto>> queryRoleIsStatus(PageAuto auto);
+	
+	
+	/**
+	 * 根据角色名称获取用户信息
+	 * @param roleId
+	 * @return
+	 */
+	BackResult<List<TdsUserDomain>> queryUserByRoleName(String roleName,String contact);
   
 }

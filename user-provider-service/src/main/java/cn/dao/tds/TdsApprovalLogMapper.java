@@ -16,7 +16,7 @@ import main.java.cn.domain.page.PageAuto;
  * @author Gen
  */
 @Mapper
-public interface TdsApprovalMapper extends IBaseDao<TdsApprovalLog, Integer>{
+public interface TdsApprovalLogMapper extends IBaseDao<TdsApprovalLog, Integer>{
 	
 	
 	List<TdsCustomerView> pageTdsApproval(PageAuto auto);

@@ -1,5 +1,7 @@
 package cn.controller.tds;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +13,9 @@ import cn.service.tds.TdsCustomerService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsAttornLogDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
+import main.java.cn.domain.tds.TdsUserDiscountDomain;
 
 @RestController
 @RequestMapping("/customer")
@@ -33,8 +37,8 @@ public class TdsCustomerController {
 	
 	
 	@RequestMapping(value = "/attorn", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageAuto> attorn(PageAuto auto){
-		return tdsCustomerService.attorn(auto);
+	public BackResult<Integer> attorn(@RequestBody TdsAttornLogDomain domain){
+		return tdsCustomerService.attorn(domain);
 	}
 	
 	
@@ -42,4 +46,35 @@ public class TdsCustomerController {
 	public BackResult<Integer> addTdsCustomer(@RequestBody PageAuto auto, Integer loginUserId,Integer[] arrRoles){
 		return tdsCustomerService.addTdsCustomer(auto,loginUserId,arrRoles);
 	}
+	
+	
+	@RequestMapping(value = "/loadById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsCustomerViewDomain> loadById(Integer id){
+		return tdsCustomerService.loadById(id);
+	}
+	
+	
+	
+	//====改价
+	@RequestMapping(value = "/updatePrice", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> updatePrice(@RequestBody TdsUserDiscountDomain domain){
+		return tdsCustomerService.updatePrice(domain);
+	}
+	
+	@RequestMapping(value = "/selectAllByUserId", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsUserDiscountDomain>> selectAllByUserId(Integer userId){
+		return tdsCustomerService.selectAllByUserId(userId);
+	}
+	
+	@RequestMapping(value = "/addTdsUserDiscount", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> addTdsUserDiscount(@RequestBody TdsUserDiscountDomain domain){
+		return tdsCustomerService.addTdsUserDiscount(domain);
+	}
+	
+	
+	@RequestMapping(value = "/deleteById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> deleteById(Integer id){
+		return tdsCustomerService.deleteById(id);
+	}
+	//====end
 }

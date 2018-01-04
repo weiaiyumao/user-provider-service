@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 
-import cn.dao.tds.TdsApprovalMapper;
+import cn.dao.tds.TdsApprovalLogMapper;
 import cn.dao.tds.TdsUserMapper;
 import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsUser;
@@ -36,7 +36,7 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 	private final static Logger logger = LoggerFactory.getLogger(TdsApprovalServiceImpl.class);
 
 	@Autowired
-	private TdsApprovalMapper tdsApprovalMapper;
+	private TdsApprovalLogMapper tdsApprovalMapper;
 
 	@Autowired
 	private TdsUserMapper tdsUserMapper;

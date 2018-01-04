@@ -38,6 +38,19 @@ public class TdsAttornLog implements Serializable{
 	//转让给-用户姓名 : attorn_user_name 	
 	private String attornUserName; 
 	
+	
+	//创建操作人
+	private Integer creater;
+	
+	
+	public Integer getCreater() {
+		return creater;
+	}
+	
+	public void setCreater(Integer creater) {
+		this.creater = creater;
+	}
+	
 
 	/**
 	 * 转让id : id

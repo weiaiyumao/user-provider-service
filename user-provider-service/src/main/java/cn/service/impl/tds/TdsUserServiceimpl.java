@@ -95,7 +95,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		BackResult<Integer> result = new BackResult<Integer>();
 		try {
 			tdsUserMapper.deleteById(id);
-			result.setResultObj(id);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("用户ID:" + id + "delete功能信息出现系统异常：" + e.getMessage());
@@ -301,6 +301,21 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			rollback(status);
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
 			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
+		}
+		return result;
+	}
+
+	@Override
+	public BackResult<Integer> updateHeadImg(Integer id,String hedehref) {
+		BackResult<Integer> result=new BackResult<Integer>();
+		try {
+			tdsUserMapper.updateHeadImg(id, hedehref);
+			result.setResultObj(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("头像编辑功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据修改失败");
 		}
 		return result;
 	}

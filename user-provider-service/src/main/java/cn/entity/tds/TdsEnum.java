@@ -1,31 +1,27 @@
 package cn.entity.tds;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * : 模块实体
+ * : tds_enum
  * 
  * 
  * @author Gen
  */
-public class TdsModular implements Serializable{
+public class TdsEnum implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 114108720646134952L;
+	private static final long serialVersionUID = -441506941726029464L;
 
-	//模块id : id 	
+	//状态id : id 	
 	private Integer id; 
 	
-	//模块名称 : name 	
-	private String name; 
+	//状态名 : sl_name 	
+	private String slName; 
 	
-	//备注 : remarks 	
-	private String remarks; 
-	
-	//父级模块id : parent_id 	
-	private Integer parentId; 
+	//代码 : type_code 	
+	private String typeCode; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -42,35 +38,12 @@ public class TdsModular implements Serializable{
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
 	
-  
-	//排序 : sort 	
-	private Integer sort; 
+	//备注 : remarks 	
+	private String remarks; 
 	
-	
-	
-	private List<TdsFunction> listFun;
-	
-	
-	
-	public List<TdsFunction> getListFun() {
-		return listFun;
-	}
-	
-	public void setListFun(List<TdsFunction> listFun) {
-		this.listFun = listFun;
-	}
-	
-	
-	public Integer getSort() {
-		return sort;
-	}
-	
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-	
+
 	/**
-	 * 模块id : id
+	 * 状态id : id
 	 * 
 	 * @return 
 	 */
@@ -78,10 +51,8 @@ public class TdsModular implements Serializable{
 		return id;
 	}
 	
-	
-	
 	/**
-	 * 模块id : id
+	 * 状态id : id
 	 * 
 	 * @return 
 	 */
@@ -89,55 +60,38 @@ public class TdsModular implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 模块名称 : name
+	 * 状态名 : sl_name
 	 * 
 	 * @return 
 	 */
-	public String getName () {
-		return name;
+	public String getSlName () {
+		return slName;
 	}
 	
 	/**
-	 * 模块名称 : name
+	 * 状态名 : sl_name
 	 * 
 	 * @return 
 	 */
-	public void setName (String name) {
-		this.name = name;
+	public void setSlName (String slName) {
+		this.slName = slName;
 	}
 	/**
-	 * 备注 : remarks
+	 * 代码 : type_code
 	 * 
 	 * @return 
 	 */
-	public String getRemarks () {
-		return remarks;
-	}
-	
-	/**
-	 * 备注 : remarks
-	 * 
-	 * @return 
-	 */
-	public void setRemarks (String remarks) {
-		this.remarks = remarks;
-	}
-	/**
-	 * 父级模块id : parent_id
-	 * 
-	 * @return 
-	 */
-	public Integer getParentId () {
-		return parentId;
+	public String getTypeCode () {
+		return typeCode;
 	}
 	
 	/**
-	 * 父级模块id : parent_id
+	 * 代码 : type_code
 	 * 
 	 * @return 
 	 */
-	public void setParentId (Integer parentId) {
-		this.parentId = parentId;
+	public void setTypeCode (String typeCode) {
+		this.typeCode = typeCode;
 	}
 	/**
 	 * 创建时间 : create_time
@@ -223,6 +177,23 @@ public class TdsModular implements Serializable{
 	 */
 	public void setIsDeleted (String isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public String getRemarks () {
+		return remarks;
+	}
+	
+	/**
+	 * 备注 : remarks
+	 * 
+	 * @return 
+	 */
+	public void setRemarks (String remarks) {
+		this.remarks = remarks;
 	}
 
 

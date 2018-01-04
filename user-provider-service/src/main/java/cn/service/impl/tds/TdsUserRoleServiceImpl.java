@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsUserRoleMapper;
+import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
+import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 
@@ -181,6 +184,31 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
+
+	@Override
+	public BackResult<List<TdsUserDomain>> queryUserByRoleName(String roleName,String contact) {
+		BackResult<List<TdsUserDomain>> result=new BackResult<List<TdsUserDomain>>();
+		try {
+			List<TdsUserDomain> listDomain = new ArrayList<TdsUserDomain>();
+			List<TdsUser> list=tdsUserRoleMapper.queryUserByRoleName(roleName, contact);
+			if (CommonUtils.isNotEmpty(list)) {
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有信息");
+			}
+			TdsUserDomain tdsDomain = null;
+			for (TdsUser obj : list) {
+				tdsDomain = new TdsUserDomain();
+				BeanUtils.copyProperties(obj, tdsDomain);
+				listDomain.add(tdsDomain);
+			}
+			result.setResultObj(listDomain);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("模块查询失败");
 		}
 		return result;
 	}

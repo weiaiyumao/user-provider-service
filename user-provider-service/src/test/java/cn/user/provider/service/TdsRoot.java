@@ -2,6 +2,7 @@ package cn.user.provider.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +63,8 @@ public class TdsRoot {
 	  
 	  @Test
 	  public void test1(){
-		  TdsAccountBankDomain tab=new TdsAccountBankDomain();
+		  int hashCodev = UUID.randomUUID().toString().hashCode();  
+	       System.out.println(UUID.randomUUID().toString());  
 		
 	  }
 	  
@@ -96,6 +98,7 @@ public class TdsRoot {
 	  
 	  @Test
 	  public void page(){
+		  tdsFunctionService.moduleLoadingByUsreId(1);
 	  }
 	  
 	  

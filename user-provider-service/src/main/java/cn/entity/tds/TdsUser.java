@@ -17,7 +17,7 @@ public class TdsUser implements Serializable{
 	 */
 	private static final long serialVersionUID = -4850488697148969583L;
 
-	//用户id : id 	
+	    //用户id : id 	
 		private Integer id; 
 		
 		//名称，昵称 : name 	

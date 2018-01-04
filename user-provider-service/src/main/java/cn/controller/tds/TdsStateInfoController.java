@@ -1,5 +1,7 @@
 package cn.controller.tds;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +13,8 @@ import cn.service.tds.TdsStateInfoSerrvice;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsEnumDomain;
+import main.java.cn.domain.tds.TdsProductMoneyDomain;
 import main.java.cn.domain.tds.TdsStateInfoDomain;
 
 @RestController
@@ -66,6 +70,20 @@ public class TdsStateInfoController {
 	@RequestMapping(value = "/loadById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<TdsStateInfoDomain> loadById(Integer id){
 		BackResult<TdsStateInfoDomain> result = tdsStateInfoService.loadById(id);
+		return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "/addProductTable", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> addProductTable(@RequestBody TdsProductMoneyDomain domain){
+		BackResult<Integer> result = tdsStateInfoService.addProductTable(domain);
+		return result;
+	}
+	
+	@RequestMapping(value="/queryByTypeCode", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsEnumDomain>> queryByTypeCode(String codeName){
+		 BackResult<List<TdsEnumDomain>> result = tdsStateInfoService.queryByTypeCode(codeName);
 		return result;
 	}
 }
