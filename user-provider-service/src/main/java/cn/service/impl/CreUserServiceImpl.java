@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.dao.CreUserAccountMapper;
 import cn.dao.CreUserMapper;
 import cn.entity.CreUser;
@@ -24,7 +26,6 @@ import main.java.cn.common.ResultCode;
 import main.java.cn.domain.CreUserDomain;
 import main.java.cn.hhtp.service.SendRequestService;
 import main.java.cn.hhtp.util.MD5Util;
-import net.sf.json.JSONObject;
 
 @Service
 public class CreUserServiceImpl implements CreUserService {
@@ -163,10 +164,10 @@ public class CreUserServiceImpl implements CreUserService {
 							josnObject);
 					logger.info("接口返回结果" + responseStr);
 
-					JSONObject json = JSONObject.fromObject(responseStr);
+					JSONObject json = JSONObject.parseObject(responseStr);
 
 					if (json.get("status").equals("success")) {
-						JSONObject data = JSONObject.fromObject(json.get("data"));
+						JSONObject data = JSONObject.parseObject(json.get("data").toString());
 						creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
 					}
 
@@ -338,10 +339,10 @@ public class CreUserServiceImpl implements CreUserService {
 						josnObject);
 				logger.info("接口返回结果" + responseStr);
 
-				JSONObject json = JSONObject.fromObject(responseStr);
+				JSONObject json = JSONObject.parseObject(responseStr);
 
 				if (json.get("status").equals("success")) {
-					JSONObject data = JSONObject.fromObject(json.get("data"));
+					JSONObject data = JSONObject.parseObject(json.get("data").toString());
 					creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
 				}
 
