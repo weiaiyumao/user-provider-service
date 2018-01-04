@@ -41,6 +41,7 @@ public class TdsPosition implements Serializable{
 	//修改者 : updater 	
 	private Integer updater; 
 	
+	
 	//排序 : sort 	
 	private String sort; 
 	

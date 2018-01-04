@@ -228,7 +228,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setPassword(MD5Util.getInstance().getMD5Code(auto.getPassWord())); // 密码
 			tdsUser.setPhone(auto.getPhone()); // 手机号码
 			tdsUser.setContact(auto.getContact()); // 联系人
-			tdsUser.setSource(StatusType.ADD_SOURCE3); // 注册来源
+			tdsUser.setSource(StatusType.ADD_ADMIN); // 注册来源
 			tdsUser.setIsDeleted("2"); // 需要审核
 			tdsUser.setParentUserId(loginUserId); // 归属父id
 			tdsUser.setComId(tdsCom.getId());

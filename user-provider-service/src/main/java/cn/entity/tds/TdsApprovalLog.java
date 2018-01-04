@@ -1,6 +1,7 @@
 package cn.entity.tds;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * : 客服审核操作记录表
@@ -156,6 +157,24 @@ public class TdsApprovalLog implements Serializable{
 		this.spare1 = spare1;
 	}
 
+	/**
+	 * 
+	 * @param userId 用户
+	 * @param appStatus  xx
+	 * @param appRemarks  原因
+	 * @param createTime  时间
+	 * @param spare1  备注
+	 */
+	public TdsApprovalLog(Integer userId, String appStatus, String appRemarks, Date createTime,String spare1) {
+		this.userId = userId;
+		this.appStatus = appStatus;
+		this.appRemarks = appRemarks;
+		this.createTime = createTime;
+		this.spare1=spare1;
+	}
 
+   public TdsApprovalLog(){
+	   
+   }
   
 }

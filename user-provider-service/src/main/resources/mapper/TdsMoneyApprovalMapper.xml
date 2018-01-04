@@ -24,6 +24,8 @@
 		<result column="approval_type" property="approvalType"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="remarks" property="remarks"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="updater" property="updater"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -44,7 +46,9 @@
 		approval_status,
 		approval_type,
 		is_deleted,
-		remarks
+		remarks,
+		update_time,
+		updater
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -80,6 +84,8 @@
 			<if test="approvalStatus != null">and approval_status = #{approvalStatus}</if>
 			<if test="approvalType != null">and approval_type = #{approvalType}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="updater != null">and updater = #{updater}</if>
 			and is_deleted = '0'
 		</where>
 	</select>
@@ -103,6 +109,8 @@
 			<if test="approvalStatus != null"> approval_status , </if>
 			<if test="approvalType != null"> approval_type , </if>
 			<if test="remarks != null"> remarks , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="updater != null"> updater , </if>
 			 is_deleted , 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -122,6 +130,8 @@
 			<if test="approvalStatus != null"> #{approvalStatus} , </if>
 			<if test="approvalType != null"> #{approvalType} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
 			'0', 
 		</trim>
 
@@ -155,7 +165,19 @@
 			<if test="approvalType != null"> approval_type = #{approvalType}, </if>
 			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
 		</trim>
 		WHERE id=#{id}
+	</update>
+	
+	
+	<update id="approvalByUpStatus" parameterType="cn.entity.tds.TdsMoneyApproval">
+		UPDATE tds_money_approval  
+		SET approval_status=#{approvalStatus}, update_time = #{updateTime},updater = #{updater}
+		WHERE id=#{id}
+		AND order_number=#{orderNumber}
+		AND approval_type=#{approvalType}
+		AND is_deleted='0' 
 	</update>
 </mapper>

@@ -59,7 +59,7 @@ public class TdsMoneyApproval implements Serializable{
 	//开票状态 0未开票 1已开票 : billing 	
 	private String billing; 
 	
-	//进账审核(0未审核  1已审核)   出账审核(2未审核 3已审核)  退款审核(4未审核 5已审核) : approval_status 	
+	//审核(0未审核  1已审核) 
 	private String approvalStatus; 
 	
 	//审核类型 1进账审核  2出账审核 3退款审核 : approval_type 	
@@ -71,7 +71,28 @@ public class TdsMoneyApproval implements Serializable{
 	//备注 : remarks 	
 	private String remarks; 
 	
-
+	
+	//修改者 : updater 	
+	private Integer updater; 
+	//修改时间 : update_time 	
+    private java.util.Date updateTime; 
+    
+    
+    public Integer getUpdater() {
+		return updater;
+	}
+    
+    public void setUpdater(Integer updater) {
+		this.updater = updater;
+	}
+    
+    public void setUpdateTime(java.util.Date updateTime) {
+		this.updateTime = updateTime;
+	}
+    public java.util.Date getUpdateTime() {
+		return updateTime;
+	}
+    
 	/**
 	 * 财务审核表 : id
 	 * 
@@ -311,7 +332,7 @@ public class TdsMoneyApproval implements Serializable{
 		this.billing = billing;
 	}
 	/**
-	 * 进账审核(0未审核  1已审核)   出账审核(2未审核 3已审核)  退款审核(4未审核 5已审核) : approval_status
+	 * 审核(0待审核  1已审核 3驳回  4到账 5线下开票 6 充账 ) 
 	 * 
 	 * @return 
 	 */
@@ -320,7 +341,7 @@ public class TdsMoneyApproval implements Serializable{
 	}
 	
 	/**
-	 * 进账审核(0未审核  1已审核)   出账审核(2未审核 3已审核)  退款审核(4未审核 5已审核) : approval_status
+	 * 审核(0待审核  1已审核 3驳回  4到账 5线下开票 6 充账 ) 
 	 * 
 	 * @return 
 	 */
