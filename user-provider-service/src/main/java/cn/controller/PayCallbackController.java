@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
@@ -13,7 +14,6 @@ import com.alipay.api.response.AlipayTradePrecreateResponse;
 
 import cn.service.TrdOrderService;
 import main.java.cn.common.BackResult;
-import net.sf.json.JSONObject;
 
 @RestController
 @RequestMapping("/payCallback")
@@ -64,7 +64,7 @@ public class PayCallbackController {
 			// model.setAuthCode("xxxxx");//沙箱钱包中的付款码
 			// model.setScene("bar_code");
 
-			request.setBizContent("{" + "    \"out_trade_no\":\"20150320010101016\"," + "    \"total_amount\":\"0.01\","
+			request.setBizContent("{" + "    \"out_trade_no\":\"2015032001010101116\"," + "    \"total_amount\":\"0.01\","
 					+ "    \"subject\":\"Iphone6 16G\"," + "    \"store_id\":\"NJ_001\","
 					+ "    \"timeout_express\":\"90m\"}");// 设置业务参数
 
@@ -75,9 +75,9 @@ public class PayCallbackController {
 			if (response.isSuccess()) {
 				System.out.println(response.getBody());
 				
-				JSONObject json = JSONObject.fromObject(response.getBody());
+				JSONObject json = JSONObject.parseObject(response.getBody());
 				
-				JSONObject json1 = JSONObject.fromObject(json.get("alipay_trade_precreate_response"));
+				JSONObject json1 = JSONObject.parseObject(json.get("alipay_trade_precreate_response").toString());
 				
 				System.out.println(json1.get("code"));
 				System.out.println(json1.get("qr_code"));
