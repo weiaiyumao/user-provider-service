@@ -6,8 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.CreUserAccountService;
@@ -15,6 +17,7 @@ import main.java.cn.common.BackResult;
 import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
+import main.java.cn.domain.page.PageDomain;
 
 @RestController
 @RequestMapping("/userAccount")
@@ -22,13 +25,18 @@ public class UserAccountController {
 	
 	@Autowired
 	private CreUserAccountService creUserAccountService;
+	
+	
+	
+	
+	
 
 	/**
 	 * 查询账户余额
 	 * @param mobile
 	 * @return
 	 */
-	@RequestMapping("/findbyMobile")
+	@RequestMapping(value = "/findbyMobile", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<UserAccountDomain> findbyMobile(HttpServletRequest request, HttpServletResponse response,String mobile) {
 		BackResult<UserAccountDomain> result = creUserAccountService.findByMobile(mobile);
 		return result;
@@ -58,6 +66,22 @@ public class UserAccountController {
 		return result;
 	}
 	
+	
+	/**
+	 * 查询消费记录<分页>
+	 * @param request
+	 * @param response
+	 * @param creUserId
+	 * @param numPerPage
+	 * @param currentPage
+	 * @return
+	 */
+	@RequestMapping("/pageFindTrdOrderByCreUserId")
+	public BackResult<PageDomain<TrdOrderDomain>> pageFindTrdOrderByCreUserId(HttpServletRequest request, HttpServletResponse response,Integer creUserId,Integer pageSize,Integer pageNum){
+		BackResult<PageDomain<TrdOrderDomain>> result = creUserAccountService.pageFindTrdOrderByCreUserId(creUserId, pageSize, pageNum);
+		return result;
+	}
+	
 	/**
 	 * 消费条数
 	 * @param trdOrderDomain
@@ -83,4 +107,6 @@ public class UserAccountController {
 	public static void main(String[] args) {
 		
 	}
+	
+	
 }

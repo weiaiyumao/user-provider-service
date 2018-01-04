@@ -11,18 +11,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.dao.CreUserAccountMapper;
 import cn.dao.CreUserMapper;
 import cn.entity.CreUser;
 import cn.entity.CreUserAccount;
+import cn.redis.RedisClient;
 import cn.service.CreUserService;
 import cn.utils.CommonUtils;
+import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.CreUserDomain;
 import main.java.cn.hhtp.service.SendRequestService;
 import main.java.cn.hhtp.util.MD5Util;
-import net.sf.json.JSONObject;
 
 @Service
 public class CreUserServiceImpl implements CreUserService {
@@ -44,8 +47,8 @@ public class CreUserServiceImpl implements CreUserService {
 	@Value("${activePlatformAccount}")
 	private String activePlatformAccount;
 
-//	@Autowired
-//	private RedisTemplate redisTemplate;
+	@Autowired  
+    protected RedisClient redisClinet;  
 
 	@Override
 	public CreUser findCreUserByUserPhone(String userPhone) {
@@ -115,7 +118,7 @@ public class CreUserServiceImpl implements CreUserService {
 	}
 
 	@Transactional
-	public BackResult<CreUserDomain> findOrsaveUser(CreUserDomain creUserDomain) {
+	public synchronized BackResult<CreUserDomain> findOrsaveUser(CreUserDomain creUserDomain) {
 		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
 
 		try {
@@ -125,52 +128,76 @@ public class CreUserServiceImpl implements CreUserService {
 			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
 
 			if (null != user) {
+				// 修改最后登录时间 和登录ＩＰ
+				user.setLastLoginIp(creUserDomain.getLastLoginIp());
+				user.setLastLoginTime(new Date());
+				this.updateCreUser(user);
 				BeanUtils.copyProperties(user, creUserDomains);
 				result.setResultObj(creUserDomains);
 				return result;
+			} else {
+				// 不存在重新注册
+				String register_key = "USER_IP_" + creUserDomain.getLastLoginIp().replace(".", "");
+				String count  = redisClinet.get(register_key);
+				
+				if (count == null || count.equals("") || count.equals("null")) {
+					count = "0";
+					redisClinet.set(register_key, "1",DateUtils.getMiao());
+				}
+				
+				if (Integer.parseInt(redisClinet.get(register_key)) <= 2) {
+					CreUser creUser = new CreUser();
+
+					BeanUtils.copyProperties(creUserDomain, creUser);
+					creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+					creUser.setLastLoginTime(new Date());
+
+					JSONObject josnObject = new JSONObject();
+					String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+					String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+					josnObject.put("account_name", creUserDomain.getUserPhone());
+					josnObject.put("timestamp", timestamp);
+					josnObject.put("token", tokenValue);
+
+					logger.info("接口请求参数" + josnObject.toString());
+					String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
+							josnObject);
+					logger.info("接口返回结果" + responseStr);
+
+					JSONObject json = JSONObject.parseObject(responseStr);
+
+					if (json.get("status").equals("success")) {
+						JSONObject data = JSONObject.parseObject(json.get("data").toString());
+						creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
+					}
+
+					this.saveCreUser(creUser);
+					creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+					BeanUtils.copyProperties(creUser, creUserDomains);
+					
+					// 赠送5000 条
+					CreUserAccount creUserAccount = new CreUserAccount();
+					creUserAccount.setAccount(5000); // 充值默认送5000
+					creUserAccount.setCreUserId(creUser.getId());
+					creUserAccount.setApiAccount(0); // 默认api账户0条
+					creUserAccount.setVersion(0);
+					creUserAccount.setCreateTime(new Date());
+					creUserAccount.setUpdateTime(new Date());
+					creUserAccount.setDeleteStatus("0");
+					creUserAccountMapper.saveCreUserAccount(creUserAccount);
+					
+					result.setResultObj(creUserDomains);
+					
+					// 同一ＩＰ　次数加　１　
+					int redisCount = Integer.parseInt(count) + 1;
+					redisClinet.set(register_key, String.valueOf(redisCount),DateUtils.getMiao());
+				} else {
+					result.setResultCode(ResultCode.RESULT_REGISTERFAILED);
+					result.setResultMsg("IP地址超过注册限制");
+				}
+				
 			}
 			
-			// 不存在重新注册
-
-			CreUser creUser = new CreUser();
-
-			BeanUtils.copyProperties(creUserDomain, creUser);
-
-			JSONObject josnObject = new JSONObject();
-			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-			String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
-			josnObject.put("account_name", creUserDomain.getUserPhone());
-			josnObject.put("timestamp", timestamp);
-			josnObject.put("token", tokenValue);
-
-			logger.info("接口请求参数" + josnObject.toString());
-			String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
-					josnObject);
-			logger.info("接口返回结果" + responseStr);
-
-			JSONObject json = JSONObject.fromObject(responseStr);
-
-			if (json.get("status").equals("success")) {
-				JSONObject data = JSONObject.fromObject(json.get("data"));
-				creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
-			}
-
-			this.saveCreUser(creUser);
-			creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
-			BeanUtils.copyProperties(creUser, creUserDomains);
-			
-			// 赠送5000 条
-			CreUserAccount creUserAccount = new CreUserAccount();
-			creUserAccount.setAccount(30); // 充值默认送30
-			creUserAccount.setCreUserId(creUser.getId());
-			creUserAccount.setApiAccount(0); // 默认api账户0条
-			creUserAccount.setVersion(0);
-			creUserAccount.setCreateTime(new Date());
-			creUserAccount.setUpdateTime(new Date());
-			creUserAccount.setDeleteStatus("0");
-			creUserAccountMapper.saveCreUserAccount(creUserAccount);
-			
-			result.setResultObj(creUserDomains);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());
@@ -241,6 +268,161 @@ public class CreUserServiceImpl implements CreUserService {
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("系统异常");
 		}
+		return result;
+	}
+
+	@Transactional
+	public BackResult<CreUserDomain> updateCreUser(String userPhone, String email) {
+		CreUser user = this.findCreUserByUserPhone(userPhone);
+
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+		
+		CreUserDomain creuserdomain = new CreUserDomain();
+		
+		try {
+			if (null == user) {
+				result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
+				result.setResultMsg("用户信息不存在");
+				return result;
+			}
+			
+			user.setUserEmail(email);
+			
+			this.updateCreUser(user);
+			
+			BeanUtils.copyProperties(user, creuserdomain);
+			
+			result.setResultObj(creuserdomain);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号：【" + userPhone + "】执行修改操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据修改失败");
+		}
+		
+		return result;
+	}
+
+	@Transactional
+	public BackResult<CreUserDomain> activateUser(CreUserDomain creUserDomain) {
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+
+		try {
+			
+			CreUserDomain creUserDomains = new CreUserDomain();
+
+			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+
+			if (null != user) {
+				BeanUtils.copyProperties(user, creUserDomains);
+				result.setResultObj(creUserDomains);
+				result.setResultMsg("账户已经激活");
+				return result;
+			} else {
+				// 不存在重新注册
+				CreUser creUser = new CreUser();
+
+				BeanUtils.copyProperties(creUserDomain, creUser);
+				creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+				creUser.setLastLoginTime(new Date());
+
+				JSONObject josnObject = new JSONObject();
+				String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+				String tokenValue = MD5Util.getInstance().getMD5Code(timestamp + apiKey);
+				josnObject.put("account_name", creUserDomain.getUserPhone());
+				josnObject.put("timestamp", timestamp);
+				josnObject.put("token", tokenValue);
+
+				logger.info("接口请求参数" + josnObject.toString());
+				String responseStr = SendRequestService.getInstance().sendRequest(apiHost + activePlatformAccount,
+						josnObject);
+				logger.info("接口返回结果" + responseStr);
+
+				JSONObject json = JSONObject.parseObject(responseStr);
+
+				if (json.get("status").equals("success")) {
+					JSONObject data = JSONObject.parseObject(json.get("data").toString());
+					creUser.setClAccountId(Integer.parseInt(data.get("id").toString()));
+				}
+
+				this.saveCreUser(creUser);
+				creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+				BeanUtils.copyProperties(creUser, creUserDomains);
+				
+				// 赠送5000 条
+				CreUserAccount creUserAccount = new CreUserAccount();
+				creUserAccount.setAccount(5000); // 充值默认送5000
+				creUserAccount.setCreUserId(creUser.getId());
+				creUserAccount.setApiAccount(0); // 默认api账户0条
+				creUserAccount.setVersion(0);
+				creUserAccount.setCreateTime(new Date());
+				creUserAccount.setUpdateTime(new Date());
+				creUserAccount.setDeleteStatus("0");
+				creUserAccountMapper.saveCreUserAccount(creUserAccount);
+				
+				result.setResultObj(creUserDomains);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据入库失败");
+		}
+
+		return result;
+	}
+
+	@Override
+	public BackResult<CreUserDomain> activateUserZzt(CreUserDomain creUserDomain) {
+		BackResult<CreUserDomain> result = new BackResult<CreUserDomain>();
+
+		try {
+			
+			CreUserDomain creUserDomains = new CreUserDomain();
+
+			CreUser user = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+
+			if (null != user) {
+				BeanUtils.copyProperties(user, creUserDomains);
+				result.setResultObj(creUserDomains);
+				result.setResultMsg("账户已经激活");
+				return result;
+			} else {
+				// 不存在重新注册
+				CreUser creUser = new CreUser();
+
+				BeanUtils.copyProperties(creUserDomain, creUser);
+				creUser.setLastLoginIp(creUserDomain.getLastLoginIp());
+				creUser.setLastLoginTime(new Date());
+				this.saveCreUser(creUser);
+				creUser = this.findCreUserByUserPhone(creUserDomain.getUserPhone());
+				BeanUtils.copyProperties(creUser, creUserDomains);
+				
+				// 赠送5000 条
+				CreUserAccount creUserAccount = new CreUserAccount();
+				creUserAccount.setAccount(5000); // 充值默认送5000
+				creUserAccount.setCreUserId(creUser.getId());
+				creUserAccount.setApiAccount(0); // 默认api账户0条
+				creUserAccount.setVersion(0);
+				creUserAccount.setCreateTime(new Date());
+				creUserAccount.setUpdateTime(new Date());
+				creUserAccount.setDeleteStatus("0");
+				creUserAccountMapper.saveCreUserAccount(creUserAccount);
+				
+				result.setResultObj(creUserDomains);
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("用户手机号码：【" + creUserDomain.getUserPhone() + "】执行注册操作数据入库异常！" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据入库失败");
+		}
+
 		return result;
 	}
 

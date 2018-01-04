@@ -5,7 +5,7 @@
   <groupId>cn.user.provider.service</groupId>
   <artifactId>user-provider-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>user-provider-service</name>
   <url>http://maven.apache.org</url>
@@ -101,27 +101,29 @@
 			 <version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
-		<dependency>
-		        <groupId>org.springframework.boot</groupId>
-		        <artifactId>spring-boot-starter-tomcat</artifactId>
-		        <scope>provided</scope>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 		        <groupId>org.springframework.boot</groupId> -->
+<!-- 		        <artifactId>spring-boot-starter-tomcat</artifactId> -->
+<!-- 		        <scope>provided</scope> -->
+<!-- 		</dependency> -->
 		
 		<dependency>
 	        <groupId>org.alipay-sdk</groupId>
 	        <artifactId>alipay-sdk</artifactId>
 	        <version>20170829142630</version>
-	        <scope>system</scope> 
-	        <systemPath>${project.basedir}/src/main/resources/lib/alipay-sdk-java20170829142630.jar</systemPath>
+<!-- 	        <scope>system</scope>  -->
+<!-- 	        <systemPath>${project.basedir}/src/main/resources/lib/alipay-sdk-java20170829142630.jar</systemPath> -->
        </dependency>
        
        <dependency>
 	        <groupId>org.alipay-sdk</groupId>
 	        <artifactId>alipay-commons-logging</artifactId>
 	        <version>1.1.1</version>
-	        <scope>system</scope> 
-	        <systemPath>${project.basedir}/src/main/resources/lib/commons-logging-1.1.1.jar</systemPath>
+<!-- 	        <scope>system</scope>  -->
+<!-- 	        <systemPath>${project.basedir}/src/main/resources/lib/commons-logging-1.1.1.jar</systemPath> -->
        </dependency>
+       
+       
 		
     </dependencies>
     <dependencyManagement>
@@ -136,11 +138,11 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <build>
+  <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -148,25 +150,6 @@
 			    	<warName>userService</warName> 
                 </configuration>
             </plugin>
-            <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-dependency-plugin</artifactId>
-			    <version>2.10</version>
-			    <executions>
-			        <execution>
-			            <id>copy-dependencies</id>
-			            <phase>compile</phase>
-			            <goals>
-			                <goal>copy-dependencies</goal>
-			            </goals>
-			            <configuration>
-			                <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/lib</outputDirectory>
-			                <includeScope>system</includeScope>
-			            </configuration>
-			        </execution>
-			    </executions>
-			</plugin>
-            
         </plugins>
     </build>
 </project>

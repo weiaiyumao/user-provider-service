@@ -30,10 +30,8 @@ public class UserController {
 	 * @param mobile
 	 * @return
 	 */
-	@RequestMapping("/findbyMobile")
+	@RequestMapping(value = "/findbyMobile", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<CreUserDomain> findbyMobile(HttpServletRequest request, HttpServletResponse response,String mobile) {
-		
-		
 		BackResult<CreUserDomain> result = creUserService.findbyMobile(mobile);
 		return result;
 	}
@@ -52,10 +50,29 @@ public class UserController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/updateCreUserEmail", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> updateCreUser(HttpServletRequest request, HttpServletResponse response,String userPhone, String email) {
+		
+		BackResult<CreUserDomain> result = creUserService.updateCreUser(userPhone,email);
+		return result;
+	}
+	
 	@RequestMapping(value = "/findById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<CreUserDomain> findById(HttpServletRequest request, HttpServletResponse response,Integer id) {
 		
 		BackResult<CreUserDomain> result = creUserService.findById(id);
+		return result;
+	}
+	
+	@RequestMapping(value = "/activateUser", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> activateUser(@RequestBody CreUserDomain creUserDomain){
+		BackResult<CreUserDomain> result = creUserService.activateUser(creUserDomain);
+		return result;
+	}
+	
+	@RequestMapping(value = "/activateUserZzt", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<CreUserDomain> activateUserZzt(@RequestBody CreUserDomain creUserDomain){
+		BackResult<CreUserDomain> result = creUserService.activateUserZzt(creUserDomain);
 		return result;
 	}
 	

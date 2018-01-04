@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
@@ -32,7 +33,6 @@ import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.hhtp.util.HttpUtil;
 import main.java.cn.hhtp.util.MD5Util;
 import main.java.cn.sms.util.ChuangLanSmsUtil;
-import net.sf.json.JSONObject;
 
 @Service
 public class TrdOrderServiceImpl implements TrdOrderService {
@@ -141,6 +141,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				jsonAccount.put("amount", order.getNumber());
 				jsonAccount.put("bank", "5");
 				jsonAccount.put("pay_mode", "1");
+				jsonAccount.put("pay_date", String.valueOf(order.getPayTime().getTime()).substring(0,10));
 				jsonAccount.put("remark", "手机号：" + user.getUserPhone() + "客户充值成功");
 				jsonAccount.put("sequence", order.getTradeNo());
 				jsonAccount.put("timestamp", timestamp);
@@ -148,11 +149,11 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				logger.info("下单成功,请求参数:" + jsonAccount);
 				String responseStr = HttpUtil.createHttpPost(apiHost + orderUrl, jsonAccount);
 				logger.info("下单成功,请求结果:" + responseStr);
-				JSONObject json = JSONObject.fromObject(responseStr);
+				JSONObject json = JSONObject.parseObject(responseStr);
 				if (json.get("status").equals("success")) {
 					// erp 请求成功 记录erpid
-					JSONObject data = JSONObject.fromObject(json.get("data"));
-					order.setOrderNo("ERPID_" + data.get("id").toString());
+					JSONObject data = JSONObject.parseObject(json.get("data").toString());
+					order.setClOrderNo("ERPID_" + data.get("id").toString());
 					this.updateTrdOrder(order);
 				}
 			} catch (Exception e) {
@@ -253,9 +254,9 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 
 			if (response.isSuccess()) {
 				
-				JSONObject responseBody = JSONObject.fromObject(response.getBody());
+				JSONObject responseBody = JSONObject.parseObject(response.getBody());
 				
-				JSONObject json = JSONObject.fromObject(responseBody.get("alipay_trade_precreate_response"));
+				JSONObject json = JSONObject.parseObject(responseBody.get("alipay_trade_precreate_response").toString());
 				
 				if (json.get("code").equals("10000")) {
 					
