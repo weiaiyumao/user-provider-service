@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsPositionMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsPosition">
+		<result column="id" property="id"></result>
+		<result column="name" property="name"></result>
+		<result column="department_id" property="departmentId"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="sort" property="sort"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,
+		NAME,
+		DEPARTMENT_ID,
+		REMARKS,
+		CREATE_TIME,
+		UPDATE_TIME,
+		CREATER,
+		UPDATER,
+		SORT,
+		IS_DELETED
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_position
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsPosition">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_position
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="name != null">and name = #{name}</if>
+			<if test="departmentId != null">and department_id = #{departmentId}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="sort != null">and sort = #{sort}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsPosition">
+		INSERT INTO tds_position
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null"> name , </if>
+			<if test="departmentId != null"> department_id , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			<if test="sort != null"> sort , </if>
+			is_deleted
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null"> #{name} , </if>
+			<if test="departmentId != null"> #{departmentId} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="sort != null"> #{sort} , </if>
+		    '0'
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_position SET IS_DELETED='1'
+		WHERE id=#{id} 
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsPosition">
+		UPDATE tds_position
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null"> name = #{name}, </if>
+			<if test="departmentId != null"> department_id = #{departmentId}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="sort != null"> sort = #{sort}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	
+	<select id="selectByDeparId" resultMap="BaseResultMap" parameterType="HashMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_position
+        where department_id = #{departmentId}
+		and is_deleted ='0'
+	</select>
+</mapper>

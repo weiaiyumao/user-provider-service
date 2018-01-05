@@ -34,7 +34,7 @@
 <!--     <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" /> -->
 
     <!--myibatis log configure-->
-  	<logger name="com.ibatis" level="DEBUG" />  
+  	<logger name="com.ibatis" level="info" />  
 	<logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />  
 	<logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />  
 	<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />  

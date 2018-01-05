@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsUserRoleMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUserRole">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="role_id" property="roleId"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="status" property="status"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,
+		USER_ID,
+		ROLE_ID,
+		CREATE_TIME,
+		UPDATE_TIME,
+		CREATER,
+		UPDATER,
+		IS_DELETED,
+		status
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_role
+		WHERE
+		ID=#{id}
+		AND IS_DELETED=0
+	</select>
+
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserRole">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_role
+		<where>
+			<if test="id != null"> AND ID=#{id}</if>
+			<if test="userId != null"> AND USER_ID=#{userId}</if>
+			<if test="roleId != null"> AND ROLE_ID=#{roleId}</if>
+			<if test="createTime != null">AND CREATE_TIME=#{createTime}</if>
+			<if test="updateTime != null">AND UPDATE_TIME=#{updateTime}</if>
+			<if test="creater != null">AND CREATER=#{creater}</if>
+			<if test="updater != null">AND UPDATER=#{updater}</if>
+			<if test="updater != null">AND STATUS=#{status}</if>
+			AND IS_DELETED=0
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsUserRole">
+		INSERT INTO tds_user_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> USER_ID , </if>
+			<if test="roleId != null"> ROLE_ID , </if>
+			<if test="createTime != null"> CREATE_TIME , </if>
+			<if test="updateTime != null"> UPDATE_TIME , </if>
+			<if test="creater != null"> CREATER , </if>
+			<if test="updater != null"> UPDATER , </if>
+			IS_DELETED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="roleId != null"> #{roleId} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			'0'
+		</trim>
+	</insert>
+
+	<!-- 逻辑删除 -->
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_user_role SET IS_DELETED='1'
+		WHERE ID=#{id}
+	</update>
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsUserRole">
+		UPDATE tds_user_role
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> USER_ID = #{userId}, </if>
+			<if test="roleId != null"> ROLE_ID = #{roleId}, </if>
+			<if test="createTime != null"> CREATE_TIME = #{createTime}, </if>
+			<if test="updateTime != null"> UPDATE_TIME = #{updateTime}, </if>
+			<if test="creater != null"> CREATER = #{creater}, </if>
+			<if test="updater != null"> UPDATER = #{updater}, </if>
+			<if test="isDeleted != null"> IS_DELETED = #{isDeleted}, </if>
+			<if test="status != null"> STATUS = #{status}, </if>
+		</trim>
+		WHERE ID=#{id}
+	</update>
+
+
+	<update id="upStatusById" parameterType="Hashmap">
+		update tds_user set status=#{status}
+		WHERE ID=#{id} and IS_DELETED='0'
+	</update>
+
+
+	<insert id="saveRoleByUser" parameterType="Hashmap">
+		insert into tds_user_role(user_id,
+		role_id,create_time,creater,is_deleted)
+		values
+		<foreach collection="arr" item="item" index="index" separator=",">
+			(#{item.userId},#{item.roleId},#{item.createTime},#{item.creater},0)
+		</foreach>
+
+	</insert>
+
+
+	<!-- 账号配置列表查询 -->
+	<select id="queryRoleIsStatus" resultType="main.java.cn.domain.page.PageAuto"
+		parameterType="HashMap">
+		select ur.id,u.name,r.role_name as roleName,d.name as
+		departName,u.create_time,
+		u.status,ur.is_deleted from
+		tds_user u,tds_user_role ur,
+		tds_role r,tds_department d,
+		tds_user_department ud
+		where u.id=ur.user_id
+		and ur.role_id=r.id
+		and ud.depart_id=d.id
+		and ud.user_id=u.id
+		and ur.is_deleted='0'
+		<if test="name != null"> and u.name like concat(concat('%',#{name}),'%')</if>
+		order by u.create_time desc
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+	<!-- 账号配置列表查询 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="HashMap">
+		select count(1) from
+		tds_user u,tds_user_role ur,
+		tds_role r,tds_department d,
+		tds_user_department ud
+		where u.id=ur.user_id
+		and ur.role_id=r.id
+		and ud.depart_id=d.id
+		and ud.user_id=u.id
+		and ur.is_deleted='0'
+		<if test="name != null"> and u.name=#{name}</if>
+	</select>
+
+	<delete id="deleteByUserId" parameterType="HashMap">
+		delete from tds_user_role
+		where user_id=#{userId}
+	</delete>
+
+<!-- <resultMap id="BaseResultUserMap" type="cn.entity.tds.TdsUser">
+		<result column="id" property="id"></result>
+		<result column="name" property="name"></result>
+		<result column="contact" property="contact"></result>
+		<result column="phone" property="phone"></result>		
+	</resultMap>
+    -->
+    
+    
+	<!-- 根据角色名称查询用户信息 ... -->
+	<select id="queryUserByRoleName" parameterType="HashMap" resultType="cn.entity.tds.TdsUser">
+		select id,name,contact,phone from tds_user
+		where id in
+		(
+		select user_id from tds_user_role
+		where role_id=
+		(
+		select id from tds_role
+		where role_name=#{roleName}
+		and is_deleted='0'
+		)and is_deleted='0'
+		)and is_deleted='0'
+		<if test="contact != null">and contact like concat(concat('%',#{contact}),'%')</if>
+		LIMIT 10
+	</select>
+
+</mapper>

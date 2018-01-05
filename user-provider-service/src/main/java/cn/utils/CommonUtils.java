@@ -25,5 +25,9 @@ public class CommonUtils {
 	public static void main(String[] args) {
 		System.out.println(CommonUtils.isNotEmpty(null));
 		System.out.println(CommonUtils.isNotString("null"));
+		System.out.println(CommonUtils.isNotString(""));
 	}
+	
+	
+
 }

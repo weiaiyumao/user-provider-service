@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsEnumMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsEnum">
+		<result column="id" property="id"></result>
+		<result column="sl_name" property="slName"></result>
+		<result column="type_code" property="typeCode"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="remarks" property="remarks"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		sl_name,
+		type_code,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		is_deleted,
+		remarks
+	</sql>
+
+	<select id="queryByTypeCode" parameterType="HashMap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_enum
+		WHERE
+		type_code like concat(concat('%',#{codeName}),'%')
+		and is_deleted='0'
+	</select>
+
+</mapper>

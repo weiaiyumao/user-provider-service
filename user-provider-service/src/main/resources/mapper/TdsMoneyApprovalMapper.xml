@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsMoneyApprovalMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsMoneyApproval">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="serial_number" property="serialNumber"></result>
+		<result column="order_number" property="orderNumber"></result>
+		<result column="user_name" property="userName"></result>
+		<result column="pname" property="pname"></result>
+		<result column="number" property="number"></result>
+		<result column="money" property="money"></result>
+		<result column="sum_money" property="sumMoney"></result>
+		<result column="payment" property="payment"></result>
+		<result column="bank_id" property="bankId"></result>
+		<result column="create_tiem" property="createTiem"></result>
+		<result column="arrive_time" property="arriveTime"></result>
+		<result column="billing" property="billing"></result>
+		<result column="approval_status" property="approvalStatus"></result>
+		<result column="approval_type" property="approvalType"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="remarks" property="remarks"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		serial_number,
+		order_number,
+		user_name,
+		pname,
+		number,
+		money,
+		sum_money,
+		payment,
+		bank_id,
+		create_tiem,
+		arrive_time,
+		billing,
+		approval_status,
+		approval_type,
+		is_deleted,
+		remarks
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_money_approval
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap"
+		parameterType="cn.entity.tds.TdsMoneyApproval">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_money_approval
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="serialNumber != null">and serial_number = #{serialNumber}</if>
+			<if test="orderNumber != null">and order_number = #{orderNumber}</if>
+			<if test="userName != null">and user_name = #{userName}</if>
+			<if test="pname != null">and pname = #{pname}</if>
+			<if test="number != null">and number = #{number}</if>
+			<if test="money != null">and money = #{money}</if>
+			<if test="sumMoney != null">and sum_money = #{sumMoney}</if>
+			<if test="payment != null">and payment = #{payment}</if>
+			<if test="bankId != null">and bank_id = #{bankId}</if>
+			<if test="createTiem != null">and create_tiem = #{createTiem}</if>
+			<if test="arriveTime != null">and arrive_time = #{arriveTime}</if>
+			<if test="billing != null">and billing = #{billing}</if>
+			<if test="approvalStatus != null">and approval_status = #{approvalStatus}</if>
+			<if test="approvalType != null">and approval_type = #{approvalType}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			and is_deleted = '0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsMoneyApproval">
+		INSERT INTO tds_money_approval
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="serialNumber != null"> serial_number , </if>
+			<if test="orderNumber != null"> order_number , </if>
+			<if test="userName != null"> user_name , </if>
+			<if test="pname != null"> pname , </if>
+			<if test="number != null"> number , </if>
+			<if test="money != null"> money , </if>
+			<if test="sumMoney != null"> sum_money , </if>
+			<if test="payment != null"> payment , </if>
+			<if test="bankId != null"> bank_id , </if>
+			<if test="createTiem != null"> create_tiem , </if>
+			<if test="arriveTime != null"> arrive_time , </if>
+			<if test="billing != null"> billing , </if>
+			<if test="approvalStatus != null"> approval_status , </if>
+			<if test="approvalType != null"> approval_type , </if>
+			<if test="remarks != null"> remarks , </if>
+			 is_deleted , 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="serialNumber != null"> #{serialNumber} , </if>
+			<if test="orderNumber != null"> #{orderNumber} , </if>
+			<if test="userName != null"> #{userName} , </if>
+			<if test="pname != null"> #{pname} , </if>
+			<if test="number != null"> #{number} , </if>
+			<if test="money != null"> #{money} , </if>
+			<if test="sumMoney != null"> #{sumMoney} , </if>
+			<if test="payment != null"> #{payment} , </if>
+			<if test="bankId != null"> #{bankId} , </if>
+			<if test="createTiem != null"> #{createTiem} , </if>
+			<if test="arriveTime != null"> #{arriveTime} , </if>
+			<if test="billing != null"> #{billing} , </if>
+			<if test="approvalStatus != null"> #{approvalStatus} , </if>
+			<if test="approvalType != null"> #{approvalType} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			'0', 
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_money_approval SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsMoneyApproval">
+		UPDATE tds_money_approval
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="serialNumber != null"> serial_number = #{serialNumber}, </if>
+			<if test="orderNumber != null"> order_number = #{orderNumber}, </if>
+			<if test="userName != null"> user_name = #{userName}, </if>
+			<if test="pname != null"> pname = #{pname}, </if>
+			<if test="number != null"> number = #{number}, </if>
+			<if test="money != null"> money = #{money}, </if>
+			<if test="sumMoney != null"> sum_money = #{sumMoney}, </if>
+			<if test="payment != null"> payment = #{payment}, </if>
+			<if test="bankId != null"> bank_id = #{bankId}, </if>
+			<if test="createTiem != null"> create_tiem = #{createTiem}, </if>
+			<if test="arriveTime != null"> arrive_time = #{arriveTime}, </if>
+			<if test="billing != null"> billing = #{billing}, </if>
+			<if test="approvalStatus != null"> approval_status = #{approvalStatus}, </if>
+			<if test="approvalType != null"> approval_type = #{approvalType}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+</mapper>

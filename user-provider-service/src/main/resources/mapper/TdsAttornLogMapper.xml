@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsAttornLogMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsAttornLog">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="att_remarks" property="attRemarks"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="spare1" property="spare1"></result>
+		<result column="attorn_user_id" property="attornUserId"></result>
+		<result column="attorn_user_name" property="attornUserName"></result>
+		<result column="creater" property="creater"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		att_remarks,
+		is_deleted,
+		create_time,
+		spare1,
+		attorn_user_id,
+		attorn_user_name,
+		creater
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_attorn_log
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsAttornLog">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_attorn_log
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="attRemarks != null">and att_remarks = #{attRemarks}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="spare1 != null">and spare1 = #{spare1}</if>
+			<if test="attornUserId != null">and attorn_user_id = #{attornUserId}</if>
+			<if test="attornUserName != null">and attorn_user_name = #{attornUserName}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+		  and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsAttornLog">
+		INSERT INTO tds_attorn_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="attRemarks != null"> att_remarks , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="spare1 != null"> spare1 , </if>
+			<if test="attornUserId != null"> attorn_user_id , </if>
+			<if test="attornUserName != null"> attorn_user_name , </if>
+			<if test="creater != null"> creater , </if>
+			is_deleted, 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="attRemarks != null"> #{attRemarks} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="spare1 != null"> #{spare1} , </if>
+			<if test="attornUserId != null"> #{attornUserId} , </if>
+			<if test="attornUserName != null"> #{attornUserName} , </if>
+			<if test="creater != null"> #{creater} , </if>
+		  '0', 
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_attorn_log SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsAttornLog">
+		UPDATE tds_attorn_log
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="attRemarks != null"> att_remarks = #{attRemarks}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="spare1 != null"> spare1 = #{spare1}, </if>
+			<if test="attornUserId != null"> attorn_user_id = #{attornUserId}, </if>
+			<if test="attornUserName != null"> attorn_user_name = #{attornUserName}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	<!-- parent_id=2 为父级部门类 -->
+	<select id="pageTdsCustomer" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsCustomerView">
+		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		departName,u.contact,u.phone,u.create_time,
+		u.source,com.com_url as
+		comUrl,u.is_deleted
+		from tds_user u,
+		tds_user_department
+		ud,tds_department d,
+		tds_company com
+		where u.id=ud.user_id and
+		d.id=ud.depart_id and com.id=u.com_id
+		and d.parent_id=2
+		and u.is_deleted ='0' 
+	</select>
+	
+	
+	
+</mapper>

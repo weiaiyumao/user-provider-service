@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsCommissionMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsCommission">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="serial_number" property="serialNumber"></result>
+		<result column="order_number" property="orderNumber"></result>
+		<result column="serial_money" property="serialMoney"></result>
+		<result column="before_money" property="beforeMoney"></result>
+		<result column="comm_status" property="commStatus"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="updater" property="updater"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		serial_number,
+		order_number,
+		serial_money,
+		before_money,
+		comm_status,
+		is_deleted,
+		create_time,
+		creater,
+		update_time,
+		updater
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_commission
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsCommission">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_commission
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="serialNumber != null">and serial_number = #{serialNumber}</if>
+			<if test="orderNumber != null">and order_number = #{orderNumber}</if>
+			<if test="serialMoney != null">and serial_money = #{serialMoney}</if>
+			<if test="beforeMoney != null">and before_money = #{beforeMoney}</if>
+			<if test="commStatus != null">and comm_status = #{commStatus}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsCommission">
+		INSERT INTO tds_commission
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="serialNumber != null"> serial_number , </if>
+			<if test="orderNumber != null"> order_number , </if>
+			<if test="serialMoney != null"> serial_money , </if>
+			<if test="beforeMoney != null"> before_money , </if>
+			<if test="commStatus != null"> comm_status , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="updater != null"> updater , </if>
+			is_deleted , 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="serialNumber != null"> #{serialNumber} , </if>
+			<if test="orderNumber != null"> #{orderNumber} , </if>
+			<if test="serialMoney != null"> #{serialMoney} , </if>
+			<if test="beforeMoney != null"> #{beforeMoney} , </if>
+			<if test="commStatus != null"> #{commStatus} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			'0' ,
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_commission SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsCommission">
+		UPDATE tds_commission
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="serialNumber != null"> serial_number = #{serialNumber}, </if>
+			<if test="orderNumber != null"> order_number = #{orderNumber}, </if>
+			<if test="serialMoney != null"> serial_money = #{serialMoney}, </if>
+			<if test="beforeMoney != null"> before_money = #{beforeMoney}, </if>
+			<if test="commStatus != null"> comm_status = #{commStatus}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+</mapper>
