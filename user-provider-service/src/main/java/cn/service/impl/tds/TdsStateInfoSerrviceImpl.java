@@ -173,13 +173,15 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 
 	
 	
+	/**
+	 * 获取enum表对象
+	 */
 	@Override
 	public BackResult<List<TdsEnumDomain>> queryByTypeCode(String codeName) {
 		
 		BackResult<List<TdsEnumDomain>> result=new BackResult<List<TdsEnumDomain>>();
 		List<TdsEnumDomain>  listDomain=new ArrayList<TdsEnumDomain>();
 		try {
-			//获取价格管理项目列表
 			List<TdsEnum> list=tdsEnumMapper.queryByTypeCode(codeName);
 			if(list.size()>0 && list!=null){
 				TdsEnumDomain tdsDomain=null;

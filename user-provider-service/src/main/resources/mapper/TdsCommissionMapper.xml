@@ -78,7 +78,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updateTime != null"> update_time , </if>
 			<if test="updater != null"> updater , </if>
-			is_deleted , 
+			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null"> #{userId} , </if>
@@ -98,7 +98,8 @@
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_commission SET IS_DELETED='1'
+		UPDATE tds_commission SET
+		IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -113,12 +114,39 @@
 			<if test="serialMoney != null"> serial_money = #{serialMoney}, </if>
 			<if test="beforeMoney != null"> before_money = #{beforeMoney}, </if>
 			<if test="commStatus != null"> comm_status = #{commStatus}, </if>
-			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 			<if test="createTime != null"> create_time = #{createTime}, </if>
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updateTime != null"> update_time = #{updateTime}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 		</trim>
-		WHERE id=#{id}
+		WHERE id=#{id} and is_deleted='0'
 	</update>
+
+
+
+	<select id="pageTdsCommission" parameterType="HashMap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_commission
+		<where>
+			<if test="commStatus != null and commStatus!=''">AND comm_status = #{commStatus}</if>
+			<if test="statTime != null and statTime!=''">AND create_time &gt;= #{statTime}</if>
+			<if test="endTime != null and endTime!=''">AND create_time &lt;= #{endTime}</if>
+			AND is_deleted ='0' order by create_time desc
+		</where>
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT count(1) FROM tds_commission
+		<where>
+			<if test="commStatus != null and commStatus != '' ">AND comm_status = #{commStatus}</if>
+			<if test="statTime != null and statTime!= '' ">AND create_time &gt;= #{statTime}</if>
+			<if test="endTime != null and endTime!= '' ">AND create_time &lt;= #{endTime}</if>
+			AND is_deleted ='0'
+		</where>
+	</select>
+
 </mapper>

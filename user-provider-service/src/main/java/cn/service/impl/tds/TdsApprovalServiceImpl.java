@@ -50,7 +50,7 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 
 			// // TODO
 			// // yyyy-mm-dd 天数加1
-			if (null != auto.getStatTime() || "".equals(auto.getStatTime())) {
+			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间
 				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间

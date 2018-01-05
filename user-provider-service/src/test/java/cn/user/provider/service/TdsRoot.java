@@ -18,6 +18,7 @@ import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsAccountBankService;
 import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsFunctionService;
+import cn.service.tds.TdsMoneyApprovalService;
 import cn.service.tds.TdsStateInfoSerrvice;
 import cn.service.tds.TdsUserRoleService;
 import cn.service.tds.TdsUserService;
@@ -26,6 +27,7 @@ import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAccountBankDomain;
 import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
+import main.java.cn.domain.tds.TdsMoneyApprovalDomain;
 import main.java.cn.domain.tds.TdsStateInfoDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
@@ -60,11 +62,13 @@ public class TdsRoot {
 	  @Autowired
 	  private TdsAccountBankService tdsAccountBankService;
 	  
+	  @Autowired
+	  private TdsMoneyApprovalService tdsMoneyApprovalService;
 	  
 	  @Test
 	  public void test1(){
-		  int hashCodev = UUID.randomUUID().toString().hashCode();  
-	       System.out.println(UUID.randomUUID().toString());  
+		  TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
+		  tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
 		
 	  }
 	  

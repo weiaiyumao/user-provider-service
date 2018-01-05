@@ -17,7 +17,7 @@
 		<result column="sum_money" property="sumMoney"></result>
 		<result column="payment" property="payment"></result>
 		<result column="bank_id" property="bankId"></result>
-		<result column="create_tiem" property="createTiem"></result>
+		<result column="create_tiem" property="createTime"></result>
 		<result column="arrive_time" property="arriveTime"></result>
 		<result column="billing" property="billing"></result>
 		<result column="approval_status" property="approvalStatus"></result>
@@ -40,7 +40,7 @@
 		sum_money,
 		payment,
 		bank_id,
-		create_tiem,
+		create_time,
 		arrive_time,
 		billing,
 		approval_status,
@@ -78,7 +78,7 @@
 			<if test="sumMoney != null">and sum_money = #{sumMoney}</if>
 			<if test="payment != null">and payment = #{payment}</if>
 			<if test="bankId != null">and bank_id = #{bankId}</if>
-			<if test="createTiem != null">and create_tiem = #{createTiem}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
 			<if test="arriveTime != null">and arrive_time = #{arriveTime}</if>
 			<if test="billing != null">and billing = #{billing}</if>
 			<if test="approvalStatus != null">and approval_status = #{approvalStatus}</if>
@@ -103,7 +103,7 @@
 			<if test="sumMoney != null"> sum_money , </if>
 			<if test="payment != null"> payment , </if>
 			<if test="bankId != null"> bank_id , </if>
-			<if test="createTiem != null"> create_tiem , </if>
+			<if test="createTime != null"> create_time , </if>
 			<if test="arriveTime != null"> arrive_time , </if>
 			<if test="billing != null"> billing , </if>
 			<if test="approvalStatus != null"> approval_status , </if>
@@ -111,7 +111,7 @@
 			<if test="remarks != null"> remarks , </if>
 			<if test="updateTime != null"> update_time , </if>
 			<if test="updater != null"> updater , </if>
-			 is_deleted , 
+			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null"> #{userId} , </if>
@@ -124,22 +124,23 @@
 			<if test="sumMoney != null"> #{sumMoney} , </if>
 			<if test="payment != null"> #{payment} , </if>
 			<if test="bankId != null"> #{bankId} , </if>
-			<if test="createTiem != null"> #{createTiem} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
 			<if test="arriveTime != null"> #{arriveTime} , </if>
 			<if test="billing != null"> #{billing} , </if>
 			<if test="approvalStatus != null"> #{approvalStatus} , </if>
 			<if test="approvalType != null"> #{approvalType} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
-			<if test="creater != null"> #{creater} , </if>
-			'0', 
+			<if test="updater != null"> #{updater} , </if>
+			'0',
 		</trim>
 
 	</insert>
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_money_approval SET IS_DELETED='1'
+		UPDATE tds_money_approval
+		SET IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -158,8 +159,7 @@
 			<if test="sumMoney != null"> sum_money = #{sumMoney}, </if>
 			<if test="payment != null"> payment = #{payment}, </if>
 			<if test="bankId != null"> bank_id = #{bankId}, </if>
-			<if test="createTiem != null"> create_tiem = #{createTiem}, </if>
-			<if test="arriveTime != null"> arrive_time = #{arriveTime}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
 			<if test="billing != null"> billing = #{billing}, </if>
 			<if test="approvalStatus != null"> approval_status = #{approvalStatus}, </if>
 			<if test="approvalType != null"> approval_type = #{approvalType}, </if>
@@ -168,16 +168,57 @@
 			<if test="updateTime != null"> update_time = #{updateTime}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 		</trim>
-		WHERE id=#{id}
+		WHERE id=#{id} and is_deleted='0'
 	</update>
-	
-	
-	<update id="approvalByUpStatus" parameterType="cn.entity.tds.TdsMoneyApproval">
-		UPDATE tds_money_approval  
-		SET approval_status=#{approvalStatus}, update_time = #{updateTime},updater = #{updater}
-		WHERE id=#{id}
-		AND order_number=#{orderNumber}
-		AND approval_type=#{approvalType}
-		AND is_deleted='0' 
-	</update>
+
+
+	<select id="pageMoneyApprovalAll" parameterType="HashMap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_money_approval
+		<where>
+			<if test="approvalType != null">AND approval_type = #{approvalType}</if>
+			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+			<if test="startOrderTime != null">AND create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null">AND create_time &lt;= #{endOrderTime}</if>
+			<if test="startArrivTime != null">AND arrive_time &gt;= #{startArrivTime}</if>
+			<if test="endArrivTime != null">AND arrive_time &lt;= #{endArrivTime}</if>
+			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND bank_id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=null">
+				AND user_name like concat(concat('%',#{likeName}),'%')
+				or pname like concat(concat('%',#{likeName}),'%')
+				or bank_id like concat(concat('%',#{likeName}),'%')
+			</if> 
+			AND is_deleted ='0' order by create_time desc
+		</where>
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Hashmap">
+		select count(1) from tds_money_approval
+		<where>
+		   <if test="approvalType != null">AND approval_type = #{approvalType}</if>
+			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+			<if test="startOrderTime != null">AND create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null">AND create_time &lt;= #{endOrderTime}</if>
+			<if test="startArrivTime != null">AND arrive_time &gt;= #{startArrivTime}</if>
+			<if test="endArrivTime != null">AND arrive_time &lt;= #{endArrivTime}</if>
+		    <if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND bank_id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=null">
+				AND user_name like concat(concat('%',#{likeName}),'%')
+				or pname like concat(concat('%',#{likeName}),'%')
+				or bank_id like concat(concat('%',#{likeName}),'%')
+			</if> 
+			AND is_deleted ='0'
+		</where>
+	</select>
+
 </mapper>

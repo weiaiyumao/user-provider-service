@@ -1,5 +1,7 @@
 package cn.dao.tds;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.entity.tds.TdsMoneyApproval;
@@ -16,14 +18,19 @@ public interface TdsMoneyApprovalMapper extends IBaseDao<TdsMoneyApproval, Integ
 	
 	
 	/**
-	 * 审核操作
-	 * @param id  列表id
-	 * @param orderNumber  订单号
-	 * @param approvalType  审核类型 ，入进账审核为1  出账为2 退款3
-	 * @param approvalStatus  审核操作 0待审核  1已审核 3驳回  4到账 5线下开票 6 充账
+	 * 进账 出账 退款 分页 条件查询
+	 * @param entity
 	 * @return
 	 */
-	Integer approvalByUpStatus(TdsMoneyApproval entity);
+	List<TdsMoneyApproval> pageMoneyApprovalAll(TdsMoneyApproval entity);
 	
-  
+	/**
+	 * 获取总数
+	 * @param entity
+	 * @param selected
+	 * @return
+	 */
+	Integer queryCount(TdsMoneyApproval entity);
+	
+	
 }

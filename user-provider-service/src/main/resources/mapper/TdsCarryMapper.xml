@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsCarryMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsCarry">
+		<result column="id" property="id"></result>
+		<result column="carry_serial" property="carrySerial"></result>
+		<result column="carry_order" property="carryOrder"></result>
+		<result column="bank_id" property="bankId"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="carr_money" property="carrMoney"></result>
+		<result column="bef_money" property="befMoney"></result>
+		<result column="carr_status" property="carrStatus"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="remarks" property="remarks"></result>
+		<result column="uid" property="uid"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		carry_serial,
+		carry_order,
+		bank_id,
+		is_deleted,
+		carr_money,
+		bef_money,
+		carr_status,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		remarks,
+		uid
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_carry
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsCarry">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_carry
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="carrySerial != null">and carry_serial = #{carrySerial}</if>
+			<if test="carryOrder != null">and carry_order = #{carryOrder}</if>
+			<if test="bankId != null">and bank_id = #{bankId}</if>
+			<if test="carrMoney != null">and carr_money = #{carrMoney}</if>
+			<if test="befMoney != null">and bef_money = #{befMoney}</if>
+			<if test="carrStatus != null">and carr_status = #{carrStatus}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="uid != null">and uid = #{uid}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsCarry">
+		INSERT INTO tds_carry
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="carrySerial != null"> carry_serial , </if>
+			<if test="carryOrder != null"> carry_order , </if>
+			<if test="bankId != null"> bank_id , </if>
+			<if test="carrMoney != null"> carr_money , </if>
+			<if test="befMoney != null"> bef_money , </if>
+			<if test="carrStatus != null"> carr_status , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			<if test="remarks != null"> remarks , </if>
+			<if test="uid != null"> uid , </if>
+			is_deleted ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="carrySerial != null"> #{carrySerial} , </if>
+			<if test="carryOrder != null"> #{carryOrder} , </if>
+			<if test="bankId != null"> #{bankId} , </if>
+			<if test="carrMoney != null"> #{carrMoney} , </if>
+			<if test="befMoney != null"> #{befMoney} , </if>
+			<if test="carrStatus != null"> #{carrStatus} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+			<if test="uid != null"> #{uid} , </if>
+			'0', 
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_carry SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsCarry">
+		UPDATE tds_carry
+		<trim prefix="set" suffixOverrides=",">
+			<if test="carrySerial != null"> carry_serial = #{carrySerial}, </if>
+			<if test="carryOrder != null"> carry_order = #{carryOrder}, </if>
+			<if test="bankId != null"> bank_id = #{bankId}, </if>
+			<if test="carrMoney != null"> carr_money = #{carrMoney}, </if>
+			<if test="befMoney != null"> bef_money = #{befMoney}, </if>
+			<if test="carrStatus != null"> carr_status = #{carrStatus}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="uid != null"> uid = #{uid}, </if>
+		</trim>
+		WHERE id=#{id} and is_deleted='0'
+	</update>
+</mapper>
