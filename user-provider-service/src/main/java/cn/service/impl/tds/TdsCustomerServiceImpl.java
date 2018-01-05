@@ -28,6 +28,7 @@ import cn.entity.tds.TdsUserDiscount;
 import cn.entity.tds.TdsUserRole;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsCustomerService;
+import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -150,6 +151,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		PageDomain<TdsCustomerViewDomain> pageListDomain = null;
 		List<TdsCustomerViewDomain> listDomain = new ArrayList<TdsCustomerViewDomain>();
 		try {
+			BeanHelper.beanHelperTrim(auto);  //去掉空格
 			if (null != auto.getCreateTime() || "".equals(auto.getCreateTime())) {
 				Date endTime = DateUtils.addDay(auto.getCreateTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间

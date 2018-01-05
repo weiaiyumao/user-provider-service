@@ -21,6 +21,7 @@ import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsSerualInfo;
 import cn.service.tds.TdsMoneyApprovalService;
+import cn.utils.BeanHelper;
 import cn.utils.OrderNo;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -60,7 +61,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		// 流水
 		String serial = OrderNo.getSerial16();
 
-		Integer yonjing = 0; // 佣金
+		//Integer yonjing = 0; // 佣金
 
 		TransactionStatus status = this.begin();
 		try {
@@ -196,6 +197,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		PageDomain<TdsMoneyApprovalDomain> pageListDomain = null;
 		List<TdsMoneyApprovalDomain> listDomain = new ArrayList<TdsMoneyApprovalDomain>();
 		try {
+			BeanHelper.beanHelperTrim(domain);  //去掉空格
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsMoneyApproval tdsMoApp=new TdsMoneyApproval();
@@ -243,6 +245,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		PageDomain<TdsSerualInfoDomain> pageListDomain = null;
 		List<TdsSerualInfoDomain> listDomain = new ArrayList<TdsSerualInfoDomain>();
 		try {
+			BeanHelper.beanHelperTrim(domain);  //去掉空格
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsSerualInfo tdsSerual=new TdsSerualInfo();
@@ -281,6 +284,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		PageDomain<TdsCommissionDomain> pageListDomain = null;
 		List<TdsCommissionDomain> listDomain = new ArrayList<TdsCommissionDomain>();
 		try {
+			BeanHelper.beanHelperTrim(domain);  //去掉空格
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsCommission tdsComm=new TdsCommission();

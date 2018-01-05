@@ -18,6 +18,7 @@ import cn.entity.tds.TdsEnum;
 import cn.entity.tds.TdsProductMoney;
 import cn.entity.tds.TdsStateInfo;
 import cn.service.tds.TdsStateInfoSerrvice;
+import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -85,6 +86,7 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		try {
 			// TODO
 			// yyyy-mm-dd 天数加1
+			BeanHelper.beanHelperTrim(auto);  //去掉空格
 			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
