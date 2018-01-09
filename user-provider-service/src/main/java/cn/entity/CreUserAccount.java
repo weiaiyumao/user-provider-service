@@ -19,6 +19,8 @@ public class CreUserAccount implements Serializable{
 	private Integer account;
 	
 	private Integer apiAccount;
+
+	private Integer rqAccount;
 	
 	private String deleteStatus;
 	
@@ -91,6 +93,12 @@ public class CreUserAccount implements Serializable{
 	public void setApiAccount(Integer apiAccount) {
 		this.apiAccount = apiAccount;
 	}
-	
-	
+
+	public Integer getRqAccount() {
+		return rqAccount;
+	}
+
+	public void setRqAccount(Integer rqAccount) {
+		this.rqAccount = rqAccount;
+	}
 }

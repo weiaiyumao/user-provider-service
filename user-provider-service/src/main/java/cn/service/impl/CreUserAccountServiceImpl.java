@@ -86,6 +86,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			accountDomian.setAccount(account.getAccount());
 			accountDomian.setCreUserId(user.get(0).getId());
 			accountDomian.setApiAccount(account.getApiAccount());
+			accountDomian.setRqAccount(account.getRqAccount());
 			result.setResultObj(accountDomian);
 		} catch (Exception e) {
 			logger.error("用户手机号：【" + mobile + "】执行获取账户信息发生系统异常：" + e.getMessage());
@@ -410,8 +411,48 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			account.setUpdateTime(new Date());
 			creUserAccountMapper.updateCreUserAccount(account);
 			result.setResultObj(Boolean.TRUE);
-			logger.info("用户id" + creUserId + "进行账户2次清洗本次成功消费：" + count + "条，剩余："
+			logger.info("用户id" + creUserId + "进行空号API本次成功消费：" + count + "条，剩余："
 					+ (account.getApiAccount() - Integer.valueOf(count)) + "条");
+		} catch (Exception e) {
+			logger.error("用户ID：【" + creUserId + "】查询修改账户信息系统异常：" + e.getMessage());
+			e.printStackTrace();
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据落地异常");
+		}
+
+		return result;
+	}
+
+	@Override
+	public BackResult<Boolean> consumeRqApiAccount(String creUserId, String count) {
+
+		BackResult<Boolean> result = new BackResult<Boolean>();
+
+		CreUserAccount account = this.findCreUserAccountByUserId(Integer.valueOf(creUserId));
+
+		try {
+			if (null == account) {
+				logger.error("用户ID：【" + creUserId + "】，不存在账户记录，数据落地异常");
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultObj(Boolean.FALSE);
+				result.setResultMsg("账户二次清洗API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				return result;
+			}
+
+			if (Integer.valueOf(count) > account.getRqAccount()) {
+				logger.error("用户ID：【" + creUserId + "】，当前用户余额条数不够本次消费");
+				result.setResultObj(Boolean.FALSE);
+				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+				result.setResultMsg("账户二次清洗商户信息剩余可消费条数为：" + account.getAccount() + "本次执行消费：" + count + "无法执行消费，请充值！");
+				return result;
+			}
+
+			account.setRqAccount(account.getRqAccount() - Integer.valueOf(count));
+			account.setUpdateTime(new Date());
+			creUserAccountMapper.updateCreUserAccount(account);
+			result.setResultObj(Boolean.TRUE);
+			logger.info("用户id" + creUserId + "进行账户2次清洗本次成功消费：" + count + "条，剩余："
+					+ (account.getRqAccount() - Integer.valueOf(count)) + "条");
 		} catch (Exception e) {
 			logger.error("用户ID：【" + creUserId + "】查询修改账户信息系统异常：" + e.getMessage());
 			e.printStackTrace();
@@ -443,7 +484,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			if (totalNumber == 0) {
 				result.setResultMsg("该用户没有订单信息");
 				result.setResultObj(listDomain);
-				
+
 			} else {
 				List<TrdOrder> orderList = trdOrderMapper.pageFindTrdOrderByCreUserId(map);
 				for (TrdOrder trdOrder : orderList) {
@@ -455,7 +496,7 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			   if ((totalNumber%pageSize)!=0) {
 				   totalPages++;
 			    }
-			    
+
 				listDomain.setTotalPages(totalPages);
 				listDomain.setCurrentPage(pageNum);
 				listDomain.setNumPerPage(pageSize);
