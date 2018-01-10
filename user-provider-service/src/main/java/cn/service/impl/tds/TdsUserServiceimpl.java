@@ -186,7 +186,14 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			isUser.setLoginIp(tdsUserDomain.getLoginIp());
 			tdsUserMapper.update(isUser);
 			BeanUtils.copyProperties(isUser, tdsUserDomain);
-			result.setResultObj(tdsUserDomain);
+			//登录结果返回基本信息
+			TdsUserDomain user=new TdsUserDomain(); 
+			user.setId(tdsUserDomain.getId());
+			user.setUserName(tdsUserDomain.getUserName());
+			user.setName(tdsUserDomain.getName());
+			user.setPhone(tdsUserDomain.getPhone());
+			user.setHedehref(tdsUserDomain.getHedehref());
+			result.setResultObj(user);
 
 		} catch (BeansException e) {
 			e.printStackTrace();

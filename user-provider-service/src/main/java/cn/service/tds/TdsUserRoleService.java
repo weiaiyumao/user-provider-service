@@ -3,12 +3,12 @@ package cn.service.tds;
 
 
 import java.util.List;
+import java.util.Map;
 
 import cn.entity.tds.TdsUserRole;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
-import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.service.tds.TdsUserRoleBusService;
 
 /**
@@ -47,6 +47,6 @@ public interface TdsUserRoleService extends  TdsUserRoleBusService{
 	 * @param roleId
 	 * @return
 	 */
-	BackResult<List<TdsUserDomain>> queryUserByRoleName(String roleName,String contact);
+	BackResult<List<Map<String,String>>> queryUserByRoleName(String contact);
   
 }

@@ -32,7 +32,6 @@ import cn.entity.tds.TdsUserDepartment;
 import cn.entity.tds.TdsUserRole;
 import cn.entity.tds.view.UserRoleDepartmentView;
 import cn.service.tds.TdsDepartmentService;
-import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -111,8 +110,6 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 			// // TODO
 		    // yyyy-mm-dd 天数加1
-			BeanHelper.beanHelperTrim(auto);  //去掉空格
-			
 			if (null != auto.getStatTime() && !auto.getStatTime().equals("")) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间

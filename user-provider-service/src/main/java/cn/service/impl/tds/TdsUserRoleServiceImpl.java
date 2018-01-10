@@ -4,6 +4,7 @@ package cn.service.impl.tds;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.tds.TdsUserMapper;
 import cn.dao.tds.TdsUserRoleMapper;
-import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
-import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
-import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
 
@@ -33,6 +32,9 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 	
 	@Autowired
 	private TdsUserRoleMapper tdsUserRoleMapper;
+	
+	@Autowired
+	private TdsUserMapper tdsUserMapper;
 	
 	@Override
 	public BackResult<TdsUserRole> loadById(Integer id) {
@@ -189,21 +191,11 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 	}
 
 	@Override
-	public BackResult<List<TdsUserDomain>> queryUserByRoleName(String roleName,String contact) {
-		BackResult<List<TdsUserDomain>> result=new BackResult<List<TdsUserDomain>>();
+	public BackResult<List<Map<String,String>>> queryUserByRoleName(String contact) {
+		BackResult<List<Map<String,String>>> result=new BackResult<List<Map<String,String>>>();
 		try {
-			List<TdsUserDomain> listDomain = new ArrayList<TdsUserDomain>();
-			List<TdsUser> list=tdsUserRoleMapper.queryUserByRoleName(roleName, contact);
-			if (CommonUtils.isNotEmpty(list)) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有信息");
-			}
-			TdsUserDomain tdsDomain = null;
-			for (TdsUser obj : list) {
-				tdsDomain = new TdsUserDomain();
-				BeanUtils.copyProperties(obj, tdsDomain);
-				listDomain.add(tdsDomain);
-			}
-			result.setResultObj(listDomain);
+			List<Map<String,String>> list=tdsUserMapper.queryUserByRoleName(contact);
+			result.setResultObj(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("系统异常：" + e.getMessage());

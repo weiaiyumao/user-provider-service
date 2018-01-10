@@ -1,6 +1,8 @@
 package cn.controller.tds;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsModularService;
+import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.BasePageParam;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsModularDomain;
 
 @RestController
@@ -38,9 +43,11 @@ public class TdsModularController {
 	 * 
 	 * @param tdsFunction
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> saveTdsFunction(@RequestBody TdsModularDomain tdsModularDomain) {
+	public BackResult<Integer> saveTdsFunction(@RequestBody TdsModularDomain tdsModularDomain) throws Exception {
+		  BeanHelper.beanHelperTrim(tdsModularDomain);
 		  BackResult<Integer> result = tdsModularService.saveTdsModular(tdsModularDomain);
 		  return result;
 	}
@@ -50,9 +57,11 @@ public class TdsModularController {
 	 * 
 	 * @param tdsFunction
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsModularDomain> update(@RequestBody TdsModularDomain tdsModularDomain) {
+	public BackResult<TdsModularDomain> update(@RequestBody TdsModularDomain tdsModularDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsModularDomain);
 		BackResult<TdsModularDomain> result =tdsModularService.updateTdsModular(tdsModularDomain);
 		return result;
 	}
@@ -74,11 +83,27 @@ public class TdsModularController {
 	 * 
 	 * @param tdsFunction
 	 * @return List<>
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<TdsModularDomain>> selectAll(@RequestBody TdsModularDomain tdsModularDomain) {
+	public BackResult<List<TdsModularDomain>> selectAll(@RequestBody TdsModularDomain tdsModularDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsModularDomain);
 		BackResult<List<TdsModularDomain>> result =tdsModularService.selectAll(tdsModularDomain);
 		return result;
 	}
+	
+     /**
+      * 分页模块查询
+      * @param name
+      * @param currentPage
+      * @param numPerPage
+      * @return
+     * @throws Exception 
+      */
+	 @RequestMapping(value = "/pageByModular", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	 BackResult<PageDomain<Map<String,Object>>> pageByModular(String name,@RequestBody BasePageParam basePageParam) throws Exception{
+		 BeanHelper.beanHelperTrim(name);
+		 return tdsModularService.pageByModular(name,basePageParam);
+	 }
 
 }

@@ -109,7 +109,7 @@
 		d.id=ud.depart_id and com.id=u.com_id
 		and d.parent_id=2
 			<if test="departId != null">AND d.id = #{departId}</if>
-			<if test="contact != null">AND u.contact = #{contact}</if>
+			<if test="userName != null">AND u.name = #{userName}</if>
 			<if test="statTime != null">
 				AND u.create_time &gt;= #{statTime}
 				AND u.create_time &lt;= #{endTime}

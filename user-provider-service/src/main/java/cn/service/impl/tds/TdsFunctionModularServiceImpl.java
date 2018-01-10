@@ -4,6 +4,7 @@ package cn.service.impl.tds;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsModularService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.page.BasePageParam;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsModularDomain;
 
 
@@ -143,6 +146,37 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
+
+	
+	/**
+	 * 
+	 * name  模块名称
+	 * currentPage 当前页
+	 * numPerPage 显示多少行
+	 */
+	@Override
+	public BackResult<PageDomain<Map<String, Object>>> pageByModular(String name,BasePageParam basePageParam) {
+		BackResult<PageDomain<Map<String, Object>>> result =new  BackResult<PageDomain<Map<String, Object>>>();
+		PageDomain<Map<String, Object>> pageListDomain = null;
+		try {
+			if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
+			if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
+			Integer count=tdsModularMapper.queryCount(name);
+			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
+			List<Map<String,Object>> listMap = tdsModularMapper.pageByModular(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
+			// 构造计算分页参数
+			pageListDomain = new PageDomain<>( basePageParam.getCurrentPage(),basePageParam.getNumPerPage(),count);
+			pageListDomain.setTlist(listMap);
+			result.setResultObj(pageListDomain);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("模块功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
 		}

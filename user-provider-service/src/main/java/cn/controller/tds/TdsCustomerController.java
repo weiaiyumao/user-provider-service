@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.tds.TdsCustomerService;
+import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
@@ -31,7 +32,8 @@ public class TdsCustomerController {
 
 	
 	@RequestMapping(value = "/pageTdsCustomer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsCustomer(@RequestBody PageAuto auto){
+	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsCustomer(@RequestBody PageAuto auto) throws Exception{
+		BeanHelper.beanHelperTrim(auto);  //去掉空格
 		return tdsCustomerService.pageTdsCustomer(auto);
 	}
 	

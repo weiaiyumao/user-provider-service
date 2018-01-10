@@ -42,21 +42,27 @@
 	</resultMap>
 
 
-	<select id="moduleLoadingByUsreId" resultMap="BaseResultCollection" parameterType="HashMap">
-		select m.*,f.id as fid,f.name as fname,f.url,f.parent_id as fparentId
+	<select id="moduleLoadingByUsreId" resultMap="BaseResultCollection"
+		parameterType="HashMap">
+		select m.*,f.id as fid,f.name as fname,f.url,f.parent_id
+		as fparentId
 		from
 		tds_modular m,tds_function f
 		where f.id in(
-		select fun_id from
+		select
+		fun_id from
 		tds_function_role
 		where role_id in (
-		select role_id from tds_user_role
+		select role_id from
+		tds_user_role
 		where user_id=#{userId}
 		and is_deleted='0'
-		)and is_deleted='0'
+		)and
+		is_deleted='0'
 		)and m.id=f.parent_id
 		and m.is_deleted='0'
-		and f.is_deleted='0'
+		and
+		f.is_deleted='0'
 
 	</select>
 
@@ -145,4 +151,24 @@
 	</update>
 
 
+	<select id="pageByModular" resultType="java.util.HashMap"
+		parameterType="HashMap">
+		SELECT * FROM view_modular
+		where is_deleted='0'
+		<if test="name!=null and name!=''">
+			and name like concat(concat('%',#{name}),'%')
+		</if>
+		ORDER BY id
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="HashMap">
+		SELECT COUNT(1) FROM view_modular
+		where is_deleted='0'
+		<if test="name!=null and name!=''">
+			and name like concat(concat('%',#{name}),'%')
+		</if>
+	</select>
 </mapper>

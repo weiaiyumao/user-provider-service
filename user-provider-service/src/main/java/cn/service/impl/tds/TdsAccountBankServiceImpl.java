@@ -14,7 +14,6 @@ import cn.entity.tds.TdsAccountBank;
 import cn.service.tds.TdsAccountBankService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAccountBankDomain;
 
@@ -32,12 +31,10 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 		    PageDomain<TdsAccountBankDomain> pageListDomain =null;
 			List<TdsAccountBankDomain> listDomain = new ArrayList<TdsAccountBankDomain>();
 		try {
-			PageAuto auto=new PageAuto(currentPage,numPerPage);
 			Integer count=tdsAccountBankMapper.queryCount(likeName,selected);//获取总数
-			List<TdsAccountBank> list = tdsAccountBankMapper.pageTdsAccountBank(likeName,auto.getPageNumber(),auto.getNumPerPage(),selected);
+			Integer cur =currentPage <= 0 ? 1 :currentPage;
+			List<TdsAccountBank> list = tdsAccountBankMapper.pageTdsAccountBank(likeName,(cur - 1) * numPerPage,numPerPage,selected);
 			if (list.size() > 0 && list != null) {
-				
-			
 				//定义对象用于转换
 				TdsAccountBankDomain tdsDomain = null;
 				for (TdsAccountBank obj : list) {

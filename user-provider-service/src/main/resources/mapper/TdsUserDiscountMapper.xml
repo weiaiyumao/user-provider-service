@@ -70,7 +70,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
-			 is_deleted ,
+			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null"> #{userId} , </if>
@@ -81,14 +81,15 @@
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
-		   '0' ,
+			'0' ,
 		</trim>
 
 	</insert>
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_user_discount SET IS_DELETED='1'
+		UPDATE tds_user_discount
+		SET IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -109,4 +110,15 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
+
+
+	<select id="getDiscount" parameterType="hashMap" resultMap="BaseResultMap">
+		SELECT * FROM tds_user_discount
+		where user_id=#{userId}
+		and start_money &lt;=#{startMoney}
+		and is_deleted='0'
+		ORDER BY start_money desc
+		LIMIT 1
+	</select>
+
 </mapper>

@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserRole;
 import main.java.cn.domain.page.PageAuto;
 
@@ -62,10 +61,4 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	Integer deleteByUserId(@Param("userId")Integer userId);
 	
 	
-	/**
-	 * 根据角色id or 联系人 获取用户信息
-	 * @param roleId
-	 * @return
-	 */
-	List<TdsUser> queryUserByRoleName(@Param("roleName")String roleName,@Param("contact")String contact);
 }

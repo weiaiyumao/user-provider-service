@@ -65,6 +65,7 @@ public class TdsRoot {
 	  @Autowired
 	  private TdsMoneyApprovalService tdsMoneyApprovalService;
 	  
+	  
 	  @Test
 	  public void test1(){
 		  TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
@@ -81,8 +82,7 @@ public class TdsRoot {
 	  
 	  @Test
 	  public void list2(){
-		   Integer[] arr={};
-		   tdsDepartmentService.addCustomPermissions("123",2,arr);
+		  tdsUserRoleService.queryUserByRoleName("");
 	  }
 	  
 	  @Test

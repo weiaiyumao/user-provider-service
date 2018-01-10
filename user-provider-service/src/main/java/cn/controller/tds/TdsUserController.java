@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.service.tds.TdsCompanyService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
@@ -22,6 +23,9 @@ public class TdsUserController {
 
 	@Autowired
 	private TdsUserService tdsUserService;
+	
+	@Autowired
+	private TdsCompanyService tdsCompanyService;
 	
 	
 
@@ -160,5 +164,8 @@ public class TdsUserController {
 	
 	
 	
-	
+	@RequestMapping(value = "/queryComByUserId", method = RequestMethod.POST)
+	public BackResult<TdsCompanyDomain> queryComByUserId(Integer userId){
+		return tdsCompanyService.queryComByUserId(userId);
+	}
 }

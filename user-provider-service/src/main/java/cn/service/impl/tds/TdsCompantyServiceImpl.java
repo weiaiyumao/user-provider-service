@@ -72,6 +72,23 @@ public class TdsCompantyServiceImpl implements TdsCompanyService{
 		 return result;
 	}
 
+	@Override
+	public BackResult<TdsCompanyDomain> queryComByUserId(Integer userId) {
+		 BackResult<TdsCompanyDomain> result=new BackResult<TdsCompanyDomain>();
+		 TdsCompanyDomain comDomain=new TdsCompanyDomain();
+		 try {
+			 TdsCompany obj=tdsCompanyMapper.queryComByUserId(userId);
+			 BeanUtils.copyProperties(obj,comDomain);
+			 result.setResultObj(comDomain);
+		} catch (BeansException e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		 return result;
+	}
+
 
 
 	
