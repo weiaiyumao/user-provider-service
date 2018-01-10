@@ -2,13 +2,15 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
  * :流水明细表
  * 
  * 
  * @author Gen
  */
-public class TdsSerualInfo implements Serializable{
+public class TdsSerualInfo extends BasePageParam implements Serializable{
 	/**
 	 * 
 	 */
@@ -174,7 +176,7 @@ public class TdsSerualInfo implements Serializable{
 		this.beforeMoney = beforeMoney;
 	}
 	/**
-	 * 流水状态 1处理中 2已到账 3被驳回 : serial_status
+	 * 流水状态 1处理中2已处理3被驳回 : serial_status
 	 * 
 	 * @return 
 	 */
@@ -183,7 +185,7 @@ public class TdsSerualInfo implements Serializable{
 	}
 	
 	/**
-	 * 流水状态 1处理中 2已到账 3被驳回 : serial_status
+	 * 流水状态 1处理中 2已处理 3被驳回 : serial_status
 	 * 
 	 * @return 
 	 */

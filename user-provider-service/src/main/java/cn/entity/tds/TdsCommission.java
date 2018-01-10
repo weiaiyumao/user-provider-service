@@ -2,13 +2,15 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
  * : 佣金列表实体
  * 
  * 
  * @author Gen
  */
-public class TdsCommission implements Serializable{
+public class TdsCommission extends BasePageParam implements Serializable{
 	
 	
 	/**
@@ -122,7 +124,7 @@ public class TdsCommission implements Serializable{
 		this.orderNumber = orderNumber;
 	}
 	/**
-	 * 到账金额 : serial_money
+	 * 到账佣金金额 : serial_money
 	 * 
 	 * @return 
 	 */
@@ -131,7 +133,7 @@ public class TdsCommission implements Serializable{
 	}
 	
 	/**
-	 * 到账金额 : serial_money
+	 * 到账佣金金额 : serial_money
 	 * 
 	 * @return 
 	 */

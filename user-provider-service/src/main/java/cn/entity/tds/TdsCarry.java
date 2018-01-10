@@ -3,39 +3,41 @@ package cn.entity.tds;
 import java.io.Serializable;
 
 /**
- * :银行入账
+ * : 提现
  * 
  * 
  * @author Gen
  */
-public class TdsAccountBank implements Serializable{
-	
+public class TdsCarry implements Serializable{
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3033211713682451381L;
+	private static final long serialVersionUID = -1327686900272019021L;
 
-	//入账银行id : id 	
+	//提现id : id 	
 	private Integer id; 
 	
-	//简称名 : less_name 	
-	private String lessName; 
+	//提现流水 : carry_serial 	
+	private String carrySerial; 
 	
-	//账号名称 : account_name 	
-	private String accountName; 
+	//提现订单 : carry_order 	
+	private String carryOrder; 
 	
-	//银行类型  0：对公 1：对私 : bank_type 	
-	private String bankType; 
-	
-	//开发银行 : bank_name 	
-	private String bankName; 
-	
-	//开户账号号 : open_account 	
-	private String openAccount; 
+	//所涉及银行id : bank_id 	
+	private String bankId; 
 	
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
+	
+	//提现金额 : carr_money 	
+	private String carrMoney; 
+	
+	//之金额 : bef_money 	
+	private String befMoney; 
+	
+	//提现状态 : carr_status 	
+	private String carrStatus; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -57,7 +59,7 @@ public class TdsAccountBank implements Serializable{
 	
 
 	/**
-	 * 入账银行id : id
+	 * 提现id : id
 	 * 
 	 * @return 
 	 */
@@ -66,7 +68,7 @@ public class TdsAccountBank implements Serializable{
 	}
 	
 	/**
-	 * 入账银行id : id
+	 * 提现id : id
 	 * 
 	 * @return 
 	 */
@@ -74,89 +76,55 @@ public class TdsAccountBank implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 简称名 : less_name
+	 * 提现流水 : carry_serial
 	 * 
 	 * @return 
 	 */
-	public String getLessName () {
-		return lessName;
+	public String getCarrySerial () {
+		return carrySerial;
 	}
 	
 	/**
-	 * 简称名 : less_name
+	 * 提现流水 : carry_serial
 	 * 
 	 * @return 
 	 */
-	public void setLessName (String lessName) {
-		this.lessName = lessName;
+	public void setCarrySerial (String carrySerial) {
+		this.carrySerial = carrySerial;
 	}
 	/**
-	 * 账号名称 : account_name
+	 * 提现订单 : carry_order
 	 * 
 	 * @return 
 	 */
-	public String getAccountName () {
-		return accountName;
-	}
-	
-	/**
-	 * 账号名称 : account_name
-	 * 
-	 * @return 
-	 */
-	public void setAccountName (String accountName) {
-		this.accountName = accountName;
-	}
-	/**
-	 * 银行类型  0：对公 1：对私 : bank_type
-	 * 
-	 * @return 
-	 */
-	public String getBankType () {
-		return bankType;
+	public String getCarryOrder () {
+		return carryOrder;
 	}
 	
 	/**
-	 * 银行类型  0：对公 1：对私 : bank_type
+	 * 提现订单 : carry_order
 	 * 
 	 * @return 
 	 */
-	public void setBankType (String bankType) {
-		this.bankType = bankType;
+	public void setCarryOrder (String carryOrder) {
+		this.carryOrder = carryOrder;
 	}
 	/**
-	 * 开发银行 : bank_name
+	 * 所涉及银行id : bank_id
 	 * 
 	 * @return 
 	 */
-	public String getBankName () {
-		return bankName;
-	}
-	
-	/**
-	 * 开发银行 : bank_name
-	 * 
-	 * @return 
-	 */
-	public void setBankName (String bankName) {
-		this.bankName = bankName;
-	}
-	/**
-	 * 开户账号号 : open_account
-	 * 
-	 * @return 
-	 */
-	public String getOpenAccount () {
-		return openAccount;
+	public String getBankId () {
+		return bankId;
 	}
 	
 	/**
-	 * 开户账号号 : open_account
+	 * 所涉及银行id : bank_id
 	 * 
 	 * @return 
 	 */
-	public void setOpenAccount (String openAccount) {
-		this.openAccount = openAccount;
+	public void setBankId (String bankId) {
+		this.bankId = bankId;
 	}
 	/**
 	 * 删除状态：0正常，1已删除 : is_deleted
@@ -174,6 +142,57 @@ public class TdsAccountBank implements Serializable{
 	 */
 	public void setIsDeleted (String isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	/**
+	 * 提现金额 : carr_money
+	 * 
+	 * @return 
+	 */
+	public String getCarrMoney () {
+		return carrMoney;
+	}
+	
+	/**
+	 * 提现金额 : carr_money
+	 * 
+	 * @return 
+	 */
+	public void setCarrMoney (String carrMoney) {
+		this.carrMoney = carrMoney;
+	}
+	/**
+	 * 之金额 : bef_money
+	 * 
+	 * @return 
+	 */
+	public String getBefMoney () {
+		return befMoney;
+	}
+	
+	/**
+	 * 之金额 : bef_money
+	 * 
+	 * @return 
+	 */
+	public void setBefMoney (String befMoney) {
+		this.befMoney = befMoney;
+	}
+	/**
+	 * 提现状态 : carr_status
+	 * 
+	 * @return 
+	 */
+	public String getCarrStatus () {
+		return carrStatus;
+	}
+	
+	/**
+	 * 提现状态 : carr_status
+	 * 
+	 * @return 
+	 */
+	public void setCarrStatus (String carrStatus) {
+		this.carrStatus = carrStatus;
 	}
 	/**
 	 * 创建时间 : create_time
