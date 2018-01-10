@@ -225,5 +225,15 @@
 			AND app.is_deleted ='0'
 		</where>
 	</select>
+	
+	
+	<!-- approval_status 3 到账 -->
+	<select id="queryByOrderByUser" parameterType="HashMap" resultMap="BaseResultMap">
+	   SELECT * FROM tds_money_approval
+	   where approval_type='1' 
+	   and order_number=#{orderNumber} 
+	   and user_id=#{userId}
+	   and is_deleted='0'
+	</select>
 
 </mapper>

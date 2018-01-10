@@ -3,6 +3,7 @@ package cn.dao.tds;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsMoneyApproval;
 
@@ -32,5 +33,13 @@ public interface TdsMoneyApprovalMapper extends IBaseDao<TdsMoneyApproval, Integ
 	 */
 	Integer queryCount(TdsMoneyApproval entity);
 	
+	
+	/**
+	 * 根据订单查询是否符合退款要求
+	 * @param orderNumber
+	 * @param userId
+	 * @return
+	 */
+	TdsMoneyApproval queryByOrderByUser(@Param("orderNumber")String orderNumber,@Param("userId")Integer userId);
 	
 }

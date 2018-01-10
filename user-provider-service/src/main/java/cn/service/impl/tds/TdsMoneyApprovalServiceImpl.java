@@ -17,10 +17,12 @@ import cn.dao.tds.TdsCommissionMapper;
 import cn.dao.tds.TdsMoneyApprovalMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
+import cn.dao.tds.TdsUserMapper;
 import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsSerualInfo;
+import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserDiscount;
 import cn.service.tds.TdsMoneyApprovalService;
 import cn.utils.BeanHelper;
@@ -54,6 +56,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Autowired
 	private TdsUserDiscountMapper tdsUserDiscountMapper;
+	
+	@Autowired
+	private TdsUserMapper tdsUserMapper; 
 	
 	/**
 	 * 客户管理下单
@@ -107,6 +112,28 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		}
 		return result;
 	}
+	
+	
+	
+
+	/**
+	 * 退款申请，进入退款审核， 进入明细
+	 * 判断进账金额是否到账，到账则退款，否则不退款
+	 */
+	@Override
+	public BackResult<Integer> backMoney() {
+		TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
+		// 退款流水
+		String serial = OrderNo.getSerial16();
+	    TdsUser  user=tdsUserMapper.loadById(domain.getUserId());
+	    //根据订单查询是否符合退款要求
+	    TdsMoneyApproval tdsMal=tdsMoneyApprovalMapper.queryByOrderByUser(domain.getOrderNumber(),domain.getUserId());
+	    
+		return null;
+	}
+
+	
+	
 
 	@Override
 	public BackResult<Integer> approvalByUpStatus(TdsMoneyApprovalDomain domain, String appRemarks) {
@@ -132,7 +159,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					// 出账
 					if ("2".equals(tdsMoApp.getApprovalStatus()))
 						rej = "出账驳回";
-					//return this.approvalByUpStatusOutOrBack(tdsMoApp, appRemarks, rej);
+					return this.approvalByUpStatusOutOrBack(tdsMoApp, appRemarks, rej);
 				case "3":
 					// 退款
 					if ("2".equals(tdsMoApp.getApprovalStatus()))
@@ -313,8 +340,8 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		TdsSerualInfo tdsSerual = new TdsSerualInfo();
 		try {
 			tdsSerual.setUpdateTime(new Date());
-			tdsSerual.setOrderNumber(order); // 保存下单-订单号
-			tdsSerual.setSerialNumber(serialNo); // 保存下单-流水号
+			tdsSerual.setOrderNumber(order); // -订单号
+			tdsSerual.setSerialNumber(serialNo); // -流水号
 			// 流水状态 1处理中 2已处理 3被驳回 : serial_status
 			tdsSerual.setSerialStatus(serualParm);
 			tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
@@ -417,6 +444,11 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		PageDomain<TdsCommissionDomain> pageListDomain = null;
 		List<TdsCommissionDomain> listDomain = new ArrayList<TdsCommissionDomain>();
 		try {
+			if (null != domain.getStatTime() && !domain.getStatTime().equals("")) {
+				Date endTime = DateUtils.addDay(domain.getStatTime(), 1);
+				domain.setStatTime(domain.getStatTime()); // 开始时间
+				domain.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
+			}
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsCommission tdsComm = new TdsCommission();
@@ -449,13 +481,6 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	
 	
-	
-	@Override
-	public BackResult<Integer> backMoney() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
 	
 

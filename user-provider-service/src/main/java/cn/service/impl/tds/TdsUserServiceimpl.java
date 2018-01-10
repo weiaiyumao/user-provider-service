@@ -231,11 +231,15 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			if (null == tdsUser) {
 				return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "该用户不存在");
 			}
-
+            //判断原密码是否正确
+			if(!MD5Util.getInstance().getMD5Code(usedPass).equals(tdsUser.getPassword())){
+				return new BackResult<Integer>(ResultCode.RESULT_FAILED, "原密码错误");
+			}
+			//新密码加密
 			String isNewPass = MD5Util.getInstance().getMD5Code(newPass);
-
+			
 			if (tdsUser.getPassword().equals(isNewPass)) {
-				return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "请不要已旧密码更改新密码");
+				return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "请不要再次已原密码更改新密码");
 			}
 			tdsUserMapper.upPassWord(userId, isNewPass); // 密码更改
 			result.setResultObj(1);

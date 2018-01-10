@@ -5,9 +5,11 @@
 
 <mapper namespace="cn.dao.tds.TdsUserMapper">
 
+
 	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUser">
 		<result column="id" property="id"></result>
 		<result column="name" property="name"></result>
+		<result column="user_name" property="userName"></result>
 		<result column="contact" property="contact"></result>
 		<result column="phone" property="phone"></result>
 		<result column="customer_type" property="customerType"></result>
@@ -15,7 +17,11 @@
 		<result column="user_qq" property="userQq"></result>
 		<result column="user_email" property="userEmail"></result>
 		<result column="user_identity" property="userIdentity"></result>
+		<result column="user_number" property="userNumber"></result>
+		<result column="bank" property="bank"></result>
+		<result column="alipay" property="alipay"></result>
 		<result column="password" property="password"></result>
+		<result column="parent_userId" property="parentUserId"></result>
 		<result column="hedehref" property="hedehref"></result>
 		<result column="login_ip" property="loginIp"></result>
 		<result column="last_login_time" property="lastLoginTime"></result>
@@ -27,38 +33,35 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="remarks" property="remarks"></result>
-		<result column="invitedcode" property="invitedcode"></result>
-		<result column="token" property="token"></result>
-		<result column="user_name" property="userName"></result>
-		<result column="parent_userId" property="parentUserId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		ID,
-		NAME,
-		CONTACT,
-		PHONE,
-		CUSTOMER_TYPE,
-		COM_ID,
-		USER_QQ,
-		USER_EMAIL,
-		USER_IDENTITY,
-		PASSWORD,
-		HEDEHREF,
-		LOGIN_IP,
-		LAST_LOGIN_TIME,
-		CREATE_TIME,
-		UPDATE_TIME,
-		STATUS,
-		SOURCE,
-		CREATER,
-		UPDATER,
-		IS_DELETED,
-		REMARKS,
-		INVITEDCODE,
-		TOKEN,
-		USER_NAME,
-		PARENT_USERID
+		id,
+		name,
+		user_name,
+		contact,
+		phone,
+		customer_type,
+		com_id,
+		user_qq,
+		user_email,
+		user_identity,
+		user_number,
+		bank,
+		alipay,
+		password,
+		parent_userId,
+		hedehref,
+		login_ip,
+		last_login_time,
+		create_time,
+		update_time,
+		status,
+		source,
+		creater,
+		updater,
+		is_deleted,
+		remarks
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -71,15 +74,14 @@
 
 	</select>
 
-
 	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUser">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_user
 		<where>
 			<if test="id != null">and id = #{id}</if>
-			<if test="userName != null">and user_name = #{userName}</if>
 			<if test="name != null">and name = #{name}</if>
+			<if test="userName != null">and user_name = #{userName}</if>
 			<if test="contact != null">and contact = #{contact}</if>
 			<if test="phone != null">and phone = #{phone}</if>
 			<if test="customerType != null">and customer_type = #{customerType}</if>
@@ -87,7 +89,11 @@
 			<if test="userQq != null">and user_qq = #{userQq}</if>
 			<if test="userEmail != null">and user_email = #{userEmail}</if>
 			<if test="userIdentity != null">and user_identity = #{userIdentity}</if>
+			<if test="userNumber != null">and user_number = #{userNumber}</if>
+			<if test="bank != null">and bank = #{bank}</if>
+			<if test="alipay != null">and alipay = #{alipay}</if>
 			<if test="password != null">and password = #{password}</if>
+			<if test="parentUserId != null">and parent_userId = #{parentUserId}</if>
 			<if test="hedehref != null">and hedehref = #{hedehref}</if>
 			<if test="loginIp != null">and login_ip = #{loginIp}</if>
 			<if test="lastLoginTime != null">and last_login_time = #{lastLoginTime}</if>
@@ -98,16 +104,12 @@
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
-			<if test="invitedcode != null">and invitedcode = #{invitedcode}</if>
-			<if test="token != null">and token = #{token}</if>
-			<if test="parentUserId != null">and parent_userId = #{parentUserId}</if>
-
 			and is_deleted ='0'
 		</where>
+		
 	</select>
 
-	<insert id="save" parameterType="cn.entity.tds.TdsUser"
-		useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="cn.entity.tds.TdsUser">
 		INSERT INTO tds_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="name != null"> name , </if>
@@ -119,7 +121,10 @@
 			<if test="userQq != null"> user_qq , </if>
 			<if test="userEmail != null"> user_email , </if>
 			<if test="userIdentity != null"> user_identity , </if>
+			<if test="bank != null"> bank , </if>
+			<if test="alipay != null"> alipay , </if>
 			<if test="password != null"> password , </if>
+			<if test="parentUserId != null"> parent_userId , </if>
 			<if test="hedehref != null"> hedehref , </if>
 			<if test="loginIp != null"> login_ip , </if>
 			<if test="lastLoginTime != null"> last_login_time , </if>
@@ -129,9 +134,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
-			<if test="invitedcode != null"> invitedcode , </if>
-			<if test="token != null"> token , </if>
-			<if test="parentUserId != null"> parent_userId , </if>
+			user_number,
 			status ,
 			is_deleted,
 		</trim>
@@ -145,7 +148,10 @@
 			<if test="userQq != null"> #{userQq} , </if>
 			<if test="userEmail != null"> #{userEmail} , </if>
 			<if test="userIdentity != null"> #{userIdentity} , </if>
+			<if test="bank != null"> #{bank} , </if>
+			<if test="alipay != null"> #{alipay} , </if>
 			<if test="password != null"> #{password} , </if>
+			<if test="parentUserId != null"> #{parentUserId} , </if>
 			<if test="hedehref != null"> #{hedehref} , </if>
 			<if test="loginIp != null"> #{loginIp} , </if>
 			<if test="lastLoginTime != null"> #{lastLoginTime} , </if>
@@ -155,19 +161,15 @@
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
-			<if test="invitedcode != null"> #{invitedcode} , </if>
-			<if test="token != null"> #{token} , </if>
-			<if test="parentUserId != null"> #{parentUserId} , </if>
+			'0',
 			'0',
 			'0',
 		</trim>
-
 	</insert>
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_user SET
-		IS_DELETED='1'
+		UPDATE tds_user SET IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -185,7 +187,11 @@
 			<if test="userQq != null"> user_qq = #{userQq}, </if>
 			<if test="userEmail != null"> user_email = #{userEmail}, </if>
 			<if test="userIdentity != null"> user_identity = #{userIdentity}, </if>
+			<if test="userNumber != null"> user_number = #{userNumber}, </if>
+			<if test="bank != null"> bank = #{bank}, </if>
+			<if test="alipay != null"> alipay = #{alipay}, </if>
 			<if test="password != null"> password = #{password}, </if>
+			<if test="parentUserId != null"> parent_userId = #{parentUserId}, </if>
 			<if test="hedehref != null"> hedehref = #{hedehref}, </if>
 			<if test="loginIp != null"> login_ip = #{loginIp}, </if>
 			<if test="lastLoginTime != null"> last_login_time = #{lastLoginTime}, </if>
@@ -197,12 +203,10 @@
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
-			<if test="invitedcode != null"> invitedcode = #{invitedcode}, </if>
-			<if test="token != null"> token = #{token}, </if>
-			<if test="parentUserId != null"> parent_userId=#{parentUserId} , </if>
 		</trim>
 		WHERE id=#{id}
 	</update>
+
 
 	<select id="loadByPhone" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
@@ -259,7 +263,8 @@
 		<include refid="Base_Column_List" />
 		FROM tds_user
 		where IS_DELETED ='0' ORDER BY ID DESC
-		LIMIT #{pageNumber},#{numPerPage}
+		LIMIT
+		#{pageNumber},#{numPerPage}
 	</select>
 
 
@@ -305,14 +310,17 @@
 
 
 	<update id="updateHeadImg" parameterType="HashMap">
-		UPDATE tds_user set hedehref=#{hedehref}
+		UPDATE tds_user set
+		hedehref=#{hedehref}
 		where id=#{id} and is_deleted='0'
 	</update>
 
 
 
-	<select id="queryUserByRoleName" parameterType="HashMap" resultType="java.util.HashMap">
-		select u.id as userId,u.contact,u.name,com.com_name as comName from tds_user
+	<select id="queryUserByRoleName" parameterType="HashMap"
+		resultType="java.util.HashMap">
+		select u.id as userId,u.contact,u.name,com.com_name as comName from
+		tds_user
 		u,
 		tds_company com
 		where u.com_id=com.id
