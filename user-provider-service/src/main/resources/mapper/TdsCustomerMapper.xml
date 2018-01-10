@@ -20,9 +20,9 @@
 		where u.id=ud.user_id and
 		d.id=ud.depart_id and com.id=u.com_id
 		and d.parent_id=2 and u.parent_userId=#{parentUserId}
-			<if test="departId != null">AND d.id = #{departId}</if>
-			<if test="contact != null">AND u.contact = #{contact}</if>
-			<if test="statTime != null">
+			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+			<if test="statTime != null and statTime!=''">
 				AND u.create_time &gt;= #{statTime}
 				AND u.create_time &lt;= #{endTime}
 			</if>
@@ -41,9 +41,9 @@
 		where u.id=ud.user_id and d.id=ud.depart_id and
 		com.id=u.com_id
 		and d.parent_id=2 and u.parent_userId=#{parentUserId}
-			<if test="departId != null">AND d.id = #{departId}</if>
-			<if test="contact != null">AND u.contact = #{contact}</if>
-			<if test="statTime != null">
+			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+			<if test="statTime != null and statTime!=''">
 				AND u.create_time &gt;= #{statTime}
 				AND u.create_time &lt;= #{endTime}
 			</if>

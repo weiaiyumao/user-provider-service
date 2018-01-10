@@ -150,4 +150,15 @@
 		from tds_company
 		where is_deleted='0'
 	</select>
+	
+	
+	<select id="queryComByUserId" parameterType="HashMap" resultMap="BaseResultMap">
+    select * from tds_company
+	where id=(
+	select com_id from tds_user
+	where id=#{userId} 
+	and is_deleted='0'
+	)and is_deleted='0'
+	</select>
+	
 </mapper>
