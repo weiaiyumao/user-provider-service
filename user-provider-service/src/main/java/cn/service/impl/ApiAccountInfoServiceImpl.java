@@ -231,4 +231,70 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 		return result;
 	}
 
+	@Override
+	public BackResult<Integer> checkRqApiAccount(String apiName, String password, String ip,int checkCount) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		try {
+
+			// 1、检测账户二次清洗api账户信息
+			List<ApiAccountInfo> list = apiAccountInfoMapper.findByNameAndPwd(apiName, password);
+			if (CommonUtils.isNotEmpty(list)) {
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultMsg("账户二次清洗API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				return result;
+			}
+
+			// 2、检测账户二次清洗api账户ip绑定信息 如果商户设置了ip则进行验证 反之不验证改参数
+			if (!CommonUtils.isNotString(list.get(0).getBdIp())) {
+
+				//
+				Boolean fag = false;
+
+				String[] ips = list.get(0).getBdIp().split(",");
+
+				for (String str : ips) {
+
+					if (str.equals(ip)) {
+						fag = true;
+					}
+
+				}
+
+				if (!fag) {
+					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
+					result.setResultMsg("账户二次清洗API商户绑定的IP地址验证校验失败！");
+					return result;
+				}
+
+			}
+
+			// 3、检测剩余可消费条数信息
+			List<CreUserAccount> listUserAccount = creUserAccountMapper.findCreUserAccountByUserId(list.get(0).getCreUserId());
+
+			if (CommonUtils.isNotEmpty(listUserAccount)) {
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultMsg("账户二次清洗API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
+				return result;
+			}
+
+			if (listUserAccount.get(0).getRqAccount() < checkCount) {
+				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+				result.setResultMsg("账户二次清洗API商户信息剩余可消费条数为：" + listUserAccount.get(0).getApiAccount() + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
+				return result;
+			}
+
+			result.setResultObj(list.get(0).getCreUserId());
+			result.setResultMsg("账户检测正常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("检测账户二次清洗API账户[" + apiName + "]信息出现系统异常" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+
+		return result;
+	}
+
 }

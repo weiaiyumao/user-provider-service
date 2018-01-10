@@ -26,11 +26,6 @@ public class UserAccountController {
 	@Autowired
 	private CreUserAccountService creUserAccountService;
 	
-	
-	
-	
-	
-
 	/**
 	 * 查询账户余额
 	 * @param mobile
@@ -101,6 +96,17 @@ public class UserAccountController {
 	@RequestMapping("/consumeApiAccount")
 	public BackResult<Boolean> consumeApiAccount(String creUserId,String count) {
 		BackResult<Boolean> result = creUserAccountService.consumeApiAccount(creUserId, count);
+		return result;
+	}
+
+	/**
+	 * 消费账户二次清洗条数
+	 * @param trdOrderDomain
+	 * @return
+	 */
+	@RequestMapping("/consumeRqApiAccount")
+	public BackResult<Boolean> consumeRqApiAccount(String creUserId,String count) {
+		BackResult<Boolean> result = creUserAccountService.consumeRqApiAccount(creUserId, count);
 		return result;
 	}
 	

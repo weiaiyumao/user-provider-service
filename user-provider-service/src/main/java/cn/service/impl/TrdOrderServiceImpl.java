@@ -119,11 +119,14 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			
 			if(orderNo.substring(0,4).equals("CLRQ")) {
 				// 账号二次清洗充值回调
-				account.setApiAccount(account.getApiAccount() + order.getNumber());
+                account.setRqAccount(account.getAccount() + order.getNumber());
 			} else if (orderNo.substring(0,4).equals("CLSH")) {
 				// 空号检测充值回调
 				account.setAccount(account.getAccount() + order.getNumber());
-			}
+			} else if (orderNo.substring(0,4).equals("CLKH")) {
+                // 空号API充值回调
+                account.setApiAccount(account.getApiAccount() + order.getNumber());
+            }
 
 			creUserAccountMapper.updateCreUserAccount(account);
 
@@ -174,7 +177,9 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 		
 		BackResult<String> result = new BackResult<String>();
 		try {
-			
+
+			String orderCode = "";
+			String subjectName = "";
 			String timestamp = String.valueOf(System.currentTimeMillis());
 			// 生成订单
 			TrdOrder order = new TrdOrder();
@@ -185,16 +190,22 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			if (productsId == 1) {
 				order.setNumber(500000);  // 根据条数计算 具体金额
 				order.setMoney(new BigDecimal(950));
+				orderCode = "CLSH_";
+				subjectName="创蓝实号检测产品";
 			} 
 			
 			if (productsId == 2) {
 				order.setNumber(5000000);  // 根据条数计算 具体金额
 				order.setMoney(new BigDecimal(9000));
+				orderCode = "CLSH_";
+				subjectName="创蓝实号检测产品";
 			} 
 			
 			if (productsId == 3) {
 				order.setNumber(10000000);  // 根据条数计算 具体金额
 				order.setMoney(new BigDecimal(16000));
+				orderCode = "CLSH_";
+				subjectName="创蓝实号检测产品";
 			} 
 			
 			if (productsId == 4) {
@@ -202,22 +213,30 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				BigDecimal b1 = new BigDecimal(number);   
 				BigDecimal b2 = new BigDecimal(0.002);  
 				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+				orderCode = "CLSH_";
+				subjectName="创蓝实号检测产品";
 			}
 			
 			// 账号二次清洗产品
 			if (productsId == 5) {
 				order.setNumber(100000 * 1);
 				order.setMoney(new BigDecimal(1900)); // 充值金额1900---10万条
+				orderCode = "CLRQ_";
+				subjectName="创蓝账号二次清洗";
 			}
 			
 			if (productsId == 6) {
 				order.setNumber(100000 * 5);
 				order.setMoney(new BigDecimal(9000)); // 充值金额9000---50万条
+				orderCode = "CLRQ_";
+				subjectName="创蓝账号二次清洗";
 			}
 			
 			if (productsId == 7) {
 				order.setNumber(100000 * 10);
 				order.setMoney(new BigDecimal(16000)); // 充值金额16000---100万条
+				orderCode = "CLRQ_";
+				subjectName="创蓝账号二次清洗";
 			}
 			
 			if (productsId == 8) {
@@ -225,11 +244,35 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				BigDecimal b1 = new BigDecimal(number);   
 				BigDecimal b2 = new BigDecimal(0.02);  // 单价2分钱一条
 				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+				orderCode = "CLRQ_";
+				subjectName="创蓝账号二次清洗";
+			}
+
+			// 空号API产品
+			if (productsId == 9) {
+				order.setNumber(4000000 * 1);
+				order.setMoney(new BigDecimal(19000)); // 充值金额19000---400万条 9.5
+				orderCode = "CLKH_";
+				subjectName="创蓝空号API产品";
+			}
+
+			if (productsId == 10) {
+				order.setNumber(10000000 * 1);
+				order.setMoney(new BigDecimal(45000)); // 充值金额45000---1000万条 9
+				orderCode = "CLKH_";
+				subjectName="创蓝空号API产品";
+			}
+
+			if (productsId == 11) {
+				order.setNumber(20000000 * 1);
+				order.setMoney(new BigDecimal(80000)); // 充值金额80000---2000万条 8
+				orderCode = "CLKH_";
+				subjectName="创蓝空号API产品";
 			}
 			
 			order.setPayType(payType);
 			order.setType(type);
-			order.setOrderNo(productsId >= 5 ? "CLRQ_" + timestamp : "CLSH_" +timestamp);
+			order.setOrderNo(orderCode + timestamp);
 			order.setStatus(Constant.TRD_ORDER_STATUS_PROCESSING);
 			order.setDeleteStatus("0");
 			order.setVersion(0);
@@ -240,7 +283,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			// 向支付宝发送请求 生成二维码
 			AlipayClient alipayClient = new DefaultAlipayClient(alipayPayurl, alipayAppid, alipayPrivatekey,"json","utf-8", alipayPublickey, "RSA2");
 			AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest(); // 创建API对应的request类
-			String subject = productsId >= 5 ? "创蓝账号二次清洗" : "创蓝实号检测产品";
+			String subject = subjectName;
 			String storeId = "创蓝数据";
 			request.setBizContent("{" + "    \"out_trade_no\":\""+order.getOrderNo()+"\"," + "    \"total_amount\":\""+order.getMoney()+"\","
 					+ "    \"subject\":\""+subject+"\"," + "    \"store_id\":\""+storeId+"\","
