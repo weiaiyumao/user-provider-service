@@ -159,21 +159,5 @@
 	</delete>
 
 
-	<!-- 根据角色名称查询用户信息 ... -->
-	<select id="queryUserByRoleName" parameterType="HashMap" resultType="cn.entity.tds.TdsUser">
-		select id,name,contact,phone from tds_user
-		where id in
-		(
-		select user_id from tds_user_role
-		where role_id=
-		(
-		select id from tds_role
-		where role_name=#{roleName}
-		and is_deleted='0'
-		)and is_deleted='0'
-		)and is_deleted='0'
-		<if test="contact != null">and contact like concat(concat('%',#{contact}),'%')</if>
-		LIMIT 10
-	</select>
 
 </mapper>

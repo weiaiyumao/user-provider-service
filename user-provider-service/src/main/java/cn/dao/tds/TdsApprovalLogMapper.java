@@ -19,8 +19,18 @@ import main.java.cn.domain.page.PageAuto;
 public interface TdsApprovalLogMapper extends IBaseDao<TdsApprovalLog, Integer>{
 	
 	
+	/**
+	 * 客户审核列表分页查询
+	 * @param auto
+	 * @return
+	 */
 	List<TdsCustomerView> pageTdsApproval(PageAuto auto);
 	
+	/**
+	 * 统计
+	 * @param auto
+	 * @return
+	 */
 	Integer queryCount(PageAuto auto);
 	
 	

@@ -60,7 +60,7 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	// 开票状态 0未开票 1已开票 : billing
 	private String billing;
 
-	// 审核(1待审核 2已审核 3驳回 4到账 5线下开票 6 充账 )
+	// 审核(0待审核 1已审核 2驳回 3到账 4线下开票 5 充账 )
 	private String approvalStatus;
 
 	// 审核类型 1进账审核 2出账审核 3退款审核 : approval_type
@@ -89,8 +89,37 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	private String endArrivTime;
 	
 	
+	private String lessName;
+
+	// 下单人，创建人
+	private Integer creater;
+
 	
+	public String getLessName() {
+		return lessName;
+	}
 	
+	public void setLessName(String lessName) {
+		this.lessName = lessName;
+	}
+	
+	/**
+	 * 下单人，创建人
+	 * 
+	 * @return
+	 */
+	public Integer getCreater() {
+		return creater;
+	}
+
+	/**
+	 * 下单人，创建人
+	 * 
+	 * @param creater
+	 */
+	public void setCreater(Integer creater) {
+		this.creater = creater;
+	}
 
 	public String getStartOrderTime() {
 		return startOrderTime;
@@ -393,7 +422,7 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	}
 
 	/**
-	 * 审核(1待审核 2已审核 3驳回 4到账 5线下开票 6 充账 )
+	 * 审核(0待审核 1已审核 2驳回 3到账 4线下开票 5 充账 )
 	 * 
 	 * @return
 	 */
@@ -402,7 +431,7 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	}
 
 	/**
-	 * 审核(1待审核 2已审核 3驳回 4到账 5线下开票 6 充账 )
+	 * 审核(0待审核 1已审核 2驳回 3到账 4线下开票 5 充账 )
 	 * 
 	 * @return
 	 */

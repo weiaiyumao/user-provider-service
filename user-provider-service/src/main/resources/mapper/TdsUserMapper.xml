@@ -101,16 +101,17 @@
 			<if test="invitedcode != null">and invitedcode = #{invitedcode}</if>
 			<if test="token != null">and token = #{token}</if>
 			<if test="parentUserId != null">and parent_userId = #{parentUserId}</if>
-			
+
 			and is_deleted ='0'
 		</where>
 	</select>
 
-	<insert id="save" parameterType="cn.entity.tds.TdsUser" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="cn.entity.tds.TdsUser"
+		useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO tds_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="name != null"> name , </if>
-		   <if test="userName != null"> user_name , </if>
+			<if test="userName != null"> user_name , </if>
 			<if test="contact != null"> contact , </if>
 			<if test="phone != null"> phone , </if>
 			<if test="customerType != null"> customer_type , </if>
@@ -131,12 +132,12 @@
 			<if test="invitedcode != null"> invitedcode , </if>
 			<if test="token != null"> token , </if>
 			<if test="parentUserId != null"> parent_userId , </if>
-		    status ,
+			status ,
 			is_deleted,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null"> #{name} , </if>
-		    <if test="userName != null"> #{userName} , </if>
+			<if test="userName != null"> #{userName} , </if>
 			<if test="contact != null"> #{contact} , </if>
 			<if test="phone != null"> #{phone} , </if>
 			<if test="customerType != null"> #{customerType} , </if>
@@ -176,7 +177,7 @@
 		UPDATE tds_user
 		<trim prefix="set" suffixOverrides=",">
 			<if test="name != null"> name = #{name}, </if>
-		    <if test="userName != null"> user_name = #{userName}, </if>
+			<if test="userName != null"> user_name = #{userName}, </if>
 			<if test="contact != null"> contact = #{contact}, </if>
 			<if test="phone != null"> phone = #{phone}, </if>
 			<if test="customerType != null"> customer_type = #{customerType}, </if>
@@ -215,7 +216,8 @@
 
 
 	<update id="upPassWord" parameterType="HashMap">
-		UPDATE tds_user set password=#{newPass}
+		UPDATE tds_user set
+		password=#{newPass}
 		where id=#{userId}
 	</update>
 
@@ -238,7 +240,7 @@
 		is_deleted='0'
 	</select>
 
-    
+
 	<update id="updateStatus" parameterType="cn.entity.tds.TdsUser">
 		UPDATE tds_user
 		<trim prefix="set" suffixOverrides=",">
@@ -256,7 +258,7 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_user
-	    where IS_DELETED ='0' ORDER BY ID DESC
+		where IS_DELETED ='0' ORDER BY ID DESC
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
@@ -302,9 +304,22 @@
 	</insert>
 
 
-     <update id="updateHeadImg"  parameterType="HashMap">
-            UPDATE tds_user set hedehref=#{hedehref}
-			where id=#{id} and is_deleted='0'
-     </update>
-    
+	<update id="updateHeadImg" parameterType="HashMap">
+		UPDATE tds_user set hedehref=#{hedehref}
+		where id=#{id} and is_deleted='0'
+	</update>
+
+
+
+	<select id="queryUserByRoleName" parameterType="HashMap" resultType="java.util.HashMap">
+		select u.id as userId,u.contact,u.name,com.com_name as comName from tds_user
+		u,
+		tds_company com
+		where u.com_id=com.id
+		<if test="contact != null and contact!=''">and u.contact like concat(concat('%',#{contact}),'%')</if>
+		and u.is_deleted='0'
+		and not ISNULL(u.contact)
+		LIMIT 10
+	</select>
+
 </mapper>

@@ -17,7 +17,6 @@ import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsUser;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsApprovalService;
-import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -51,7 +50,6 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 
 			// // TODO
 			// // yyyy-mm-dd 天数加1
-			BeanHelper.beanHelperTrim(auto);  //去掉空格
 			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间

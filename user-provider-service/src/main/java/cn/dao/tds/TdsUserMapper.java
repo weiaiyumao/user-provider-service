@@ -2,6 +2,7 @@ package cn.dao.tds;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -84,5 +85,15 @@ public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
      * @return
      */
     Integer updateHeadImg(@Param("id")Integer id,@Param("hedehref")String hedehref);
+    
+    
+    
+
+	/**
+	 * 联系人 获取用户信息 公司名称
+	 * @param roleId
+	 * @return
+	 */
+    List<Map<String,String>> queryUserByRoleName(@Param("contact")String contact);
     
 }

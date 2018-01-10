@@ -124,7 +124,7 @@ public class TdsCommission extends BasePageParam implements Serializable{
 		this.orderNumber = orderNumber;
 	}
 	/**
-	 * 到账金额 : serial_money
+	 * 到账佣金金额 : serial_money
 	 * 
 	 * @return 
 	 */
@@ -133,7 +133,7 @@ public class TdsCommission extends BasePageParam implements Serializable{
 	}
 	
 	/**
-	 * 到账金额 : serial_money
+	 * 到账佣金金额 : serial_money
 	 * 
 	 * @return 
 	 */

@@ -28,7 +28,6 @@ import cn.entity.tds.TdsUserDiscount;
 import cn.entity.tds.TdsUserRole;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsCustomerService;
-import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -151,7 +150,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		PageDomain<TdsCustomerViewDomain> pageListDomain = null;
 		List<TdsCustomerViewDomain> listDomain = new ArrayList<TdsCustomerViewDomain>();
 		try {
-			BeanHelper.beanHelperTrim(auto);  //去掉空格
+		
 			if (null != auto.getCreateTime() || "".equals(auto.getCreateTime())) {
 				Date endTime = DateUtils.addDay(auto.getCreateTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间
@@ -186,17 +185,28 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		return result;
 	}
 
+	
+	@Transactional
 	@Override
 	public BackResult<Integer> attorn(TdsAttornLogDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsAttornLog tdsAtt = new TdsAttornLog();
+		TransactionStatus status=this.begin();
 		domain.setCreateTime(new Date());
 		try {
+			//记录log
 			BeanUtils.copyProperties(domain, tdsAtt);
 			tdsAttornLogMapper.save(tdsAtt);
+			//修改父级用户id
+            TdsUser tdsUser=new TdsUser();
+            tdsUser.setId(tdsAtt.getUserId());
+            tdsUser.setParentUserId(tdsAtt.getAttornUserId());//数据转移
+			tdsUserMapper.update(tdsUser);
 			result.setResultObj(1);
+			this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
+			this.rollback(status);
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据保存失败");

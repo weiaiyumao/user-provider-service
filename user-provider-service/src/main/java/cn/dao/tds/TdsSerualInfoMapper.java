@@ -29,5 +29,11 @@ public interface TdsSerualInfoMapper extends IBaseDao<TdsSerualInfo, Integer>{
 	 */
 	Integer queryCount(TdsSerualInfo entity);
 	
+	
+	/*
+	 * 修改状态
+	 */
+	Integer upSerialByStatus(TdsSerualInfo entity);
+	
     
 }

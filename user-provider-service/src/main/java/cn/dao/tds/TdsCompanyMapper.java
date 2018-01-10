@@ -33,5 +33,13 @@ public interface TdsCompanyMapper  extends IBaseDao<TdsCompany, Integer> {
 	
 	
 	List<TdsCompany> selectCompanyAll();
+	
+	
+	/**
+	 * 根据userid查询公司id进表查询
+	 * @param userId
+	 * @return
+	 */
+	TdsCompany queryComByUserId(@Param("userId")Integer userId);
 
 }

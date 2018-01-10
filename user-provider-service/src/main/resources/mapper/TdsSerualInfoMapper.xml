@@ -136,7 +136,7 @@
 		FROM tds_serual_info
 		<where>
 	     	<if test="serialType != null and serialType!=''">AND serial_type = #{serialType}</if>
-			<if test="serialStatus != null and serialStatus!=''">AND serialStatus = #{serialStatus}</if>
+			<if test="serialStatus != null and serialStatus!=''">AND serial_status = #{serialStatus}</if>
 			<if test="statTime != null and statTime!=''">AND create_time &gt;= #{statTime}</if>
 			<if test="endTime != null and endTime!=''">AND  create_time &lt;= #{endTime}</if>
 			AND is_deleted ='0'  order by create_time desc
@@ -149,10 +149,18 @@
 	  SELECT count(1)  FROM tds_serual_info
 		<where>
 	     	<if test="serialType != null and serialType!=''">AND serial_type = #{serialType}</if>
-			<if test="serialStatus != null and serialStatus!=''">AND serialStatus = #{serialStatus}</if>
+			<if test="serialStatus != null and serialStatus!=''">AND serial_status = #{serialStatus}</if>
 			<if test="statTime != null and statTime!=''">AND create_time &gt;= #{statTime}</if>
 			<if test="endTime != null and endTime!='' ">AND  create_time &lt;= #{endTime}</if>
 			AND is_deleted ='0'
 		</where>
 	</select>
+	
+	
+	<update id="upSerialByStatus" parameterType="HashMap">
+		UPDATE tds_serual_info  set serial_status = #{serialStatus}
+		WHERE serial_number=#{serialNumber}  and order_number=#{orderNumber} 
+		and  is_deleted ='0'
+	</update>
+	
 </mapper>
