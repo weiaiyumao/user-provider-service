@@ -77,23 +77,33 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	// 修改时间 : update_time
 	private java.util.Date updateTime;
 
-	// 订单开始时间
-	private String startOrderTime;
-	// 订单结束时间
-	private String endOrderTime;
-
-	// 到账开始时间
-	private String startArrivTime;
-
-	// 到账结束
-	private String endArrivTime;
-	
 	
 	private String lessName;
 
 	// 下单人，创建人
 	private Integer creater;
 
+	//关联产品id : pname_id 	
+	private Integer pnameId; 
+	
+	
+	/**
+	 * 关联产品id : pname_id
+	 * 
+	 * @return 
+	 */
+	public Integer getPnameId () {
+		return pnameId;
+	}
+	
+	/**
+	 * 关联产品id : pname_id
+	 * 
+	 * @return 
+	 */
+	public void setPnameId (Integer pnameId) {
+		this.pnameId = pnameId;
+	}
 	
 	public String getLessName() {
 		return lessName;
@@ -119,38 +129,6 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	 */
 	public void setCreater(Integer creater) {
 		this.creater = creater;
-	}
-
-	public String getStartOrderTime() {
-		return startOrderTime;
-	}
-
-	public void setStartOrderTime(String startOrderTime) {
-		this.startOrderTime = startOrderTime;
-	}
-
-	public String getEndOrderTime() {
-		return endOrderTime;
-	}
-
-	public void setEndOrderTime(String endOrderTime) {
-		this.endOrderTime = endOrderTime;
-	}
-
-	public String getStartArrivTime() {
-		return startArrivTime;
-	}
-
-	public void setStartArrivTime(String startArrivTime) {
-		this.startArrivTime = startArrivTime;
-	}
-
-	public String getEndArrivTime() {
-		return endArrivTime;
-	}
-
-	public void setEndArrivTime(String endArrivTime) {
-		this.endArrivTime = endArrivTime;
 	}
 
 	public Integer getUpdater() {

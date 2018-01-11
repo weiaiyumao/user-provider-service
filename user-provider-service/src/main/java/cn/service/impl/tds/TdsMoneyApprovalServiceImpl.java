@@ -14,15 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsApprovalLogMapper;
 import cn.dao.tds.TdsCommissionMapper;
-import cn.dao.tds.TdsMoneyApprovalMapper;
+import cn.dao.tds.TdsMoneyApprovalGoMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
-import cn.dao.tds.TdsUserMapper;
 import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsSerualInfo;
-import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserDiscount;
 import cn.service.tds.TdsMoneyApprovalService;
 import cn.utils.BeanHelper;
@@ -43,7 +41,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	private final static Logger logger = LoggerFactory.getLogger(TdsMoneyApprovalServiceImpl.class);
 
 	@Autowired
-	private TdsMoneyApprovalMapper tdsMoneyApprovalMapper;
+	private TdsMoneyApprovalGoMapper tdsMoneyApprovalGoMapper;
 
 	@Autowired
 	private TdsApprovalLogMapper tdsApprovalLogMapper;
@@ -57,11 +55,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	@Autowired
 	private TdsUserDiscountMapper tdsUserDiscountMapper;
 	
-	@Autowired
-	private TdsUserMapper tdsUserMapper; 
 	
 	/**
-	 * 客户管理下单
+	 * 客户管理--下单
 	 */
 	@Transactional
 	@Override
@@ -86,7 +82,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			domain.setPayment("1");//进账类型
 			BeanUtils.copyProperties(domain, tds);
 			// 保存进账审核
-			tdsMoneyApprovalMapper.save(tds);
+			tdsMoneyApprovalGoMapper.save(tds);
 
 			// 进入流水明细保存
 			TdsSerualInfo tdsSerual = new TdsSerualInfo();
@@ -102,7 +98,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			tdsSerual.setSerialMoney(domain.getSumMoney());// 下单金额 涉及金额
 			tdsSerualInfoMapper.save(tdsSerual);
 			result.setResultObj(1);
-			this.commit(status);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.rollback(status);
@@ -113,124 +109,30 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 	
-	
-	
 
-	/**
-	 * 退款申请，进入退款审核， 进入明细
-	 * 判断进账金额是否到账，到账则退款，否则不退款
-	 */
+	@Transactional
 	@Override
-	public BackResult<Integer> backMoney() {
-		TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
-		// 退款流水
-		String serial = OrderNo.getSerial16();
-	    TdsUser  user=tdsUserMapper.loadById(domain.getUserId());
-	    //根据订单查询是否符合退款要求
-	    TdsMoneyApproval tdsMal=tdsMoneyApprovalMapper.queryByOrderByUser(domain.getOrderNumber(),domain.getUserId());
-	    
-		return null;
-	}
-
-	
-	
-
-	@Override
-	public BackResult<Integer> approvalByUpStatus(TdsMoneyApprovalDomain domain, String appRemarks) {
+	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApprovalDomain domain, String appRemarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
+		TransactionStatus status = this.begin();
 		domain.setUpdateTime(new Date());
-
 		TdsMoneyApproval tdsMoApp = new TdsMoneyApproval();
 		String rej = null;
 		try {
 			BeanHelper.beanHelperTrim(domain); // 去掉空格
 			BeanUtils.copyProperties(domain, tdsMoApp);
-			// 审核类型 1进账审核 2出账审核 3退款审核 approvalType
-			// 审核(0待审核 1已审核 2驳回 3到账 4线下开票 5 充账 )approvalStatus
-			if (null != tdsMoApp.getApprovalType() && !"".equals(tdsMoApp.getApprovalType())) {
-				switch (tdsMoApp.getApprovalType()) {
-				case "1":
-					// 进入 进账审核列表操作
-					// 如果是驳回操作更改logs
-					if ("2".equals(tdsMoApp.getApprovalStatus()))
-						rej = "进账驳回";
-					return this.approvalByUpStatusGo(tdsMoApp, appRemarks, rej);
-				case "2":
-					// 出账
-					if ("2".equals(tdsMoApp.getApprovalStatus()))
-						rej = "出账驳回";
-					return this.approvalByUpStatusOutOrBack(tdsMoApp, appRemarks, rej);
-				case "3":
-					// 退款
-					if ("2".equals(tdsMoApp.getApprovalStatus()))
-						rej = "退款驳回";
-				//	return this.approvalByUpStatusAll(tdsMoApp, appRemarks, rej);
-				}
-			}
-
-			result.setResultObj(1);
+			if ("2".equals(tdsMoApp.getApprovalStatus()))
+				rej = "进账驳回";
+			result=this.approvalByUpStatusGo(tdsMoApp, appRemarks, rej);
+			this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
+			this.rollback(status);
 			logger.error("审核功能操作功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据修改失败");
 		}
 		return result;
-	}
-	
-	
-	
-
-	/**
-	 * 出账（提现）审核  退款审核-- 通过和驳回到账操作
-	 * 0待审核 1已审核 2驳回
-	 * @param tdsMoApp
-	 * @param appRemarks
-	 *            原因
-	 * @param rej
-	 *            xx驳回
-	 * @return
-	 */
-	@Transactional
-	public BackResult<Integer> approvalByUpStatusOutOrBack(TdsMoneyApproval tdsMoApp, String appRemarks, String rej){
-		BackResult<Integer> result = new BackResult<Integer>();
-		TransactionStatus status = this.begin();
-		// 流水状态 1处理中 2已处理 3被驳回 : serial_status
-		String serual = "1";
-		
-		try {
-			if (null != tdsMoApp.getApprovalStatus() && !"".equals(tdsMoApp.getApprovalStatus())) {
-				// 通过
-				if (StatusType.APPROVAL_STATUS_1.equals(tdsMoApp.getApprovalStatus())) {
-					tdsMoneyApprovalMapper.update(tdsMoApp);
-					// 审核通过 等待金额 到账时间 再次确认
-					serual = "1";//流水状态 1处理中  
-				}
-
-				// 驳回
-				if (StatusType.APPROVAL_STATUS_2.equals(tdsMoApp.getApprovalStatus())) {
-					// 驳回原因 记录
-					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), rej, appRemarks, new Date(),
-							tdsMoApp.getOrderNumber()));
-					// 并操作驳回更新
-					tdsMoneyApprovalMapper.update(tdsMoApp);
-					// 更新流水明细驳回状态
-					serual = "3";
-				}
-				 //更新流水号状态
-				upSerialStatus(tdsMoApp.getOrderNumber(), tdsMoApp.getSerialNumber(), serual);
-
-			}
-			result.setResultObj(1);
-			this.commit(status);
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.rollback(status);
-			logger.error("出账审核功能操作功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据修改失败");
-		}
-		 return result;
 	}
 	
 	
@@ -244,19 +146,20 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	 *            xx驳回
 	 * @return
 	 */
-	@Transactional
 	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApproval tdsMoApp, String appRemarks, String rej) {
 		BackResult<Integer> result = new BackResult<Integer>();
-		TransactionStatus status = this.begin();
 		// 流水状态 1处理中 2已处理 3被驳回 : serial_status
 		String serual = "1";
 		
+		
+		//获取当前进账审核状态信息
+		TdsMoneyApproval isStatus=tdsMoneyApprovalGoMapper.loadById(tdsMoApp.getId());
 		
 		try {
 			if (null != tdsMoApp.getApprovalStatus() && !"".equals(tdsMoApp.getApprovalStatus())) {
 				// 通过
 				if (StatusType.APPROVAL_STATUS_1.equals(tdsMoApp.getApprovalStatus())) {
-					tdsMoneyApprovalMapper.update(tdsMoApp);
+					tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					// 审核通过 等待金额 到账时间 再次确认
 					serual = "1";//流水状态 1处理中  
 				}
@@ -267,7 +170,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), rej, appRemarks, new Date(),
 							tdsMoApp.getOrderNumber()));
 					// 并操作驳回更新
-					tdsMoneyApprovalMapper.update(tdsMoApp);
+					tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					// 更新流水明细驳回状态
 					serual = "3";
 				}
@@ -276,13 +179,20 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 				// 确认到账
 				if (StatusType.APPROVAL_STATUS_3.equals(tdsMoApp.getApprovalStatus())) {
 					tdsMoApp.setArriveTime(new Date());// 插入到账时间
-					tdsMoneyApprovalMapper.update(tdsMoApp);
+					
+					//判断是否通过初次审核
+					if(!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())){
+						return new BackResult<>(ResultCode.RESULT_FAILED,"没有通过初次审核不可操作");
+					}
+					
+					tdsMoApp.setApprovalStatus(StatusType.APPROVAL_STATUS_1);
+					tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					serual = "2"; // 到账已确认 流水状态显示处理成功  佣金可提现
 					String disc="";//折扣比例
 					
 					TdsCommission tdsCommiss=new TdsCommission();
 					TdsUserDiscount discount=tdsUserDiscountMapper.getDiscount(tdsMoApp.getUserId(),tdsMoApp.getSumMoney());
-					if(null!=discount){
+					if(null!=discount && !"".equals(discount.getStartDiscount())){
 						disc=discount.getStartDiscount();
 						tdsCommiss.setSerialMoney(String.valueOf(MoneyCommission.getCommission(tdsMoApp.getSumMoney(),disc)));
 					}else{
@@ -301,23 +211,32 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 				}
 				
 				
-				// 下线开票
+				// 开票
 				if (StatusType.APPROVAL_STATUS_4.equals(tdsMoApp.getApprovalStatus())) {
+					//判断是否通过初次审核
+					if(!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())){
+						return new BackResult<>(ResultCode.RESULT_FAILED,"没有通过初次审核不可操作");
+					}
 					tdsMoApp.setBilling(StatusType.APPROVAL_BILLING_ON);
-					tdsMoneyApprovalMapper.update(tdsMoApp);
-					result.setResultObj(1); // 开票成功 1
+					tdsMoApp.setApprovalStatus(StatusType.APPROVAL_STATUS_1);
+					tdsMoneyApprovalGoMapper.update(tdsMoApp);
+					result.setResultObj(1);
 					return result;
 				}
 				
-				 //更新流水号状态
-				upSerialStatus(tdsMoApp.getOrderNumber(), tdsMoApp.getSerialNumber(), serual);
-
-			}
-			result.setResultObj(1);
-			this.commit(status);
+				//更新流水号状态
+			    //upSerialStatus(tdsMoApp.getOrderNumber(), tdsMoApp.getSerialNumber(), serual);
+				TdsSerualInfo tdsSerual = new TdsSerualInfo();
+				tdsSerual.setUpdateTime(new Date());
+				tdsSerual.setOrderNumber(tdsMoApp.getOrderNumber()); // -订单号
+				tdsSerual.setSerialNumber(tdsMoApp.getSerialNumber()); // -流水号
+				// 流水状态 1处理中 2已处理 3被驳回 : serial_status
+				tdsSerual.setSerialStatus(serual);
+				tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
+			    }
+			   result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.rollback(status);
 			logger.error("进账审核功能操作功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据修改失败");
@@ -327,39 +246,14 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	}
 	
 	
-
-	/**
-	 * 更新流水号状态
-	 * @param order
-	 * @param serialNo
-	 * @param serualParm
-	 */
-	public BackResult<Integer> upSerialStatus(String order, String serialNo, String serualParm) {
-		// 根据流水号和订单号更新流水明细状态
-		BackResult<Integer> result=new BackResult<Integer>();
-		TdsSerualInfo tdsSerual = new TdsSerualInfo();
-		try {
-			tdsSerual.setUpdateTime(new Date());
-			tdsSerual.setOrderNumber(order); // -订单号
-			tdsSerual.setSerialNumber(serialNo); // -流水号
-			// 流水状态 1处理中 2已处理 3被驳回 : serial_status
-			tdsSerual.setSerialStatus(serualParm);
-			tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("流水号状态更新功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据修改失败");
-		}
-		   return result;
-	}
 	
 	
 	
 	
-
+	
+	
 	@Override
-	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalAll(TdsMoneyApprovalDomain domain) {
+	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
 		BackResult<PageDomain<TdsMoneyApprovalDomain>> result = new BackResult<PageDomain<TdsMoneyApprovalDomain>>();
 		PageDomain<TdsMoneyApprovalDomain> pageListDomain = null;
 		List<TdsMoneyApprovalDomain> listDomain = new ArrayList<TdsMoneyApprovalDomain>();
@@ -369,8 +263,8 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsMoneyApproval tdsMoApp = new TdsMoneyApproval();
 			BeanUtils.copyProperties(domain, tdsMoApp);
-			Integer count = tdsMoneyApprovalMapper.queryCount(tdsMoApp);// 获取总数
-			List<TdsMoneyApproval> list = tdsMoneyApprovalMapper.pageMoneyApprovalAll(tdsMoApp);
+			Integer count = tdsMoneyApprovalGoMapper.queryCount(tdsMoApp);// 获取总数
+			List<TdsMoneyApproval> list = tdsMoneyApprovalGoMapper.pageMoneyApprovalGo(tdsMoApp);
 			if (list.size() > 0 && list != null) {
 				// 定义对象用于转换
 				TdsMoneyApprovalDomain tdsDomain = null;
@@ -395,6 +289,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 
+	
 	@Override
 	public BackResult<PageDomain<TdsSerualInfoDomain>> pageTdsSerualInfo(TdsSerualInfoDomain domain) {
 		BackResult<PageDomain<TdsSerualInfoDomain>> result = new BackResult<PageDomain<TdsSerualInfoDomain>>();
@@ -480,6 +375,32 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	}
 
 	
+//
+//	/**
+//	 * 更新流水号状态
+//	 * @param order
+//	 * @param serialNo
+//	 * @param serualParm
+//	 */
+//	public  BackResult<Integer> upSerialStatus(String order, String serialNo, String serualParm) {
+//		// 根据流水号和订单号更新流水明细状态
+//		BackResult<Integer> result=new BackResult<Integer>();
+//		TdsSerualInfo tdsSerual = new TdsSerualInfo();
+//		try {
+//			tdsSerual.setUpdateTime(new Date());
+//			tdsSerual.setOrderNumber(order); // -订单号
+//			tdsSerual.setSerialNumber(serialNo); // -流水号
+//			// 流水状态 1处理中 2已处理 3被驳回 : serial_status
+//			tdsSerual.setSerialStatus(serualParm);
+//			tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error("流水号状态更新功能信息出现系统异常：" + e.getMessage());
+//			result.setResultCode(ResultCode.RESULT_FAILED);
+//			result.setResultMsg("数据修改失败");
+//		}
+//		   return result;
+//	}
 	
 	
 	

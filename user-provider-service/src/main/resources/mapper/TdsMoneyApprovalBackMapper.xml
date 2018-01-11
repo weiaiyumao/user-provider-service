@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsMoneyApprovalBackMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsMoneyApprovalBack">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="user_name" property="userName"></result>
+		<result column="serial_number" property="serialNumber"></result>
+		<result column="order_number" property="orderNumber"></result>
+		<result column="approval_status" property="approvalStatus"></result>
+		<result column="go_order_number" property="goOrderNumber"></result>
+		<result column="go_sum_money" property="goSumMoney"></result>
+		<result column="go_pname" property="goPname"></result>
+		<result column="go_pname_number" property="goPnameNumber"></result>
+		<result column="back_pname_number" property="backPnameNumber"></result>
+		<result column="back_sum_money" property="backSumMoney"></result>
+		<result column="back_remarks" property="backRemarks"></result>
+		<result column="plus_number" property="plusNumber"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		user_name,
+		serial_number,
+		order_number,
+		approval_status,
+		go_order_number,
+		go_sum_money,
+		go_pname,
+		go_pname_number,
+		back_pname_number,
+		back_sum_money,
+		back_remarks,
+		plus_number,
+		is_deleted,
+		create_time,
+		update_time,
+		creater,
+		updater
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_money_approval_back
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap"
+		parameterType="cn.entity.tds.TdsMoneyApprovalBack">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_money_approval_back
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="userName != null">and user_name = #{userName}</if>
+			<if test="serialNumber != null">and serial_number = #{serialNumber}</if>
+			<if test="orderNumber != null">and order_number = #{orderNumber}</if>
+			<if test="approvalStatus != null">and approval_status = #{approvalStatus}</if>
+			<if test="goOrderNumber != null">and go_order_number = #{goOrderNumber}</if>
+			<if test="goSumMoney != null">and go_sum_money = #{goSumMoney}</if>
+			<if test="goPname != null">and go_pname = #{goPname}</if>
+			<if test="goPnameNumber != null">and go_pname_number = #{goPnameNumber}</if>
+			<if test="backPnameNumber != null">and back_pname_number = #{backPnameNumber}</if>
+			<if test="backSumMoney != null">and back_sum_money = #{backSumMoney}</if>
+			<if test="backRemarks != null">and back_remarks = #{backRemarks}</if>
+			<if test="plusNumber != null">and plus_number = #{plusNumber}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			and is_deleted = '0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsMoneyApprovalBack">
+		INSERT INTO tds_money_approval_back
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="userName != null"> user_name , </if>
+			<if test="serialNumber != null"> serial_number , </if>
+			<if test="orderNumber != null"> order_number , </if>
+			<if test="approvalStatus != null"> approval_status , </if>
+			<if test="goOrderNumber != null"> go_order_number , </if>
+			<if test="goSumMoney != null"> go_sum_money , </if>
+			<if test="goPname != null"> go_pname , </if>
+			<if test="goPnameNumber != null"> go_pname_number , </if>
+			<if test="backPnameNumber != null"> back_pname_number , </if>
+			<if test="backSumMoney != null"> back_sum_money , </if>
+			<if test="backRemarks != null"> back_remarks , </if>
+			<if test="plusNumber != null"> plus_number , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			is_deleted ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="userName != null"> #{userName} , </if>
+			<if test="serialNumber != null"> #{serialNumber} , </if>
+			<if test="orderNumber != null"> #{orderNumber} , </if>
+			<if test="approvalStatus != null"> #{approvalStatus} , </if>
+			<if test="goOrderNumber != null"> #{goOrderNumber} , </if>
+			<if test="goSumMoney != null"> #{goSumMoney} , </if>
+			<if test="goPname != null"> #{goPname} , </if>
+			<if test="goPnameNumber != null"> #{goPnameNumber} , </if>
+			<if test="backPnameNumber != null"> #{backPnameNumber} , </if>
+			<if test="backSumMoney != null"> #{backSumMoney} , </if>
+			<if test="backRemarks != null"> #{backRemarks} , </if>
+			<if test="plusNumber != null"> #{plusNumber} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			#{isDeleted}, 
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_money_approval_back SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsMoneyApprovalBack">
+		UPDATE tds_money_approval_back
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="userName != null"> user_name = #{userName}, </if>
+			<if test="serialNumber != null"> serial_number = #{serialNumber}, </if>
+			<if test="orderNumber != null"> order_number = #{orderNumber}, </if>
+			<if test="approvalStatus != null"> approval_status = #{approvalStatus}, </if>
+			<if test="goOrderNumber != null"> go_order_number = #{goOrderNumber}, </if>
+			<if test="goSumMoney != null"> go_sum_money = #{goSumMoney}, </if>
+			<if test="goPname != null"> go_pname = #{goPname}, </if>
+			<if test="goPnameNumber != null"> go_pname_number = #{goPnameNumber}, </if>
+			<if test="backPnameNumber != null"> back_pname_number = #{backPnameNumber}, </if>
+			<if test="backSumMoney != null"> back_sum_money = #{backSumMoney}, </if>
+			<if test="backRemarks != null"> back_remarks = #{backRemarks}, </if>
+			<if test="plusNumber != null"> plus_number = #{plusNumber}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	
+	<select id="pageApprovalBack" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT * FROM tds_money_approval_back
+		WHERE is_deleted='0'
+		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
+			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND go_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">AND go_order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=null">
+				AND user_name like concat(concat('%',#{likeName}),'%')
+				or go_pname like concat(concat('%',#{likeName}),'%')
+				or id like concat(concat('%',#{likeName}),'%')
+				or go_order_number like concat(concat('%',#{likeName}),'%')
+			</if> 
+		   order by create_time desc 
+		   LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Hashmap">
+		SELECT count(1) FROM tds_money_approval_back 
+		<where>
+		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
+			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND go_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">AND go_order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=null">
+				AND user_name like concat(concat('%',#{likeName}),'%')
+				or go_pname like concat(concat('%',#{likeName}),'%')
+				or id like concat(concat('%',#{likeName}),'%')
+				or go_order_number like concat(concat('%',#{likeName}),'%')
+			</if> 
+			and is_deleted='0'
+		</where>
+	</select>
+	
+	
+</mapper>

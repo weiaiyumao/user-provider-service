@@ -5,7 +5,6 @@
 
 <mapper namespace="cn.dao.tds.TdsUserMapper">
 
-
 	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUser">
 		<result column="id" property="id"></result>
 		<result column="name" property="name"></result>
@@ -21,7 +20,7 @@
 		<result column="bank" property="bank"></result>
 		<result column="alipay" property="alipay"></result>
 		<result column="password" property="password"></result>
-		<result column="parent_userId" property="parentUserId"></result>
+		<result column="parent_user_id" property="parentUserId"></result>
 		<result column="hedehref" property="hedehref"></result>
 		<result column="login_ip" property="loginIp"></result>
 		<result column="last_login_time" property="lastLoginTime"></result>
@@ -50,7 +49,7 @@
 		bank,
 		alipay,
 		password,
-		parent_userId,
+		parent_user_id,
 		hedehref,
 		login_ip,
 		last_login_time,
@@ -93,7 +92,7 @@
 			<if test="bank != null">and bank = #{bank}</if>
 			<if test="alipay != null">and alipay = #{alipay}</if>
 			<if test="password != null">and password = #{password}</if>
-			<if test="parentUserId != null">and parent_userId = #{parentUserId}</if>
+			<if test="parentUserId != null">and parent_user_id = #{parentUserId}</if>
 			<if test="hedehref != null">and hedehref = #{hedehref}</if>
 			<if test="loginIp != null">and login_ip = #{loginIp}</if>
 			<if test="lastLoginTime != null">and last_login_time = #{lastLoginTime}</if>
@@ -104,9 +103,8 @@
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
-			and is_deleted ='0'
+			and is_deleted = '0'
 		</where>
-		
 	</select>
 
 	<insert id="save" parameterType="cn.entity.tds.TdsUser">
@@ -121,22 +119,22 @@
 			<if test="userQq != null"> user_qq , </if>
 			<if test="userEmail != null"> user_email , </if>
 			<if test="userIdentity != null"> user_identity , </if>
+			<if test="userNumber != null"> user_number , </if>
 			<if test="bank != null"> bank , </if>
 			<if test="alipay != null"> alipay , </if>
 			<if test="password != null"> password , </if>
-			<if test="parentUserId != null"> parent_userId , </if>
+			<if test="parentUserId != null"> parent_user_id , </if>
 			<if test="hedehref != null"> hedehref , </if>
 			<if test="loginIp != null"> login_ip , </if>
 			<if test="lastLoginTime != null"> last_login_time , </if>
 			<if test="createTime != null"> create_time , </if>
 			<if test="updateTime != null"> update_time , </if>
+			<if test="status != null"> status , </if>
 			<if test="source != null"> source , </if>
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
-			user_number,
-			status ,
-			is_deleted,
+			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null"> #{name} , </if>
@@ -148,6 +146,7 @@
 			<if test="userQq != null"> #{userQq} , </if>
 			<if test="userEmail != null"> #{userEmail} , </if>
 			<if test="userIdentity != null"> #{userIdentity} , </if>
+			<if test="userNumber != null"> #{userNumber} , </if>
 			<if test="bank != null"> #{bank} , </if>
 			<if test="alipay != null"> #{alipay} , </if>
 			<if test="password != null"> #{password} , </if>
@@ -157,14 +156,14 @@
 			<if test="lastLoginTime != null"> #{lastLoginTime} , </if>
 			<if test="createTime != null"> #{createTime} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="status != null"> #{status} , </if>
 			<if test="source != null"> #{source} , </if>
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
 			'0',
-			'0',
-			'0',
 		</trim>
+
 	</insert>
 
 
@@ -191,7 +190,7 @@
 			<if test="bank != null"> bank = #{bank}, </if>
 			<if test="alipay != null"> alipay = #{alipay}, </if>
 			<if test="password != null"> password = #{password}, </if>
-			<if test="parentUserId != null"> parent_userId = #{parentUserId}, </if>
+			<if test="parentUserId != null"> parent_user_id = #{parentUserId}, </if>
 			<if test="hedehref != null"> hedehref = #{hedehref}, </if>
 			<if test="loginIp != null"> login_ip = #{loginIp}, </if>
 			<if test="lastLoginTime != null"> last_login_time = #{lastLoginTime}, </if>
@@ -201,12 +200,10 @@
 			<if test="source != null"> source = #{source}, </if>
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
-			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
 		</trim>
-		WHERE id=#{id}
+		WHERE id=#{id} and is_deleted='0'
 	</update>
-
 
 	<select id="loadByPhone" parameterType="java.lang.String"
 		resultMap="BaseResultMap">

@@ -3,7 +3,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.dao.tds.TdsMoneyApprovalMapper">
+<mapper namespace="cn.dao.tds.TdsMoneyApprovalGoMapper">
 
 	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsMoneyApproval">
 		<result column="id" property="id"></result>
@@ -28,6 +28,7 @@
 		<result column="updater" property="updater"></result>
 		<result column="creater" property="creater"></result>
 		<result column="lessName" property="lessName"></result>
+		<result column="pname_id" property="pnameId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -51,7 +52,8 @@
 		remarks,
 		update_time,
 		updater,
-		creater
+		creater,
+		pname_id
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -90,6 +92,7 @@
 			<if test="updateTime != null">and update_time = #{updateTime}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="updater != null">and creater = #{creater}</if>
+			<if test="pnameId != null">and pname_id = #{pnameId}</if>
 			and is_deleted = '0'
 		</where>
 	</select>
@@ -111,11 +114,12 @@
 			<if test="arriveTime != null"> arrive_time , </if>
 			<if test="billing != null"> billing , </if>
 			<if test="approvalStatus != null"> approval_status , </if>
-			<if test="approvalType != null"> approval_type , </if>
 			<if test="remarks != null"> remarks , </if>
 			<if test="updateTime != null"> update_time , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="creater != null"> creater , </if>
+			<if test="pnameId != null"> pname_id , </if>
+		    approval_type , 
 			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -133,11 +137,12 @@
 			<if test="arriveTime != null"> #{arriveTime} , </if>
 			<if test="billing != null"> #{billing} , </if>
 			<if test="approvalStatus != null"> #{approvalStatus} , </if>
-			<if test="approvalType != null"> #{approvalType} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="creater != null"> #{creater} , </if>
+			<if test="pnameId != null"> #{pnameId} , </if>
+			'1',
 			'0',
 		</trim>
 
@@ -173,21 +178,23 @@
 			<if test="remarks != null"> remarks = #{remarks}, </if>
 			<if test="updateTime != null"> update_time = #{updateTime}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="arriveTime != null"> arrive_time=#{arriveTime} , </if>
+			<if test="pnameId != null"> pname_id = #{pnameId}, </if>
 		</trim>
 		WHERE id=#{id} and is_deleted='0'
 	</update>
 
 
-	<select id="pageMoneyApprovalAll" parameterType="HashMap" resultMap="BaseResultMap">
+	<select id="pageMoneyApprovalGo" parameterType="HashMap" resultMap="BaseResultMap">
 		SELECT app.*,b.less_name as lessName FROM tds_money_approval app,
 		tds_account_bank b
 		WHERE app.is_deleted='0'  and b.id=app.bank_id
 			<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
 			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
-			<if test="startOrderTime != null">AND app.create_time &gt;= #{startOrderTime}</if>
-			<if test="endOrderTime != null">AND app.create_time &lt;= #{endOrderTime}</if>
-			<if test="startArrivTime != null">AND app.arrive_time &gt;= #{startArrivTime}</if>
-			<if test="endArrivTime != null">AND app.arrive_time &lt;= #{endArrivTime}</if>
+	        <if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
+			<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
+			<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
 			<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>
@@ -209,10 +216,10 @@
 		<where>
 		   	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
 			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
-			<if test="startOrderTime != null">AND app.create_time &gt;= #{startOrderTime}</if>
-			<if test="endOrderTime != null">AND app.create_time &lt;= #{endOrderTime}</if>
-			<if test="startArrivTime != null">AND app.arrive_time &gt;= #{startArrivTime}</if>
-			<if test="endArrivTime != null">AND app.arrive_time &lt;= #{endArrivTime}</if>
+			<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
+			<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
+			<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
 			<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>

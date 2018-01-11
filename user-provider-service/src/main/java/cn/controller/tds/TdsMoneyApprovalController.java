@@ -69,35 +69,12 @@ public class TdsMoneyApprovalController{
 	 */
 	@RequestMapping(value = "/approvalByUpStatusGo", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<Integer> approvalByUpStatusGo(@RequestBody TdsMoneyApprovalDomain domain, String appRemarks) {
-		domain.setApprovalType("1");
-		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatus(domain, appRemarks);
+		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatusGo(domain, appRemarks);
 		return result;
 	}
-
-	/**
-	 * 2出账审核操作 审核类型 1进账审核 2出账审核 3退款审核 : approval_type
-	 * 
-	 * @return obj
-	 */
-	@RequestMapping(value = "/approvalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> approvalByUpStatusOut(@RequestBody TdsMoneyApprovalDomain domain, String appRemarks) {
-		domain.setApprovalType("2");
-		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatus(domain, appRemarks);
-		return result;
-	}
-
-	/**
-	 * 3退款审核操作 审核类型 1进账审核 2出账审核 3退款审核 : approval_type
-	 * 
-	 * @return obj
-	 */
-	@RequestMapping(value = "/approvalByUpStatusBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> approvalByUpStatusBack(@RequestBody TdsMoneyApprovalDomain domain, String appRemarks) {
-		domain.setApprovalType("3");
-		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatus(domain, appRemarks);
-		return result;
-	}
-
+	
+	
+	
 	/**
 	 * 进账分页查询
 	 * 
@@ -107,34 +84,59 @@ public class TdsMoneyApprovalController{
 	@RequestMapping(value = "/pageApprovalByUpStatusGo", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusGo(
 			@RequestBody TdsMoneyApprovalDomain domain) {
-		domain.setApprovalType("1");
-		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
+		return tdsMoneyApprovalService.pageMoneyApprovalGo(domain);
+		
 	}
+	
 
-	/**
-	 * 出账分页查询
-	 * 
-	 * @param domain
-	 * @return
-	 */
-	@RequestMapping(value = "/pageApprovalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusOut(
-			@RequestBody TdsMoneyApprovalDomain domain) {
-		domain.setApprovalType("2");
-		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
-	}
-
-	/**
-	 * 退账分页查询
-	 * 
-	 * @param domain
-	 * @return
-	 */
-	@RequestMapping(value = "/pageApprovalByUpStatusBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusBack(
-			@RequestBody TdsMoneyApprovalDomain domain) {
-		domain.setApprovalType("3");
-		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
-	}
+//	/**
+//	 * 2出账审核操作 审核类型 1进账审核 2出账审核 3退款审核 : approval_type
+//	 * 
+//	 * @return obj
+//	 */
+//	@RequestMapping(value = "/approvalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<Integer> approvalByUpStatusOut(@RequestBody TdsMoneyApprovalDomain domain, String appRemarks) {
+//		domain.setApprovalType("2");
+//		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatus(domain, appRemarks);
+//		return result;
+//	}
+//
+//	/**
+//	 * 3退款审核操作 审核类型 1进账审核 2出账审核 3退款审核 : approval_type
+//	 * 
+//	 * @return obj
+//	 */
+//	@RequestMapping(value = "/approvalByUpStatusBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<Integer> approvalByUpStatusBack(@RequestBody TdsMoneyApprovalDomain domain, String appRemarks) {
+//		domain.setApprovalType("3");
+//		BackResult<Integer> result = tdsMoneyApprovalService.approvalByUpStatus(domain, appRemarks);
+//		return result;
+//	}
+	
+//	/**
+//	 * 出账分页查询
+//	 * 
+//	 * @param domain
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/pageApprovalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusOut(
+//			@RequestBody TdsMoneyApprovalDomain domain) {
+//		domain.setApprovalType("2");
+//		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
+//	}
+//
+//	/**
+//	 * 退账分页查询
+//	 * 
+//	 * @param domain
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/pageApprovalByUpStatusBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusBack(
+//			@RequestBody TdsMoneyApprovalDomain domain) {
+//		domain.setApprovalType("3");
+//		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
+//	}
 
 }

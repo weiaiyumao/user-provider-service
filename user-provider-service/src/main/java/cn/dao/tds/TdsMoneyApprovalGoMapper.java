@@ -15,15 +15,15 @@ import cn.entity.tds.TdsMoneyApproval;
  * @author Gen
  */
 @Mapper
-public interface TdsMoneyApprovalMapper extends IBaseDao<TdsMoneyApproval, Integer>{
+public interface TdsMoneyApprovalGoMapper extends IBaseDao<TdsMoneyApproval, Integer>{
 	
 	
 	/**
-	 * 进账 出账 退款 分页 条件查询
+	 * 进账 分页 条件查询
 	 * @param entity
 	 * @return
 	 */
-	List<TdsMoneyApproval> pageMoneyApprovalAll(TdsMoneyApproval entity);
+	List<TdsMoneyApproval> pageMoneyApprovalGo(TdsMoneyApproval entity);
 	
 	/**
 	 * 获取总数

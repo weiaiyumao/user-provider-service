@@ -8,98 +8,98 @@ import java.io.Serializable;
  * 
  * @author Gen
  */
-public class TdsUser implements Serializable{
+public class TdsUser implements Serializable {
 	
-	
-	
-	private static final long serialVersionUID = -3377557319080712246L;
 
-	//用户id : id 	
-	private Integer id; 
-	
-	//名称，昵称,姓名 : name 	
-	private String name; 
-	
-	//用户名 : user_name 	
-	private String userName; 
-	
-	//联系人 : contact 	
-	private String contact; 
-	
-	//手机号码 : phone 	
-	private String phone; 
-	
-	//用户类型 0：个人  1:企业 : customer_type 	
-	private Integer customerType; 
-	
-	//公司id : com_id 	
-	private Integer comId; 
-	
-	//QQ : user_qq 	
-	private String userQq; 
-	
-	//用户邮箱 : user_email 	
-	private String userEmail; 
-	
-	//身份证 : user_identity 	
-	private String userIdentity; 
-	
-	//数量 : user_number 	
-	private String userNumber; 
-	
-	//绑定银行卡id : bank 	
-	private Integer bank; 
-	
-	//支付宝id : alipay 	
-	private Integer alipay; 
-	
-	//密码 : password 	
-	private String password; 
-	
-	//父级用户id : parent_userId 	
-	private Integer parentUserId; 
-	
-	//头像图片地址 : hedehref 	
-	private String hedehref; 
-	
-	//IP地址 : login_ip 	
-	private String loginIp; 
-	
-	//最近登录时间 : last_login_time 	
-	private java.util.Date lastLoginTime; 
-	
-	//创建时间 : create_time 	
-	private java.util.Date createTime; 
-	
-	//修改时间 : update_time 	
-	private java.util.Date updateTime; 
-	
-	//账号状态 0：正常 1：禁用 : status 	
-	private String status; 
-	
-	//来源 0:注册 1:系统添加 2:商务 3:分销商4:代理商 : source 	
-	private String source; 
-	
-	//创建者 : creater 	
-	private Integer creater; 
-	
-	//修改者 : updater 	
-	private Integer updater; 
-	
-	//删除状态：0正常，1已删除  2客服列表注册 3 客户审核驳回 : is_deleted 	
-	private String isDeleted; 
-	
-	//备注 : remarks 	
-	private String remarks; 
-	
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// 用户id : id
+	private Integer id;
+
+	// 名称，昵称,姓名 : name
+	private String name;
+
+	// 用户名 : user_name
+	private String userName;
+
+	// 联系人 : contact
+	private String contact;
+
+	// 手机号码 : phone
+	private String phone;
+
+	// 用户类型 0：个人 1:企业 : customer_type
+	private Integer customerType;
+
+	// 公司id : com_id
+	private Integer comId;
+
+	// QQ : user_qq
+	private String userQq;
+
+	// 用户邮箱 : user_email
+	private String userEmail;
+
+	// 身份证 : user_identity
+	private String userIdentity;
+
+	// 数量 : user_number
+	private String userNumber;
+
+	// 绑定银行卡id : bank
+	private Integer bank;
+
+	// 支付宝id : alipay
+	private Integer alipay;
+
+	// 密码 : password
+	private String password;
+
+	// 父级用户id : parent_user_id
+	private Integer parentUserId;
+
+	// 头像图片地址 : hedehref
+	private String hedehref;
+
+	// IP地址 : login_ip
+	private String loginIp;
+
+	// 最近登录时间 : last_login_time
+	private java.util.Date lastLoginTime;
+
+	// 创建时间 : create_time
+	private java.util.Date createTime;
+
+	// 修改时间 : update_time
+	private java.util.Date updateTime;
+
+	// 账号状态 0：正常 1：禁用 : status
+	private String status;
+
+	// 来源 0:注册 1:系统添加 2:商务 3:分销商4:代理商 : source
+	private String source;
+
+	// 创建者 : creater
+	private Integer creater;
+
+	// 修改者 : updater
+	private Integer updater;
+
+	// 删除状态：0正常，1已删除 2客服列表注册 3 客户审核驳回 : is_deleted
+	private String isDeleted;
+
+	// 备注 : remarks
+	private String remarks;
+
 	private String token;
-	
-	
+
 	public String getToken() {
 		return token;
 	}
-	
+
 	public void setToken(String token) {
 		this.token = token;
 	}
@@ -107,446 +107,469 @@ public class TdsUser implements Serializable{
 	/**
 	 * 用户id : id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getId () {
+	public Integer getId() {
 		return id;
 	}
-	
+
 	/**
 	 * 用户id : id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setId (Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	/**
 	 * 名称，昵称,姓名 : name
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getName () {
+	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * 名称，昵称,姓名 : name
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setName (String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * 用户名 : user_name
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getUserName () {
+	public String getUserName() {
 		return userName;
 	}
-	
+
 	/**
 	 * 用户名 : user_name
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUserName (String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	/**
 	 * 联系人 : contact
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getContact () {
+	public String getContact() {
 		return contact;
 	}
-	
+
 	/**
 	 * 联系人 : contact
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setContact (String contact) {
+	public void setContact(String contact) {
 		this.contact = contact;
 	}
+
 	/**
 	 * 手机号码 : phone
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getPhone () {
+	public String getPhone() {
 		return phone;
 	}
-	
+
 	/**
 	 * 手机号码 : phone
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setPhone (String phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
 	/**
-	 * 用户类型 0：个人  1:企业 : customer_type
+	 * 用户类型 0：个人 1:企业 : customer_type
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getCustomerType () {
+	public Integer getCustomerType() {
 		return customerType;
 	}
-	
+
 	/**
-	 * 用户类型 0：个人  1:企业 : customer_type
+	 * 用户类型 0：个人 1:企业 : customer_type
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setCustomerType (Integer customerType) {
+	public void setCustomerType(Integer customerType) {
 		this.customerType = customerType;
 	}
+
 	/**
 	 * 公司id : com_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getComId () {
+	public Integer getComId() {
 		return comId;
 	}
-	
+
 	/**
 	 * 公司id : com_id
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setComId (Integer comId) {
+	public void setComId(Integer comId) {
 		this.comId = comId;
 	}
+
 	/**
 	 * QQ : user_qq
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getUserQq () {
+	public String getUserQq() {
 		return userQq;
 	}
-	
+
 	/**
 	 * QQ : user_qq
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUserQq (String userQq) {
+	public void setUserQq(String userQq) {
 		this.userQq = userQq;
 	}
+
 	/**
 	 * 用户邮箱 : user_email
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getUserEmail () {
+	public String getUserEmail() {
 		return userEmail;
 	}
-	
+
 	/**
 	 * 用户邮箱 : user_email
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUserEmail (String userEmail) {
+	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
 	}
+
 	/**
 	 * 身份证 : user_identity
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getUserIdentity () {
+	public String getUserIdentity() {
 		return userIdentity;
 	}
-	
+
 	/**
 	 * 身份证 : user_identity
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUserIdentity (String userIdentity) {
+	public void setUserIdentity(String userIdentity) {
 		this.userIdentity = userIdentity;
 	}
+
 	/**
 	 * 数量 : user_number
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getUserNumber () {
+	public String getUserNumber() {
 		return userNumber;
 	}
-	
+
 	/**
 	 * 数量 : user_number
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUserNumber (String userNumber) {
+	public void setUserNumber(String userNumber) {
 		this.userNumber = userNumber;
 	}
+
 	/**
 	 * 绑定银行卡id : bank
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getBank () {
+	public Integer getBank() {
 		return bank;
 	}
-	
+
 	/**
 	 * 绑定银行卡id : bank
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setBank (Integer bank) {
+	public void setBank(Integer bank) {
 		this.bank = bank;
 	}
+
 	/**
 	 * 支付宝id : alipay
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getAlipay () {
+	public Integer getAlipay() {
 		return alipay;
 	}
-	
+
 	/**
 	 * 支付宝id : alipay
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setAlipay (Integer alipay) {
+	public void setAlipay(Integer alipay) {
 		this.alipay = alipay;
 	}
+
 	/**
 	 * 密码 : password
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getPassword () {
+	public String getPassword() {
 		return password;
 	}
-	
+
 	/**
 	 * 密码 : password
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setPassword (String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	/**
 	 * 父级用户id : parent_userId
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getParentUserId () {
+	public Integer getParentUserId() {
 		return parentUserId;
 	}
-	
+
 	/**
 	 * 父级用户id : parent_userId
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setParentUserId (Integer parentUserId) {
+	public void setParentUserId(Integer parentUserId) {
 		this.parentUserId = parentUserId;
 	}
+
 	/**
 	 * 头像图片地址 : hedehref
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getHedehref () {
+	public String getHedehref() {
 		return hedehref;
 	}
-	
+
 	/**
 	 * 头像图片地址 : hedehref
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setHedehref (String hedehref) {
+	public void setHedehref(String hedehref) {
 		this.hedehref = hedehref;
 	}
+
 	/**
 	 * IP地址 : login_ip
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getLoginIp () {
+	public String getLoginIp() {
 		return loginIp;
 	}
-	
+
 	/**
 	 * IP地址 : login_ip
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setLoginIp (String loginIp) {
+	public void setLoginIp(String loginIp) {
 		this.loginIp = loginIp;
 	}
+
 	/**
 	 * 最近登录时间 : last_login_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public java.util.Date getLastLoginTime () {
+	public java.util.Date getLastLoginTime() {
 		return lastLoginTime;
 	}
-	
+
 	/**
 	 * 最近登录时间 : last_login_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setLastLoginTime (java.util.Date lastLoginTime) {
+	public void setLastLoginTime(java.util.Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
 	}
+
 	/**
 	 * 创建时间 : create_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public java.util.Date getCreateTime () {
+	public java.util.Date getCreateTime() {
 		return createTime;
 	}
-	
+
 	/**
 	 * 创建时间 : create_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setCreateTime (java.util.Date createTime) {
+	public void setCreateTime(java.util.Date createTime) {
 		this.createTime = createTime;
 	}
+
 	/**
 	 * 修改时间 : update_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public java.util.Date getUpdateTime () {
+	public java.util.Date getUpdateTime() {
 		return updateTime;
 	}
-	
+
 	/**
 	 * 修改时间 : update_time
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUpdateTime (java.util.Date updateTime) {
+	public void setUpdateTime(java.util.Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
 	/**
 	 * 账号状态 0：正常 1：禁用 : status
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getStatus () {
+	public String getStatus() {
 		return status;
 	}
-	
+
 	/**
 	 * 账号状态 0：正常 1：禁用 : status
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setStatus (String status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
+
 	/**
 	 * 来源 0:注册 1:系统添加 2:商务 3:分销商4:代理商 : source
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getSource () {
+	public String getSource() {
 		return source;
 	}
-	
+
 	/**
 	 * 来源 0:注册 1:系统添加 2:商务 3:分销商4:代理商 : source
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setSource (String source) {
+	public void setSource(String source) {
 		this.source = source;
 	}
+
 	/**
 	 * 创建者 : creater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getCreater () {
+	public Integer getCreater() {
 		return creater;
 	}
-	
+
 	/**
 	 * 创建者 : creater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setCreater (Integer creater) {
+	public void setCreater(Integer creater) {
 		this.creater = creater;
 	}
+
 	/**
 	 * 修改者 : updater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public Integer getUpdater () {
+	public Integer getUpdater() {
 		return updater;
 	}
-	
+
 	/**
 	 * 修改者 : updater
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setUpdater (Integer updater) {
+	public void setUpdater(Integer updater) {
 		this.updater = updater;
 	}
+
 	/**
-	 * 删除状态：0正常，1已删除  2客服列表注册 3 客户审核驳回 : is_deleted
+	 * 删除状态：0正常，1已删除 2客服列表注册 3 客户审核驳回 : is_deleted
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getIsDeleted () {
+	public String getIsDeleted() {
 		return isDeleted;
 	}
-	
+
 	/**
-	 * 删除状态：0正常，1已删除  2客服列表注册 3 客户审核驳回 : is_deleted
+	 * 删除状态：0正常，1已删除 2客服列表注册 3 客户审核驳回 : is_deleted
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setIsDeleted (String isDeleted) {
+	public void setIsDeleted(String isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
 	/**
 	 * 备注 : remarks
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public String getRemarks () {
+	public String getRemarks() {
 		return remarks;
 	}
-	
+
 	/**
 	 * 备注 : remarks
 	 * 
-	 * @return 
+	 * @return
 	 */
-	public void setRemarks (String remarks) {
+	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
 
-
-  
 }

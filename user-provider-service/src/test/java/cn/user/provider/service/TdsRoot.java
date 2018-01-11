@@ -69,7 +69,7 @@ public class TdsRoot {
 	  @Test
 	  public void test1(){
 		  TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
-		  tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
+		//  tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
 		
 	  }
 	  
