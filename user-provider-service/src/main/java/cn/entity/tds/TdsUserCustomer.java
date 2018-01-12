@@ -39,11 +39,6 @@ public class TdsUserCustomer implements Serializable{
 	//修改时间 : update_time 	
 	private java.util.Date updateTime; 
 	
-	//创建者 : creater 	
-	private Integer creater; 
-	
-	//修改者 : updater 	
-	private Integer updater; 
 	
 
 	/**
@@ -182,41 +177,7 @@ public class TdsUserCustomer implements Serializable{
 	public void setUpdateTime (java.util.Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	/**
-	 * 创建者 : creater
-	 * 
-	 * @return 
-	 */
-	public Integer getCreater () {
-		return creater;
-	}
 	
-	/**
-	 * 创建者 : creater
-	 * 
-	 * @return 
-	 */
-	public void setCreater (Integer creater) {
-		this.creater = creater;
-	}
-	/**
-	 * 修改者 : updater
-	 * 
-	 * @return 
-	 */
-	public Integer getUpdater () {
-		return updater;
-	}
-	
-	/**
-	 * 修改者 : updater
-	 * 
-	 * @return 
-	 */
-	public void setUpdater (Integer updater) {
-		this.updater = updater;
-	}
-
 
   
 }

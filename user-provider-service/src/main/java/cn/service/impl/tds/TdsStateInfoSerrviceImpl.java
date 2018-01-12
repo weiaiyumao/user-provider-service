@@ -84,7 +84,6 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		PageDomain<TdsStateInfoDomain> listDomain = null;
 		List<TdsStateInfoDomain> list = new ArrayList<TdsStateInfoDomain>();
 		try {
-			// TODO
 			// yyyy-mm-dd 天数加1
 			BeanHelper.beanHelperTrim(auto);  //去掉空格
 			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {

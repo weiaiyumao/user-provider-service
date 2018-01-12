@@ -104,28 +104,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		return result;
 	}
 
-	// //TODO
-	// @Transactional
-	// @Override
-	// public BackResult<TdsUserDomain> update(TdsUserDomain domain) {
-	// BackResult<TdsUserDomain> result = new BackResult<TdsUserDomain>();
-	// domain.setUpdateTime(new Date());
-	// TdsUser tds = new TdsUser();
-	// try {
-	// // 如果修改的是密码，进行加密
-	// if (!"".equals(domain.getPassword()) || null != domain.getPassword()) {
-	// domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
-	// }
-	// BeanUtils.copyProperties(domain, tds);
-	// tdsUserMapper.update(tds); //用户信息保存
-	// result.setResultObj(domain);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// logger.error("update功能信息出现系统异常：" + e.getMessage());
-	// return new BackResult<TdsUserDomain>(ResultCode.RESULT_FAILED, "数据落地异常");
-	// }
-	// return null;
-	// }
 
 	@Override
 	public BackResult<PageDomain<TdsUserDomain>> pageSelectAll(TdsUserDomain domain, Integer pageSize,
@@ -141,7 +119,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该用户没有订单信息");
 			}
-			// TODO
 			PageAuto auto = new PageAuto(curPage, pageSize);
 			List<TdsUser> pageList = tdsUserMapper.pageSelectAll(auto);
 			for (TdsUser tds : pageList) {
@@ -259,7 +236,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		TdsUser tdsUser = new TdsUser();
 		try {
 			BeanUtils.copyProperties(domain, tdsUser);
-			tdsUser.setCustomerType(0); // 个人编辑信息
 			tdsUserMapper.update(tdsUser); // 用户信息保存
 			result.setResultObj(1);
 		} catch (Exception e) {

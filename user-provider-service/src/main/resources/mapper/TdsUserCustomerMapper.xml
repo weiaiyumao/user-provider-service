@@ -14,8 +14,6 @@
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="create_time" property="createTime"></result>
 		<result column="update_time" property="updateTime"></result>
-		<result column="creater" property="creater"></result>
-		<result column="updater" property="updater"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -26,9 +24,7 @@
 		sum_commission,
 		is_deleted,
 		create_time,
-		update_time,
-		creater,
-		updater
+		update_time
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -53,8 +49,6 @@
 			<if test="sumCommission != null">and sum_commission = #{sumCommission}</if>
 			<if test="createTime != null">and create_time = #{createTime}</if>
 			<if test="updateTime != null">and update_time = #{updateTime}</if>
-			<if test="creater != null">and creater = #{creater}</if>
-			<if test="updater != null">and updater = #{updater}</if>
 			and is_deleted ='0'
 		</where>
 	</select>
@@ -68,8 +62,6 @@
 			<if test="sumCommission != null"> sum_commission , </if>
 			<if test="createTime != null"> create_time , </if>
 			<if test="updateTime != null"> update_time , </if>
-			<if test="creater != null"> creater , </if>
-			<if test="updater != null"> updater , </if>
 			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -79,8 +71,6 @@
 			<if test="sumCommission != null"> #{sumCommission} , </if>
 			<if test="createTime != null"> #{createTime} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
-			<if test="creater != null"> #{creater} , </if>
-			<if test="updater != null"> #{updater} , </if>
 			'0' ,
 		</trim>
 
@@ -88,7 +78,8 @@
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_user_customer SET IS_DELETED='1'
+		UPDATE tds_user_customer
+		SET IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -109,49 +100,57 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
-	
-	
-	
+
+
+
 	<select id="pageTdsCustomer" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
 		select u.id as userId,u.name as userName,d.id as departId, d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
-		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl
-		from tds_user u LEFT  JOIN tds_user_customer cu
-		on cu.user_id=u.id LEFT JOIN tds_user_department ud ON
-		ud.user_id=u.id LEFT JOIN tds_department d on d.id=ud.depart_id LEFT JOIN tds_company com  
+		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money
+		as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl
+		from tds_user u LEFT JOIN tds_user_customer cu
+		on cu.user_id=u.id LEFT
+		JOIN tds_user_department ud ON
+		ud.user_id=u.id LEFT JOIN tds_department
+		d on d.id=ud.depart_id LEFT JOIN tds_company com
 		on com.id=u.com_id
 		where u.parent_user_id=#{parentUserId}
-			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
-			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
-			<if test="statTime != null and statTime!=''">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='0' order by u.create_time desc
-	
+		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+		<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+		<if test="statTime != null and statTime!=''">
+			AND u.create_time &gt;= #{statTime}
+			AND u.create_time &lt;= #{endTime}
+		</if>
+		AND u.is_deleted ='0' order by u.create_time desc
+
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
 
-	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
-	    select count(1)
-		from tds_user u LEFT  JOIN tds_user_customer cu
-		on cu.user_id=u.id LEFT JOIN tds_user_department ud ON
-		ud.user_id=u.id LEFT JOIN tds_department d on d.id=ud.depart_id LEFT JOIN tds_company com  
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Hashmap">
+		select count(1)
+		from tds_user u LEFT JOIN tds_user_customer cu
+		on
+		cu.user_id=u.id LEFT JOIN tds_user_department ud ON
+		ud.user_id=u.id
+		LEFT JOIN tds_department d on d.id=ud.depart_id LEFT JOIN tds_company
+		com
 		on com.id=u.com_id
 		where u.parent_user_id=#{parentUserId}
-			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
-			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
-			<if test="statTime != null and statTime!=''">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='0' order by u.create_time desc
+		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+		<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+		<if test="statTime != null and statTime!=''">
+			AND u.create_time &gt;= #{statTime}
+			AND u.create_time &lt;= #{endTime}
+		</if>
+		AND u.is_deleted ='0' order by u.create_time desc
 	</select>
-	
-    <select  id="loadByIdView" parameterType="HashMap" resultType="cn.entity.tds.view.TdsCustomerView">
-        select u.id as userId,u.name as userName,d.id as departId, d.name as
+
+	<select id="loadByIdView" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsCustomerView">
+		select u.id as userId,u.name as userName,d.id as departId, d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
 		u.source,com.com_url as
 		comUrl,u.is_deleted
@@ -159,10 +158,22 @@
 		tds_user_department
 		ud,tds_department d,
 		tds_company com
-		where u.id=ud.user_id and
+		where
+		u.id=ud.user_id and
 		d.id=ud.depart_id and com.id=u.com_id
-		and u.is_deleted='0'
+		and
+		u.is_deleted='0'
 		and u.id=#{id}
-    </select>
-    
+	</select>
+
+
+	<update id="addMoneyAndCommission" parameterType="HashMap">
+		update tds_user_customer
+		SET sum_money=sum_money+#{sumMoney},
+		sum_commission=sum_commission+#{sumCommission},
+		update_time = #{updateTime}
+		where user_id=#{userId}
+		and is_deleted='0'
+	</update>
+
 </mapper>

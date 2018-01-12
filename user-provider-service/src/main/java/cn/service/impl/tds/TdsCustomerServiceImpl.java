@@ -241,7 +241,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setPhone(auto.getPhone()); // 手机号码
 			tdsUser.setContact(auto.getContact()); // 联系人
 			tdsUser.setSource(StatusType.ADD_ADMIN); // 注册来源
-			tdsUser.setIsDeleted("2"); // 需要审核
+			tdsUser.setIsDeleted("2");//客户注册审核，第注册成功 is_deleted 默认为 2 
 			tdsUser.setParentUserId(loginUserId); // 归属父id
 			tdsUser.setComId(tdsCom.getId());
 			tdsUser.setCreater(loginUserId);

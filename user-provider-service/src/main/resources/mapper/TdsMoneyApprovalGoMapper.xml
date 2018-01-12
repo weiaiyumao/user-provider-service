@@ -29,6 +29,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="lessName" property="lessName"></result>
 		<result column="pname_id" property="pnameId"></result>
+		<result column="commisson_money" property="commissonMoney"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -53,7 +54,8 @@
 		update_time,
 		updater,
 		creater,
-		pname_id
+		pname_id,
+		commisson_money
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -93,6 +95,7 @@
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="updater != null">and creater = #{creater}</if>
 			<if test="pnameId != null">and pname_id = #{pnameId}</if>
+			<if test="commissonMoney != null">and commisson_money = #{commissonMoney}</if>
 			and is_deleted = '0'
 		</where>
 	</select>
@@ -119,6 +122,7 @@
 			<if test="updater != null"> updater , </if>
 			<if test="creater != null"> creater , </if>
 			<if test="pnameId != null"> pname_id , </if>
+			<if test="commissonMoney != null"> commisson_money , </if>
 		    approval_type , 
 			is_deleted ,
 		</trim>
@@ -142,6 +146,7 @@
 			<if test="updater != null"> #{updater} , </if>
 			<if test="creater != null"> #{creater} , </if>
 			<if test="pnameId != null"> #{pnameId} , </if>
+			<if test="commissonMoney != null"> #{commissonMoney} , </if>
 			'1',
 			'0',
 		</trim>
@@ -180,6 +185,7 @@
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="arriveTime != null"> arrive_time=#{arriveTime} , </if>
 			<if test="pnameId != null"> pname_id = #{pnameId}, </if>
+			<if test="commissonMoney != null"> commisson_money = #{commissonMoney}, </if>
 		</trim>
 		WHERE id=#{id} and is_deleted='0'
 	</update>

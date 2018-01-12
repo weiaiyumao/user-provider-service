@@ -1,5 +1,6 @@
 package cn.dao.tds;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -42,5 +43,16 @@ public interface TdsUserCustomerMapper extends IBaseDao<TdsUserCustomer, Integer
      * @return
      */
 	TdsCustomerView loadByIdView(@Param("id") Integer id);
+	
+	
+	/**
+	 * 充值，下单到账金额佣金改变
+	 * @param sumMoney
+	 * @param sumCommission
+	 * @param userId
+	 * @param updateTime
+	 * @return
+	 */
+	Integer addMoneyAndCommission(@Param("sumMoney")String sumMoney,@Param("sumCommission")String sumCommission,@Param("userId")Integer userId,@Param("updateTime")Date updateTime);
   
 }

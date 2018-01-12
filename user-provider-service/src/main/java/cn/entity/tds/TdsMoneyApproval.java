@@ -76,6 +76,8 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	private Integer updater;
 	// 修改时间 : update_time
 	private java.util.Date updateTime;
+	
+	private String commissonMoney;
 
 	
 	private String lessName;
@@ -86,6 +88,14 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	//关联产品id : pname_id 	
 	private Integer pnameId; 
 	
+	
+	public String getCommissonMoney() {
+		return commissonMoney;
+	}
+	
+	public void setCommissonMoney(String commissonMoney) {
+		this.commissonMoney = commissonMoney;
+	}
 	
 	/**
 	 * 关联产品id : pname_id

@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 
 import cn.dao.tds.TdsApprovalLogMapper;
+import cn.dao.tds.TdsUserCustomerMapper;
 import cn.dao.tds.TdsUserMapper;
 import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsUser;
+import cn.entity.tds.TdsUserCustomer;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsApprovalService;
 import cn.utils.DateUtils;
@@ -40,6 +42,11 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 
 	@Autowired
 	private TdsUserMapper tdsUserMapper;
+	
+	
+
+	@Autowired
+	private TdsUserCustomerMapper tdsUserCustomerMapper;
 
 	@Override
 	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsApproval(PageAuto auto) {
@@ -48,15 +55,14 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 		List<TdsCustomerViewDomain> list = new ArrayList<TdsCustomerViewDomain>();
 		try {
 
-			// // TODO
-			// // yyyy-mm-dd 天数加1
+		   // yyyy-mm-dd 天数加1
 			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间
 				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
 			
-			// 客户注册审核，第注册成功 is_deleted 默认为2 TODO
+			// 客户注册审核，第注册成功 is_deleted 默认为2
 			// 查询isDeleted为2的客户信息
 			Integer count = tdsApprovalMapper.queryCount(auto);
 			if (count == 0) {
@@ -95,15 +101,23 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 		try {
 			if (isAgree == 0 || "0".equals(isAgree)) {
 				// 客户列表开账户
-				// 客户注册审核，第注册成功 is_deleted 默认为 2 TODO
+				// 客户注册审核，第注册成功 is_deleted 默认为 2 
 				// 同意is_deleted 为0
 				TdsUser tUser = new TdsUser();
 				tUser.setIsDeleted("0");
 				tUser.setId(userId);
 				// tUser.setUpdater(userId);
 				tdsUserMapper.update(tUser);
+				//客户列表开通账号，审核通过，列表用户消费数据新增
+                
+				TdsUserCustomer userCust=new TdsUserCustomer();
+				userCust.setUserId(userId);
+				userCust.setCreateTime(new Date());
+				userCust.setUpdateTime(new Date());
+			    tdsUserCustomerMapper.save(userCust);
+				
+				
 			} else {
-				// TODO
 				// 注册驳回
 				TdsApprovalLog tdsAppro = new TdsApprovalLog();
 				tdsAppro.setUserId(userId);// 驳回的用户

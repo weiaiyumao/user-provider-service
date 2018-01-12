@@ -108,7 +108,6 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		List<UserRoleDepartmentViewDomain> list = new ArrayList<UserRoleDepartmentViewDomain>();
 		try {
 
-			// // TODO
 		    // yyyy-mm-dd 天数加1
 			if (null != auto.getStatTime() && !auto.getStatTime().equals("")) {
 				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
@@ -189,7 +188,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		try {
 			tds.setCreateTime(new Date());
 			tds.setComId(comId);
-			tds.setCreater(loginUserId); // TODO 测试数据
+			tds.setCreater(loginUserId); 
 			tds.setPassword(MD5Util.getInstance().getMD5Code(passWord));
 			tds.setSource(StatusType.ADD_ADMIN);
 			tds.setName(name);
@@ -206,7 +205,6 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			tdsUserDepartmentMapper.save(tdsUserDepartment);
 
 			// 角色信息保存
-			// TODO //保存角色
 			List<TdsUserRole> list = new ArrayList<>();
 			for (Integer item : arrRoles) {
 				TdsUserRole tdsUserRole = new TdsUserRole();
@@ -273,8 +271,6 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
 		try {
-			
-			//TODO
 			BeanUtils.copyProperties(domain, tds);
 			tdsFunctionMapper.save(tds);
 			result.setResultObj(1);

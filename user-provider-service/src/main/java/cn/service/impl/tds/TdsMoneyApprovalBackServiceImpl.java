@@ -115,6 +115,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	 *            xx驳回
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	@Transactional
 	public BackResult<Integer> approvalByUpStatusOutOrBack(TdsMoneyApproval tdsMoApp, String appRemarks, String rej) {
 		BackResult<Integer> result = new BackResult<Integer>();
@@ -129,10 +130,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 					// tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					// 审核通过 等待金额 到账时间 再次确认
 					serual = "1";// 流水状态 1处理中
-				}
-
-				// 驳回
-				if (StatusType.APPROVAL_STATUS_2.equals(tdsMoApp.getApprovalStatus())) {
+				}else if(StatusType.APPROVAL_STATUS_2.equals(tdsMoApp.getApprovalStatus())) {
 					// 驳回原因 记录
 					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), rej, appRemarks, new Date(),
 							tdsMoApp.getOrderNumber()));
@@ -140,6 +138,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 					// tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					// 更新流水明细驳回状态
 					serual = "3";
+				}else{
+					result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
+					result.setResultMsg("传参错误!");
+					return result;
 				}
 				// 更新流水号状态
 				// upSerialStatus(tdsMoApp.getOrderNumber(),
@@ -174,24 +176,25 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		// 退款流水
 		String serial = OrderNo.getSerial16();
 		//获取下单号
-		domain.setOrderNumber(ordrr);
-		domain.setSerialNumber(serial);
-		domain.setCreateTime(new Date());
-		domain.setUpdateTime(new Date());
+		
 		try {
-			
-			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
-			BeanUtils.copyProperties(domain, appBack);
 			
 			//查询剩余佣金,该佣金可提现操作的状态
 			String serMoney=tdsCommissionMapper.queryBySumMoney(appBack.getUserId());
+			domain.setOrderNumber(ordrr);
+			domain.setSerialNumber(serial);
+			domain.setCreateTime(new Date());
+			domain.setUpdateTime(new Date());
+			domain.setSerualMoney(serMoney);
+			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
+			domain.setPlusNumber(1215400); //测试剩余数量 TODO
 			
-			//TODO
-			
+		
 			//获取所有订单并已到账的的 佣金总和
 			List<TdsMoneyApproval> list=tdsMoneyApprovalGoMapper.queryByOrderByUser(appBack.getUserId());
 			
 			
+			BeanUtils.copyProperties(domain, appBack);
 			tdsMoneyApprovalBackMapper.save(appBack); //保存退款信息审核
 			
 			
