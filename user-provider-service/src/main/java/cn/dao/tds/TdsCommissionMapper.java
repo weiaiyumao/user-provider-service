@@ -39,4 +39,12 @@ public interface TdsCommissionMapper extends IBaseDao<TdsCommission, Integer>{
 	 */
 	String queryBySumMoney(@Param("userId") Integer userId);
 	
+	
+	/**
+	 * 更新状态
+	 * @param entity
+	 * @return
+	 */
+	Integer upCommStatus(TdsCommission entity);
+	
 }

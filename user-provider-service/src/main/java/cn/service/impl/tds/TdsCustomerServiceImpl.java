@@ -19,13 +19,11 @@ import cn.dao.tds.TdsUserCustomerMapper;
 import cn.dao.tds.TdsUserDepartmentMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
 import cn.dao.tds.TdsUserMapper;
-import cn.dao.tds.TdsUserRoleMapper;
 import cn.entity.tds.TdsAttornLog;
 import cn.entity.tds.TdsCompany;
 import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserDepartment;
 import cn.entity.tds.TdsUserDiscount;
-import cn.entity.tds.TdsUserRole;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsCustomerService;
 import cn.utils.DateUtils;
@@ -60,78 +58,50 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	private TdsAttornLogMapper tdsAttornLogMapper;
 
 	@Autowired
-	private TdsUserRoleMapper tdsUserRoleMapper;
-
-	@Autowired
 	private TdsUserDiscountMapper tdsUserDiscountMapper;
 
 	@Transactional
 	@Override
-	public BackResult<Integer> update(Integer loginUserId, PageAuto auto, Integer upUserId, Integer[] arrRoles) {
+	public BackResult<Integer> updateCustomer(TdsCustomerViewDomain domain, Integer loginUserId, String passWord) {
 		TransactionStatus status = this.begin();
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUser tds = new TdsUser();
 		try {
 
-			// TdsUser isPhone = tdsUserMapper.loadByPhone(auto.getPhone());
-			// if (null != isPhone &&
-			// auto.getPhone().equals(isPhone.getPhone())) {
-			// return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS,
-			// "手机号码已注册过");
-			// }
-			//
-			// Integer isTdsCom = tdsCompanyMapper.getComUrl(auto.getComUrl());
-			// if (isTdsCom > 0) {
-			// return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS,
-			// "公司地址已经存在");
-			// }
+			TdsUser isPhone = tdsUserMapper.loadByPhone(domain.getPhone());
+			if (null != isPhone && domain.getPhone().equals(isPhone.getPhone())) {
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "手机号码已注册过");
+			}
 
 			// 根据用户id获取公司id;
-			TdsUser tur = tdsUserMapper.loadById(upUserId);
+			TdsUser tur = tdsUserMapper.loadById(domain.getUserId());
+			// 网址修改
+			TdsCompany com = new TdsCompany();
+			com.setComUrl(domain.getCom_url());
+			com.setId(tur.getComId());
+			com.setComName(domain.getCom_name());
+			com.setUpdateTime(new Date());
+			com.setUpdater(loginUserId);
+			tdsCompanyMapper.update(com);
 
-			if (null != auto.getComUrl() && !"".equals(auto.getComUrl())) {
-				// 网址修改
-				TdsCompany com = new TdsCompany();
-				com.setComUrl(auto.getComUrl());
-				com.setId(tur.getComId());
-				com.setUpdateTime(new Date());
-				com.setUpdater(loginUserId);
-				tdsCompanyMapper.update(com);
-			}
-			if (null != auto.getDepartId()) {
-				// 部门修改
-				TdsUserDepartment tdsUd = new TdsUserDepartment();
-				tdsUd.setUserId(upUserId);
-				tdsUd.setDepartId(auto.getDepartId());
-				tdsUd.setUpdater(loginUserId);
-				tdsUd.setUpdateTime(new Date());
-				tdsUserDepartmentMapper.updateByUserId(tdsUd);
-			}
-
-			if (arrRoles.length > 0) {
-				tdsUserRoleMapper.deleteByUserId(upUserId);
-				// 保存角色用户关系
-				List<TdsUserRole> list = new ArrayList<>();
-				for (Integer item : arrRoles) {
-					TdsUserRole tdsUserRole = new TdsUserRole();
-					tdsUserRole.setUserId(upUserId);
-					tdsUserRole.setCreater(loginUserId);
-					tdsUserRole.setUpdater(loginUserId);
-					tdsUserRole.setCreateTime(new Date());
-					tdsUserRole.setRoleId(item);
-					list.add(tdsUserRole);
-				}
-
-				tdsUserRoleMapper.saveRoleByUser(list);
-			}
-
+			// 部门修改
+			TdsUserDepartment tdsUd = new TdsUserDepartment();
+			tdsUd.setUserId(domain.getUserId());
+			tdsUd.setDepartId(domain.getDepartId());
+			tdsUd.setUpdater(loginUserId);
+			tdsUd.setUpdateTime(new Date());
+			tdsUserDepartmentMapper.updateByUserId(tdsUd);
+			
 			// 用户信息修改
-			tds.setPassword(MD5Util.getInstance().getMD5Code(auto.getPassWord()));
-			tds.setPhone(auto.getPhone());
-			tds.setContact(auto.getContact());
-			tds.setUserName(auto.getCustomerName());
-			tds.setId(upUserId);
+			tds.setPassword(MD5Util.getInstance().getMD5Code(passWord));
+			tds.setPhone(domain.getPhone());
+			tds.setContact(domain.getContact());
+			tds.setUserName(domain.getUserName());
+			tds.setId(domain.getUserId());
+			tds.setUpdater(loginUserId);
+			tds.setUpdateTime(new Date());
 			tdsUserMapper.update(tds);
+
 			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
@@ -150,7 +120,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		PageDomain<TdsCustomerViewDomain> pageListDomain = null;
 		List<TdsCustomerViewDomain> listDomain = new ArrayList<TdsCustomerViewDomain>();
 		try {
-		
+
 			if (null != auto.getCreateTime() || "".equals(auto.getCreateTime())) {
 				Date endTime = DateUtils.addDay(auto.getCreateTime(), 1);
 				auto.setStatTime(auto.getStatTime()); // 开始时间
@@ -185,22 +155,21 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		return result;
 	}
 
-	
 	@Transactional
 	@Override
 	public BackResult<Integer> attorn(TdsAttornLogDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsAttornLog tdsAtt = new TdsAttornLog();
-		TransactionStatus status=this.begin();
+		TransactionStatus status = this.begin();
 		domain.setCreateTime(new Date());
 		try {
-			//记录log
+			// 记录log
 			BeanUtils.copyProperties(domain, tdsAtt);
 			tdsAttornLogMapper.save(tdsAtt);
-			//修改父级用户id
-            TdsUser tdsUser=new TdsUser();
-            tdsUser.setId(tdsAtt.getUserId());
-            tdsUser.setParentUserId(tdsAtt.getAttornUserId());//数据转移
+			// 修改父级用户id
+			TdsUser tdsUser = new TdsUser();
+			tdsUser.setId(tdsAtt.getUserId());
+			tdsUser.setParentUserId(tdsAtt.getAttornUserId());// 数据转移
 			tdsUserMapper.update(tdsUser);
 			result.setResultObj(1);
 			this.commit(status);
@@ -216,54 +185,54 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 	@Transactional
 	@Override
-	public BackResult<Integer> addTdsCustomer(PageAuto auto, Integer loginUserId, Integer[] arrRoles) {
+	public BackResult<Integer> addTdsCustomer(TdsCustomerViewDomain domain, Integer loginUserId, String passWord) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TransactionStatus status = this.begin();
 		try {
-			//
-			TdsUser isPhone = tdsUserMapper.loadByPhone(auto.getPhone());
-			if (null != isPhone && auto.getPhone().equals(isPhone.getPhone())) {
+			TdsUser isPhone = tdsUserMapper.loadByPhone(domain.getPhone());
+			if (null != isPhone && domain.getPhone().equals(isPhone.getPhone())) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "手机号码已注册过");
 			}
 
-			Integer isTdsCom = tdsCompanyMapper.getComUrl(auto.getComUrl());
-			if (isTdsCom > 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "公司地址已经存在");
-			}
+			// 新增用户的时候判断公司名字和地址是否存在，存在则修改，否则更新信息
+			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getCom_url(), domain.getCom_name());
 			TdsCompany tdsCom = new TdsCompany();
-			// tdsCom.setComName(auto.getCustomerName()); //客户名称--公司名称
-			tdsCom.setComUrl(auto.getComUrl());
-			tdsCompanyMapper.save(tdsCom);
+			tdsCom.setComUrl(domain.getCom_url());
+			tdsCom.setComName(domain.getCom_name());
+			if (null == isTdsCom) {
+				// 保存
+				tdsCom.setCreateTime(new Date());
+				tdsCom.setCreater(loginUserId);
+				tdsCompanyMapper.save(tdsCom);
+			} else {
+				// 更新
+				tdsCom.setUpdateTime(new Date());
+				tdsCom.setUpdater(loginUserId);
+				tdsCompanyMapper.update(tdsCom);
+			}
 
 			TdsUser tdsUser = new TdsUser();
-			tdsUser.setUserName(auto.getCustomerName()); // 客户名称
-			tdsUser.setPassword(MD5Util.getInstance().getMD5Code(auto.getPassWord())); // 密码
-			tdsUser.setPhone(auto.getPhone()); // 手机号码
-			tdsUser.setContact(auto.getContact()); // 联系人
+			tdsUser.setUserName(domain.getUserName()); // 客户名称
+			tdsUser.setPassword(MD5Util.getInstance().getMD5Code(passWord)); // 密码
+			tdsUser.setPhone(domain.getPhone()); // 手机号码
+			tdsUser.setContact(domain.getContact()); // 联系人
 			tdsUser.setSource(StatusType.ADD_ADMIN); // 注册来源
-			tdsUser.setIsDeleted("2");//客户注册审核，第注册成功 is_deleted 默认为 2 
+			tdsUser.setIsDeleted("2");// 客户注册审核，第注册成功 is_deleted 默认为 2
 			tdsUser.setParentUserId(loginUserId); // 归属父id
 			tdsUser.setComId(tdsCom.getId());
 			tdsUser.setCreater(loginUserId);
+			tdsUser.setCreateTime(new Date());
 			tdsUserMapper.save(tdsUser); // 用户信息保存
 
 			// 保存部门用户关系
 			TdsUserDepartment tdsUserDepa = new TdsUserDepartment();
 			tdsUserDepa.setUserId(tdsUser.getId()); // 注册成功返回用户id
-			tdsUserDepa.setDepartId(auto.getDepartId()); // 部门
+			tdsUserDepa.setDepartId(domain.getDepartId()); // 部门
+			tdsUserDepa.setCreater(loginUserId);
+			tdsUserDepa.setCreateTime(new Date());
+			tdsUserDepa.setUpdateTime(new Date());
 			tdsUserDepartmentMapper.save(tdsUserDepa);
 
-			// 保存角色用户关系
-			List<TdsUserRole> list = new ArrayList<>();
-			for (Integer item : arrRoles) {
-				TdsUserRole tdsUserRole = new TdsUserRole();
-				tdsUserRole.setUserId(tdsUser.getId());
-				tdsUserRole.setCreater(loginUserId);
-				tdsUserRole.setCreateTime(new Date());
-				tdsUserRole.setRoleId(item);
-				list.add(tdsUserRole);
-			}
-			tdsUserRoleMapper.saveRoleByUser(list);
 			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
@@ -283,9 +252,6 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		TdsCustomerViewDomain comDomain = new TdsCustomerViewDomain();
 		try {
 			TdsCustomerView obj = tdsUserCustomerMapper.loadByIdView(userId);
-			if (null == obj) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该对象没信息");
-			}
 			BeanUtils.copyProperties(obj, comDomain);
 			result.setResultObj(comDomain);
 		} catch (BeansException e) {
@@ -297,15 +263,14 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		return result;
 	}
 
-	
 	@Override
 	public BackResult<Integer> updatePrice(TdsUserDiscountDomain domain) {
-		BackResult<Integer> result=new BackResult<Integer>();
+		BackResult<Integer> result = new BackResult<Integer>();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
-		TdsUserDiscount  tds=new TdsUserDiscount();
+		TdsUserDiscount tds = new TdsUserDiscount();
 		try {
-			BeanUtils.copyProperties(domain,tds);
+			BeanUtils.copyProperties(domain, tds);
 			tdsUserDiscountMapper.update(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -355,7 +320,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			if (null != tds.getStartMoney() && null != tds.getStartDiscount() && !"".equals(tds.getStartMoney())
 					&& !"".equals(tds.getStartDiscount())) {
 				tdsUserDiscountMapper.save(tds);
-			}else{
+			} else {
 				return new BackResult<>(ResultCode.RESULT_PARAM_EXCEPTIONS, "请输入完整起充量和折扣");
 			}
 			result.setResultObj(1);

@@ -122,9 +122,8 @@
 			<if test="updateTime != null"> update_time = #{updateTime}, </if>
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
-			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 		</trim>
-		WHERE user_id=#{userId}
+		WHERE user_id=#{userId} and is_deleted='0'
 	
 	</update>
 	

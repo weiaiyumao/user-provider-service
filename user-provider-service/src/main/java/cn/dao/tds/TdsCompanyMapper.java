@@ -9,20 +9,13 @@ import cn.entity.tds.TdsCompany;
 public interface TdsCompanyMapper  extends IBaseDao<TdsCompany, Integer> {
 	
 	
-	/**
-	 * 根据公司名称查询
-	 * @param comName
-	 * @return
-	 */
-	TdsCompany getComName(@Param("comName")String comName);
-	
 	
 	/**
 	 * 根据公司地址查询
 	 * @param comName
 	 * @return
 	 */
-	Integer getComUrl(@Param("comUrl")String comUrl);
+	TdsCompany getComUrlAndComName(@Param("comUrl")String comUrl,@Param("comName")String comName);
 	
 	/**
 	 * 新增公司信息 返回主键id

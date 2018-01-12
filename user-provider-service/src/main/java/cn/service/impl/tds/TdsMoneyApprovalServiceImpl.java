@@ -81,22 +81,19 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			domain.setCreateTime(new Date()); // 下单 订单时间
 			domain.setUpdateTime(new Date());
 			domain.setPayment("1");// 进账类型
-			
-			//查询折扣
-			TdsUserDiscount discount = tdsUserDiscountMapper.getDiscount(domain.getUserId(),
-					domain.getSumMoney());
+
+			// 查询折扣
+			TdsUserDiscount discount = tdsUserDiscountMapper.getDiscount(domain.getUserId(), domain.getSumMoney());
 			if (null != discount && !"".equals(discount.getStartDiscount())) {
 				String disc = discount.getStartDiscount();
-				domain.setCommissonMoney(
-						String.valueOf(MoneyCommission.getCommission(domain.getSumMoney(), disc)));
+				domain.setCommissonMoney(String.valueOf(MoneyCommission.getCommission(domain.getSumMoney(), disc)));
 			} else {
 				domain.setCommissonMoney("0"); // 没有折扣不给佣金
 			}
-			
+
 			BeanUtils.copyProperties(domain, tds);
 			// 保存进账审核
 			tdsMoneyApprovalGoMapper.save(tds);
-			
 
 			// 进入流水明细保存进账数据
 			TdsSerualInfo tdsSerual = new TdsSerualInfo();
@@ -111,9 +108,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			tdsSerual.setCreater(domain.getCreater());
 			tdsSerual.setSerialMoney(domain.getSumMoney());// 下单金额 涉及金额
 			tdsSerualInfoMapper.save(tdsSerual);
-			
-			//TODO
-			// 金额成功到账。佣金列表增加一条数据
+
+			// TODO
+			// 佣金列表增加一条数据
 			TdsCommission tdsCommiss = new TdsCommission();
 			tdsCommiss.setSerialMoney(domain.getCommissonMoney()); // 佣金
 			tdsCommiss.setSerialNumber(OrderNo.getSerial16());// 重新生成佣金流水号
@@ -123,9 +120,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			tdsCommiss.setUpdateTime(new Date());
 			tdsCommiss.setCommStatus("1");// 处理中
 			tdsCommissionMapper.save(tdsCommiss);
-					
+
 			result.setResultObj(1);
-            this.commit(status);
+			this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.rollback(status);
@@ -171,68 +168,52 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApproval tdsMoApp, String appRemarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		// 流水状态 1处理中 2已处理 3被驳回 : serial_status
-		String serual = "1";
+		// 佣金状态 1处理中 2已到账 3被驳回 4.已提现
+		String status = "1";
+
 		// 获取当前进账审核状态信息
 		TdsMoneyApproval isStatus = tdsMoneyApprovalGoMapper.loadById(tdsMoApp.getId());
-
+		TdsCommission tdsCommiss = new TdsCommission();
 		try {
+			// 审核(0待审核 1已审核 2驳回 3到账 4线下开票)
 			if (null != tdsMoApp.getApprovalStatus() && !"".equals(tdsMoApp.getApprovalStatus())) {
 
 				switch (tdsMoApp.getApprovalStatus()) {
 				case StatusType.APPROVAL_STATUS_1:
 					tdsMoneyApprovalGoMapper.update(tdsMoApp);
-					// 审核通过 等待金额 到账时间 再次确认
-					serual = "1";//流水状态 1处理中
+					status = "1";
 					break;
 				case StatusType.APPROVAL_STATUS_2:
 					// 驳回原因 记录
-					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(),"进账驳回", appRemarks, new Date(),
+					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), "进账驳回", appRemarks, new Date(),
 							tdsMoApp.getOrderNumber()));
 					// 并操作驳回更新
 					tdsMoneyApprovalGoMapper.update(tdsMoApp);
-					// 更新流水明细驳回状态
-					serual = "3";
+
+					status = "3";
 					break;
 				case StatusType.APPROVAL_STATUS_3:
-					// 驳回原因 记录
 					tdsMoApp.setArriveTime(new Date());// 插入到账时间
-
 					// 判断是否通过初次审核
 					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())) {
 						return new BackResult<>(ResultCode.RESULT_FAILED, "没有通过初次审核不可操作");
 					}
-
-					tdsMoApp.setApprovalStatus(StatusType.APPROVAL_STATUS_1);
+					tdsMoApp.setApprovalStatus("1");
 					tdsMoneyApprovalGoMapper.update(tdsMoApp);
-					serual = "2"; // 到账已确认 流水状态显示处理成功 佣金可提现 String disc = "";//
-									// 折扣比例
-
-					TdsCommission tdsCommiss = new TdsCommission();
-					
-					// 金额成功到账。佣金列表增加一条数据
-					tdsCommiss.setSerialMoney(tdsMoApp.getCommissonMoney()); // 佣金
-					tdsCommiss.setSerialNumber(OrderNo.getSerial16());// 重新生成佣金流水号
-					tdsCommiss.setOrderNumber(tdsMoApp.getOrderNumber()); // 订单号不变
-					tdsCommiss.setUserId(tdsMoApp.getUserId());
-					// 获取该用户的佣金金额
-					tdsCommiss.setCreateTime(new Date());
-					tdsCommiss.setUpdateTime(new Date());
-					tdsCommiss.setCommStatus("2");// 已到账
-					tdsCommissionMapper.save(tdsCommiss);
-
+					status = "2"; 
+				
 					// 到账成功，客户列表更新累积消费充值金额，和佣金（提取和未处理不做计算）
 					tdsUserCustomerMapper.addMoneyAndCommission(tdsMoApp.getSumMoney(), tdsCommiss.getSerialMoney(),
 							tdsCommiss.getUserId(), new Date());
 					break;
 				case StatusType.APPROVAL_STATUS_4:
-					
+
 					// 判断是否通过初次审核
 					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())) {
 						return new BackResult<>(ResultCode.RESULT_FAILED, "没有通过初次审核不可操作");
 					}
-					
 					tdsMoApp.setBilling(StatusType.APPROVAL_BILLING_ON);
-					tdsMoApp.setApprovalStatus(StatusType.APPROVAL_STATUS_1);
+					tdsMoApp.setApprovalStatus("1");
 					tdsMoneyApprovalGoMapper.update(tdsMoApp);
 					result.setResultObj(1);
 					return result;
@@ -247,14 +228,21 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 				tdsSerual.setOrderNumber(tdsMoApp.getOrderNumber()); // -订单号
 				tdsSerual.setSerialNumber(tdsMoApp.getSerialNumber()); // -流水号
 				// 流水状态 1处理中 2已处理 3被驳回 : serial_status
-				tdsSerual.setSerialStatus(serual);
+				tdsSerual.setSerialStatus(status);
 				tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
-			    result.setResultObj(1);
-			  }else{
+
+				// 更新佣金列表
+				tdsCommiss.setUpdateTime(new Date());
+				tdsCommiss.setCommStatus(status);// 已到账
+				tdsCommiss.setOrderNumber(tdsMoApp.getOrderNumber());
+				tdsCommissionMapper.upCommStatus(tdsCommiss);
+				result.setResultObj(1);
+
+			} else {
 				result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
 				result.setResultMsg("操作状态不能为空，传参错误!");
 				return result;
-			  }
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("进账审核功能操作功能信息出现系统异常：" + e.getMessage());
@@ -264,7 +252,6 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		}
 		return result;
 	}
-	
 
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
@@ -386,6 +373,5 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		}
 		return result;
 	}
-
 
 }

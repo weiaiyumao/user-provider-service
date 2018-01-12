@@ -118,27 +118,21 @@
 			<if test="updateTime != null"> update_time = #{updateTime}, </if>
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
-			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
 		</trim>
-		WHERE id=#{id}
+		WHERE id=#{id} and is_deleted='0'
 	</update>
 
 
 
-	<select id="getComName" parameterType="Hashmap" resultType="cn.entity.tds.TdsCompany">
-		SELECT
-		<include refid="Base_Column_List" />
-		FROM tds_company
-		where com_name=#{comName} and is_deleted='0'
-	</select>
 
 
-	<select id="getComUrl" parameterType="Hashmap" resultType="java.lang.Integer">
-		SELECT
-		count(1)
-		FROM tds_company
-		where com_url = #{comUrl} and is_deleted='0'
+	<select id="getComUrlAndComName" parameterType="Hashmap" resultType="cn.entity.tds.TdsCompany">
+		SELECT <include refid="Base_Column_List" />
+	    FROM tds_company
+		where com_url = #{comUrl} 
+		and com_name=#{comName}
+		and is_deleted='0'
 	</select>
 
 

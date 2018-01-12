@@ -25,9 +25,10 @@ public class TdsCustomerController {
 	@Autowired
 	private TdsCustomerService tdsCustomerService;
 	
-	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> update(Integer loginUserId,@RequestBody PageAuto auto,Integer upUserId,Integer[] arrRoles){
-		return tdsCustomerService.update(loginUserId,auto,upUserId,arrRoles);
+	@RequestMapping(value = "/updateCustomer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> updateCustomer(@RequestBody TdsCustomerViewDomain domain, Integer loginUserId, String passWord) throws Exception{
+		BeanHelper.beanHelperTrim(domain);  //去掉空格
+		return tdsCustomerService.updateCustomer(domain,loginUserId,passWord);
 	}
 
 	
@@ -45,8 +46,9 @@ public class TdsCustomerController {
 	
 	
 	@RequestMapping(value = "/addTdsCustomer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> addTdsCustomer(@RequestBody PageAuto auto, Integer loginUserId,Integer[] arrRoles){
-		return tdsCustomerService.addTdsCustomer(auto,loginUserId,arrRoles);
+	public BackResult<Integer> addTdsCustomer(@RequestBody TdsCustomerViewDomain domain, Integer loginUserId, String passWord) throws Exception{
+		BeanHelper.beanHelperTrim(domain);  //去掉空格
+		return tdsCustomerService.addTdsCustomer(domain,loginUserId,passWord);
 	}
 	
 	

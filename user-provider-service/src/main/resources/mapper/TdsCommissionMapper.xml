@@ -160,5 +160,17 @@
 		and comm_status='2'
 		and user_id=#{userId} 
 	</select>
+	
+	<update id="upCommStatus" parameterType="cn.entity.tds.TdsCommission">
+		UPDATE tds_commission
+		<trim prefix="set" suffixOverrides=",">
+			<if test="commStatus != null"> comm_status = #{commStatus}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+		</trim>
+		WHERE order_number=#{orderNumber} and is_deleted='0'
+	</update>
 
 </mapper>

@@ -255,15 +255,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		TdsCompany tdsCom = new TdsCompany();
 		TdsUser loadUser = tdsUserMapper.loadById(userId);
 		try {
-			// 判断是否已经注册公司名和地址,如果为null 新增公司表，
-			// TdsCompany isTdsCompany =
-			// tdsCompanyMapper.getComName(domain.getComName());
-			// if (null != isTdsCompany &&
-			// domain.getComName().equals(isTdsCompany.getComName())) {
-			// return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS,
-			// "公司名已经存在");
-			// }
-		//	Integer comId = null;
 			BeanUtils.copyProperties(domain, tdsCom);
 			// 判断用户是否第一次编辑企业,进行保存
 			if (null == loadUser.getComId()) {

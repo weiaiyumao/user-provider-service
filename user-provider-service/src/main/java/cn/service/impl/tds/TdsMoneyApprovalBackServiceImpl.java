@@ -194,6 +194,8 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			List<TdsMoneyApproval> list=tdsMoneyApprovalGoMapper.queryByOrderByUser(appBack.getUserId());
 			
 			
+			
+			
 			BeanUtils.copyProperties(domain, appBack);
 			tdsMoneyApprovalBackMapper.save(appBack); //保存退款信息审核
 			
