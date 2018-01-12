@@ -42,7 +42,7 @@ public interface TdsUserCustomerMapper extends IBaseDao<TdsUserCustomer, Integer
      * @param id
      * @return
      */
-	TdsCustomerView loadByIdView(@Param("id") Integer id);
+	TdsCustomerView loadByIdView(@Param("userId") Integer userId);
 	
 	
 	/**

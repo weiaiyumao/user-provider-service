@@ -278,11 +278,11 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	}
 
 	@Override
-	public BackResult<TdsCustomerViewDomain> loadById(Integer id) {
+	public BackResult<TdsCustomerViewDomain> loadByIdView(Integer userId) {
 		BackResult<TdsCustomerViewDomain> result = new BackResult<TdsCustomerViewDomain>();
 		TdsCustomerViewDomain comDomain = new TdsCustomerViewDomain();
 		try {
-			TdsCustomerView obj = tdsUserCustomerMapper.loadByIdView(id);
+			TdsCustomerView obj = tdsUserCustomerMapper.loadByIdView(userId);
 			if (null == obj) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该对象没信息");
 			}

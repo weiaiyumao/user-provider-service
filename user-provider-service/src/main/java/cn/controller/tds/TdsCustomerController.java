@@ -50,9 +50,9 @@ public class TdsCustomerController {
 	}
 	
 	
-	@RequestMapping(value = "/loadById", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsCustomerViewDomain> loadById(Integer id){
-		return tdsCustomerService.loadById(id);
+	@RequestMapping(value = "/loadByIdView", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsCustomerViewDomain> loadByIdView(Integer userId){
+		return tdsCustomerService.loadByIdView(userId);
 	}
 	
 	
