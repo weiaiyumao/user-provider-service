@@ -186,8 +186,8 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			isUser.setLoginIp(tdsUserDomain.getLoginIp());
 			tdsUserMapper.update(isUser);
 			BeanUtils.copyProperties(isUser, tdsUserDomain);
-			//登录结果返回基本信息
-			TdsUserDomain user=new TdsUserDomain(); 
+			// 登录结果返回基本信息
+			TdsUserDomain user = new TdsUserDomain();
 			user.setId(tdsUserDomain.getId());
 			user.setUserName(tdsUserDomain.getUserName());
 			user.setName(tdsUserDomain.getName());
@@ -231,13 +231,13 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			if (null == tdsUser) {
 				return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "该用户不存在");
 			}
-            //判断原密码是否正确
-			if(!MD5Util.getInstance().getMD5Code(usedPass).equals(tdsUser.getPassword())){
+			// 判断原密码是否正确
+			if (!MD5Util.getInstance().getMD5Code(usedPass).equals(tdsUser.getPassword())) {
 				return new BackResult<Integer>(ResultCode.RESULT_FAILED, "原密码错误");
 			}
-			//新密码加密
+			// 新密码加密
 			String isNewPass = MD5Util.getInstance().getMD5Code(newPass);
-			
+
 			if (tdsUser.getPassword().equals(isNewPass)) {
 				return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "请不要再次已原密码更改新密码");
 			}
@@ -252,15 +252,14 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		return result;
 	}
 
-
 	@Override
 	public BackResult<Integer> editUserInfo(TdsUserDomain domain) {
-		BackResult<Integer>  result=new BackResult<Integer>();
-        domain.setUpdateTime(new Date());
-        TdsUser tdsUser=new TdsUser();
+		BackResult<Integer> result = new BackResult<Integer>();
+		domain.setUpdateTime(new Date());
+		TdsUser tdsUser = new TdsUser();
 		try {
 			BeanUtils.copyProperties(domain, tdsUser);
-			tdsUser.setCustomerType(0); //个人编辑信息
+			tdsUser.setCustomerType(0); // 个人编辑信息
 			tdsUserMapper.update(tdsUser); // 用户信息保存
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -270,41 +269,46 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		}
 		return result;
 	}
-	
-    
+
 	@Transactional
 	@Override
-	public BackResult<Integer> editComInfo(TdsCompanyDomain domain,Integer userId,String userName,String phone,String contact) {
-		BackResult<Integer>  result=new BackResult<Integer>();
-		TransactionStatus status=this.begin();
-        TdsCompany tdsCom=new TdsCompany();
-        TdsUser  loadUser=tdsUserMapper.loadById(userId);
+	public BackResult<Integer> editComInfo(TdsCompanyDomain domain, Integer userId, String userName, String phone,
+			String contact) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		TransactionStatus status = this.begin();
+		TdsCompany tdsCom = new TdsCompany();
+		TdsUser loadUser = tdsUserMapper.loadById(userId);
 		try {
 			// 判断是否已经注册公司名和地址,如果为null 新增公司表，
-			TdsCompany isTdsCompany = tdsCompanyMapper.getComName(domain.getComName());
-			if (null != isTdsCompany && domain.getComName().equals(isTdsCompany.getComName())) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "公司名已经存在");
-			}
-				
+			// TdsCompany isTdsCompany =
+			// tdsCompanyMapper.getComName(domain.getComName());
+			// if (null != isTdsCompany &&
+			// domain.getComName().equals(isTdsCompany.getComName())) {
+			// return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS,
+			// "公司名已经存在");
+			// }
+		//	Integer comId = null;
 			BeanUtils.copyProperties(domain, tdsCom);
-			tdsCom.setCreateTime(new Date());
-			tdsCom.setUpdateTime(new Date());
-			Integer isSave = tdsCompanyMapper.save(tdsCom);
+			// 判断用户是否第一次编辑企业,进行保存
+			if (null == loadUser.getComId()) {
+				tdsCom.setUpdateTime(new Date());
+				tdsCom.setCreateTime(new Date());
+				tdsCompanyMapper.save(tdsCom);
+				loadUser.setComId(tdsCom.getId());  //保存进用户表
+			} else {
+				// 修改状态
+				tdsCom.setUpdateTime(new Date());
+				tdsCom.setId(loadUser.getComId());
+				tdsCompanyMapper.update(tdsCom);
+			}
+
 			// 保存成功赋值公司id
-			if (isSave > 0){
-				if(null!=loadUser.getCustomerType() && 0==loadUser.getCustomerType() || 11==loadUser.getCustomerType()){
-					loadUser.setCustomerType(11); //编辑个人和企业
-                }else{
-					loadUser.setCustomerType(1); //编辑企业
-				}
-				loadUser.setId(userId);
-				loadUser.setUserName(userName);
-				loadUser.setPhone(phone);
-				loadUser.setContact(contact);
-				loadUser.setComId(tdsCom.getId());
-				loadUser.setCustomerType(1);  //只编辑了公司企业信息
-				tdsUserMapper.update(loadUser); // 用户信息保存
-			}					
+			loadUser.setId(userId);
+			loadUser.setUserName(userName);
+			loadUser.setPhone(phone);
+			loadUser.setContact(contact);
+			tdsUserMapper.update(loadUser); // 用户信息保存
+
 			result.setResultObj(1);
 			commit(status);
 		} catch (Exception e) {
@@ -317,8 +321,8 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	}
 
 	@Override
-	public BackResult<Integer> updateHeadImg(Integer id,String hedehref) {
-		BackResult<Integer> result=new BackResult<Integer>();
+	public BackResult<Integer> updateHeadImg(Integer id, String hedehref) {
+		BackResult<Integer> result = new BackResult<Integer>();
 		try {
 			tdsUserMapper.updateHeadImg(id, hedehref);
 			result.setResultObj(1);

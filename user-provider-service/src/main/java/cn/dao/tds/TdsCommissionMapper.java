@@ -3,6 +3,8 @@ package cn.dao.tds;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import cn.entity.tds.TdsCommission;
 
 
@@ -29,4 +31,12 @@ public interface TdsCommissionMapper extends IBaseDao<TdsCommission, Integer>{
 	 * @return
 	 */
 	Integer queryCount(TdsCommission entity);
+	
+	
+	/**
+	 * 查询剩余（佣金）余额
+	 * @return
+	 */
+	String queryBySumMoney(@Param("userId") Integer userId);
+	
 }

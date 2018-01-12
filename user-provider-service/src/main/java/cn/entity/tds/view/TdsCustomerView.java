@@ -3,37 +3,72 @@ package cn.entity.tds.view;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * 客户列表视图
+ * 
  * @author ChuangLan
  *
  */
-public class TdsCustomerView  implements Serializable {
+public class TdsCustomerView implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2880707780947168367L;
 	
-	
-	private Integer userId;  //客户id
-	
-	private String userName;   //客户名称
-	
-	private Integer departId;  //部门id
-	
-	private String departName;  //部门名称
-	
-	private String contact;   
-	
+	private Integer userId; // 客户id
+
+	private String userName; // 客户名称
+
+	private Integer departId; // 部门id
+
+	private String departName; // 部门名称
+
+	private String contact;
+
 	private String phone;
-	
+
 	private Date create_time;
+
+	private String com_url;
+
+	private String source; // 来源
+
+	// 最近充值时间 : last_money_time
+	private java.util.Date lastMoneyTime;
+
+	// 累积充值金额 : sum_money
+	private String sumMoney;
+
+	// 累积返佣金 : sum_commission
+	private String sumCommission;
 	
-	private String com_url; 
 	
-	private String source;  //来源
+	
+
+	public java.util.Date getLastMoneyTime() {
+		return lastMoneyTime;
+	}
+
+	public void setLastMoneyTime(java.util.Date lastMoneyTime) {
+		this.lastMoneyTime = lastMoneyTime;
+	}
+
+	public String getSumMoney() {
+		return sumMoney;
+	}
+
+	public void setSumMoney(String sumMoney) {
+		this.sumMoney = sumMoney;
+	}
+
+	public String getSumCommission() {
+		return sumCommission;
+	}
+
+	public void setSumCommission(String sumCommission) {
+		this.sumCommission = sumCommission;
+	}
 
 	public Integer getUserId() {
 		return userId;
@@ -106,7 +141,5 @@ public class TdsCustomerView  implements Serializable {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
-	
 
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsApprovalLogMapper;
+import cn.dao.tds.TdsCommissionMapper;
 import cn.dao.tds.TdsMoneyApprovalBackMapper;
 import cn.dao.tds.TdsMoneyApprovalGoMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
@@ -64,7 +65,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	
 	@Autowired
 	private TdsSerualInfoMapper tdsSerualInfoMapper;
-
+	
+	@Autowired
+	private TdsCommissionMapper tdsCommissionMapper;
+    
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalBackDomain>> pageApprovalBack(TdsMoneyApprovalBackDomain domain) {
 		BackResult<PageDomain<TdsMoneyApprovalBackDomain>> result = new BackResult<PageDomain<TdsMoneyApprovalBackDomain>>();
@@ -154,12 +158,8 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		return result;
 	}
 
-	/**
-	 * 退款验证是否符合退款要求，检验上一单是否已经付款 approval_status是否是3到账状态，
-	 * 到账可退款，没到不给于退款，并且驳回，标志驳回原因 并记录流水明细，退款类型，状态改为 serial_type 3
-	 * 
-	 */
 
+		
 	/**
 	 * 退款订单申请
 	 */
@@ -167,31 +167,34 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	@Override
 	public BackResult<Integer> backApproval(TdsMoneyApprovalBackDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
+		TdsMoneyApprovalBack appBack = new TdsMoneyApprovalBack();
+		TransactionStatus status = this.begin();
 		// 退款订单号码
 		String ordrr = OrderNo.getOrderNo16();
 		// 退款流水
 		String serial = OrderNo.getSerial16();
-		TransactionStatus status = this.begin();
-		TdsMoneyApprovalBack appBack = new TdsMoneyApprovalBack();
+		//获取下单号
+		domain.setOrderNumber(ordrr);
+		domain.setSerialNumber(serial);
+		domain.setCreateTime(new Date());
+		domain.setUpdateTime(new Date());
 		try {
 			
-			//通过获取的下单订单号，得到之前下单信息
-			TdsMoneyApproval goTdsApp=tdsMoneyApprovalGoMapper.queryByOrderByUser(domain.getGoOrderNumber(),domain.getUserId());
-            if(null==goTdsApp){
-            	return new BackResult<>(ResultCode.RESULT_FAILED,"没有这条订单记录");
-            }
-			
-			// 获取下单号
-			domain.setOrderNumber(ordrr);
-			domain.setSerialNumber(serial);
-			domain.setCreateTime(new Date());
-			domain.setUpdateTime(new Date());
 			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
-			domain.setGoPname(goTdsApp.getPname());  //保存下单产品名称
-			domain.setGoPnameNumber(goTdsApp.getNumber()); //保存下单产品数量
-			domain.setGoSumMoney(goTdsApp.getSumMoney()); //保存下单设计总金额
 			BeanUtils.copyProperties(domain, appBack);
+			
+			//查询剩余佣金,该佣金可提现操作的状态
+			String serMoney=tdsCommissionMapper.queryBySumMoney(appBack.getUserId());
+			
+			//TODO
+			
+			//获取所有订单并已到账的的 佣金总和
+			List<TdsMoneyApproval> list=tdsMoneyApprovalGoMapper.queryByOrderByUser(appBack.getUserId());
+			
+			
 			tdsMoneyApprovalBackMapper.save(appBack); //保存退款信息审核
+			
+			
 
 			// 进入流水明细保存
 			TdsSerualInfo tdsSerual = new TdsSerualInfo();
@@ -204,7 +207,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			tdsSerual.setSerialType("3");// 退款类型
 			tdsSerual.setUserId(appBack.getUserId());
 			tdsSerual.setCreater(appBack.getCreater());
-			tdsSerual.setSerialMoney(appBack.getBackSumMoney());// 退款金额 涉及金额
+			tdsSerual.setSerialMoney(appBack.getBackMoney());// 退款金额 涉及金额
 			tdsSerualInfoMapper.save(tdsSerual);		
 			result.setResultObj(1);
 			this.commit(status);

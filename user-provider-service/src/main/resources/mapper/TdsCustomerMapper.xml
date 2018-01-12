@@ -6,65 +6,6 @@
 <mapper namespace="cn.dao.tds.TdsCustomerMapper">
 
 
-	<!-- parent_id=2 为父级部门类 -->
-	<select id="pageTdsCustomer" parameterType="HashMap"
-		resultType="cn.entity.tds.view.TdsCustomerView">
-		select u.id as userId,u.name as userName,d.id as departId, d.name as
-		departName,u.contact,u.phone,u.create_time,u.parent_userId,
-		u.source,com.com_url as
-		comUrl,u.is_deleted
-		from tds_user u,
-		tds_user_department
-		ud,tds_department d,
-		tds_company com
-		where u.id=ud.user_id and
-		d.id=ud.depart_id and com.id=u.com_id
-		and d.parent_id=2 and u.parent_userId=#{parentUserId}
-			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
-			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
-			<if test="statTime != null and statTime!=''">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='0' order by u.create_time desc
-	
-		LIMIT #{pageNumber},#{numPerPage}
-	</select>
-
-
-	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
-		select count(1)
-		from tds_user u,
-		tds_user_department ud,tds_department
-		d,
-		tds_company com
-		where u.id=ud.user_id and d.id=ud.depart_id and
-		com.id=u.com_id
-		and d.parent_id=2 and u.parent_userId=#{parentUserId}
-			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
-			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
-			<if test="statTime != null and statTime!=''">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='0' order by u.create_time desc
-	</select>
-	
-    <select  id="loadById" parameterType="HashMap" resultType="cn.entity.tds.view.TdsCustomerView">
-        select u.id as userId,u.name as userName,d.id as departId, d.name as
-		departName,u.contact,u.phone,u.create_time,u.parent_userId,
-		u.source,com.com_url as
-		comUrl,u.is_deleted
-		from tds_user u,
-		tds_user_department
-		ud,tds_department d,
-		tds_company com
-		where u.id=ud.user_id and
-		d.id=ud.depart_id and com.id=u.com_id
-		and u.is_deleted='0'
-		and u.id=#{id}
-    </select>
-	
 	
 	
 </mapper>

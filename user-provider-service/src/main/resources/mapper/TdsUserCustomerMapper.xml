@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsUserCustomerMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUserCustomer">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="last_money_time" property="lastMoneyTime"></result>
+		<result column="sum_money" property="sumMoney"></result>
+		<result column="sum_commission" property="sumCommission"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		last_money_time,
+		sum_money,
+		sum_commission,
+		is_deleted,
+		create_time,
+		update_time,
+		creater,
+		updater
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_customer
+		WHERE
+		id=#{id} AND IS_DELETED='0'
+
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserCustomer">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_customer
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="lastMoneyTime != null">and last_money_time = #{lastMoneyTime}</if>
+			<if test="sumMoney != null">and sum_money = #{sumMoney}</if>
+			<if test="sumCommission != null">and sum_commission = #{sumCommission}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			and is_deleted ='0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsUserCustomer">
+		INSERT INTO tds_user_customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="lastMoneyTime != null"> last_money_time , </if>
+			<if test="sumMoney != null"> sum_money , </if>
+			<if test="sumCommission != null"> sum_commission , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			is_deleted ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="lastMoneyTime != null"> #{lastMoneyTime} , </if>
+			<if test="sumMoney != null"> #{sumMoney} , </if>
+			<if test="sumCommission != null"> #{sumCommission} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			'0' ,
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_user_customer SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsUserCustomer">
+		UPDATE tds_user_customer
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="lastMoneyTime != null"> last_money_time = #{lastMoneyTime}, </if>
+			<if test="sumMoney != null"> sum_money = #{sumMoney}, </if>
+			<if test="sumCommission != null"> sum_commission = #{sumCommission}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	
+	
+	
+	<select id="pageTdsCustomer" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsCustomerView">
+		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
+		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl
+		from tds_user u LEFT  JOIN tds_user_customer cu
+		on cu.user_id=u.id LEFT JOIN tds_user_department ud ON
+		ud.user_id=u.id LEFT JOIN tds_department d on d.id=ud.depart_id LEFT JOIN tds_company com  
+		on com.id=u.com_id
+		where u.parent_user_id=#{parentUserId}
+			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+			<if test="statTime != null and statTime!=''">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='0' order by u.create_time desc
+	
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
+	    select count(1)
+		from tds_user u LEFT  JOIN tds_user_customer cu
+		on cu.user_id=u.id LEFT JOIN tds_user_department ud ON
+		ud.user_id=u.id LEFT JOIN tds_department d on d.id=ud.depart_id LEFT JOIN tds_company com  
+		on com.id=u.com_id
+		where u.parent_user_id=#{parentUserId}
+			<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
+			<if test="statTime != null and statTime!=''">
+				AND u.create_time &gt;= #{statTime}
+				AND u.create_time &lt;= #{endTime}
+			</if>
+			AND u.is_deleted ='0' order by u.create_time desc
+	</select>
+	
+    <select  id="loadByIdView" parameterType="HashMap" resultType="cn.entity.tds.view.TdsCustomerView">
+        select u.id as userId,u.name as userName,d.id as departId, d.name as
+		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
+		u.source,com.com_url as
+		comUrl,u.is_deleted
+		from tds_user u,
+		tds_user_department
+		ud,tds_department d,
+		tds_company com
+		where u.id=ud.user_id and
+		d.id=ud.depart_id and com.id=u.com_id
+		and u.is_deleted='0'
+		and u.id=#{id}
+    </select>
+    
+</mapper>

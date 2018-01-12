@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsAttornLogMapper;
 import cn.dao.tds.TdsCompanyMapper;
-import cn.dao.tds.TdsCustomerMapper;
+import cn.dao.tds.TdsUserCustomerMapper;
 import cn.dao.tds.TdsUserDepartmentMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
 import cn.dao.tds.TdsUserMapper;
@@ -54,7 +54,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	private TdsUserDepartmentMapper tdsUserDepartmentMapper;
 
 	@Autowired
-	private TdsCustomerMapper tdsCustomerMapper;
+	private TdsUserCustomerMapper tdsUserCustomerMapper;
 
 	@Autowired
 	private TdsAttornLogMapper tdsAttornLogMapper;
@@ -158,8 +158,8 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			}
 			Integer cur = auto.getCurrentPage() <= 0 ? 1 : auto.getCurrentPage();
 			auto.setPageNumber((cur - 1) * auto.getNumPerPage());
-			Integer count = tdsCustomerMapper.queryCount(auto);// 获取总数
-			List<TdsCustomerView> list = tdsCustomerMapper.pageTdsCustomer(auto);
+			Integer count = tdsUserCustomerMapper.queryCount(auto);// 获取总数
+			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(auto);
 			if (list.size() > 0 && list != null) {
 
 				// 定义对象用于转换
@@ -282,7 +282,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		BackResult<TdsCustomerViewDomain> result = new BackResult<TdsCustomerViewDomain>();
 		TdsCustomerViewDomain comDomain = new TdsCustomerViewDomain();
 		try {
-			TdsCustomerView obj = tdsCustomerMapper.loadById(id);
+			TdsCustomerView obj = tdsUserCustomerMapper.loadByIdView(id);
 			if (null == obj) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该对象没信息");
 			}
