@@ -31,4 +31,6 @@ public interface TdsModularService extends TdsModularBusService{
 	  	 */
 	      BackResult<PageDomain<Map<String,Object>>> pageByModular(String name,BasePageParam basePageParam);
 	     
+	      
+	      
 }

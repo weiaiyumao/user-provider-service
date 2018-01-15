@@ -135,7 +135,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Transactional
 	@Override
-	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApprovalDomain domain, String appRemarks) {
+	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApprovalDomain domain,String appRemarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TransactionStatus status = this.begin();
 		domain.setUpdateTime(new Date());
@@ -253,6 +253,11 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 
+	
+	
+	
+	
+	
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
 		BackResult<PageDomain<TdsMoneyApprovalDomain>> result = new BackResult<PageDomain<TdsMoneyApprovalDomain>>();

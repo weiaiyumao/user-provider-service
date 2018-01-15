@@ -95,14 +95,20 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	}
 
 	@Override
-	public BackResult<TdsModularDomain> updateTdsModular(TdsModularDomain domain) {
-		BackResult<TdsModularDomain> result=new BackResult<TdsModularDomain>();
-		domain.setUpdateTime(new Date());
+	public BackResult<Integer> updateTdsModular(String name,Integer selectedId,Integer newId) {
+		BackResult<Integer> result=new BackResult<Integer>();
 		TdsModular  tds=new TdsModular();
 		try {
-			BeanUtils.copyProperties(domain,tds);
+			tds.setId(selectedId);
+			tds.setName(name);
+			tds.setParentId(newId);
+			//如果不选，则默认为父级模块
+			if(null==newId || "".equals(newId)){
+				tds.setParentId(0);  //标记为父类
+			}
+			
 			tdsModularMapper.update(tds);
-			result.setResultObj(domain);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
@@ -182,6 +188,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		}
 		return result;
 	}
+
 
 
 	

@@ -31,8 +31,7 @@ public class TdsMoneyApprovalBackController{
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/pageApprovalBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsMoneyApprovalBackDomain>> pageApprovalBack(
-			@RequestBody TdsMoneyApprovalBackDomain domain) throws Exception {
+	public BackResult<PageDomain<TdsMoneyApprovalBackDomain>> pageApprovalBack(@RequestBody TdsMoneyApprovalBackDomain domain) throws Exception {
 		BeanHelper.beanHelperTrim(domain);
 		return tdsMoneyApprovalBackService.pageApprovalBack(domain);
 		

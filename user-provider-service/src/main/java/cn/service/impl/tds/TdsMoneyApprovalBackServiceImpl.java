@@ -35,24 +35,6 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 
 	private final static Logger logger = LoggerFactory.getLogger(TdsMoneyApprovalBackServiceImpl.class);
 
-	// @Autowired
-	// private TdsMoneyApprovalGoMapper tdsMoneyApprovalGoMapper;
-	//
-	// @Autowired
-	// private TdsApprovalLogMapper tdsApprovalLogMapper;
-	//
-	// @Autowired
-	// private TdsSerualInfoMapper tdsSerualInfoMapper;
-	//
-	// @Autowired
-	// private TdsCommissionMapper tdsCommissionMapper;
-	//
-	// @Autowired
-	// private TdsUserDiscountMapper tdsUserDiscountMapper;
-	//
-	// @Autowired
-	// private TdsUserMapper tdsUserMapper;
-
 	@Autowired
 	private TdsMoneyApprovalBackMapper tdsMoneyApprovalBackMapper;
 
@@ -75,7 +57,6 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		PageDomain<TdsMoneyApprovalBackDomain> pageListDomain = null;
 		List<TdsMoneyApprovalBackDomain> listDomain = new ArrayList<TdsMoneyApprovalBackDomain>();
 		try {
-			BeanHelper.beanHelperTrim(domain); // 去掉空格
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			TdsMoneyApprovalBack tdsMoApp = new TdsMoneyApprovalBack();
@@ -115,11 +96,9 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	 *            xx驳回
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	@Transactional
-	public BackResult<Integer> approvalByUpStatusOutOrBack(TdsMoneyApproval tdsMoApp, String appRemarks, String rej) {
+	public BackResult<Integer> approvalByUpStatusBack(TdsMoneyApproval tdsMoApp, String appRemarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
-		TransactionStatus status = this.begin();
 		// 流水状态 1处理中 2已处理 3被驳回 : serial_status
 		String serual = "1";
 
@@ -132,7 +111,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 					serual = "1";// 流水状态 1处理中
 				}else if(StatusType.APPROVAL_STATUS_2.equals(tdsMoApp.getApprovalStatus())) {
 					// 驳回原因 记录
-					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), rej, appRemarks, new Date(),
+					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), "退款驳回", appRemarks, new Date(),
 							tdsMoApp.getOrderNumber()));
 					// 并操作驳回更新
 					// tdsMoneyApprovalGoMapper.update(tdsMoApp);
@@ -143,16 +122,11 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 					result.setResultMsg("传参错误!");
 					return result;
 				}
-				// 更新流水号状态
-				// upSerialStatus(tdsMoApp.getOrderNumber(),
-				// tdsMoApp.getSerialNumber(), serual);
 
 			}
 			result.setResultObj(1);
-			this.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.rollback(status);
 			logger.error("出账审核功能操作功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据修改失败");
@@ -176,7 +150,6 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		// 退款流水
 		String serial = OrderNo.getSerial16();
 		//获取下单号
-		
 		try {
 			
 			//查询剩余佣金,该佣金可提现操作的状态
@@ -222,6 +195,28 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			logger.error("退款审核功能操作功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据退款失败");
+		}
+		return result;
+	}
+
+	
+	
+	@Override
+	public BackResult<Integer> approvalByUpStatusBack(TdsMoneyApprovalBackDomain domain, String appRemarks) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		TransactionStatus status = this.begin();
+		domain.setUpdateTime(new Date());
+		TdsMoneyApprovalBack appBack = new TdsMoneyApprovalBack();
+		try {
+			BeanUtils.copyProperties(domain, appBack);
+			//result = this.approvalByUpStatusBack(appBack, appRemarks);
+			this.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.rollback(status);
+			logger.error("审核功能操作功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据修改失败");
 		}
 		return result;
 	}
