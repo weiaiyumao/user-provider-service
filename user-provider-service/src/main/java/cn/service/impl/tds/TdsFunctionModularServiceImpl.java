@@ -103,10 +103,9 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			tds.setName(name);
 			tds.setParentId(newId);
 			//如果不选，则默认为父级模块
-			if(null==newId || "".equals(newId)){
+			if(null !=newId && newId==1){  //index
 				tds.setParentId(0);  //标记为父类
 			}
-			
 			tdsModularMapper.update(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
