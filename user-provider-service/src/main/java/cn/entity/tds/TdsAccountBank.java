@@ -2,13 +2,15 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
  * :银行入账
  * 
  * 
  * @author Gen
  */
-public class TdsAccountBank implements Serializable{
+public class TdsAccountBank extends BasePageParam implements Serializable{
 	
 	
 	/**

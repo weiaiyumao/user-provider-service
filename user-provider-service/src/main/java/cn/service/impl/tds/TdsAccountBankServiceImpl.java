@@ -1,6 +1,7 @@
 package cn.service.impl.tds;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,26 +26,27 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 	private TdsAccountBankMapper tdsAccountBankMapper;
 
 	@Override
-	public BackResult<PageDomain<TdsAccountBankDomain>> pageTdsAccountBank(String likeName,
-			Integer currentPage, Integer numPerPage, Integer selected) {
+	public BackResult<PageDomain<TdsAccountBankDomain>> pageTdsAccountBank(TdsAccountBankDomain domain) {
 		    BackResult<PageDomain<TdsAccountBankDomain>> result = new BackResult<PageDomain<TdsAccountBankDomain>>();
 		    PageDomain<TdsAccountBankDomain> pageListDomain =null;
 			List<TdsAccountBankDomain> listDomain = new ArrayList<TdsAccountBankDomain>();
+			TdsAccountBank tdsAccBank=new TdsAccountBank();
 		try {
-			Integer count=tdsAccountBankMapper.queryCount(likeName,selected);//获取总数
-			Integer cur =currentPage <= 0 ? 1 :currentPage;
-			List<TdsAccountBank> list = tdsAccountBankMapper.pageTdsAccountBank(likeName,(cur - 1) * numPerPage,numPerPage,selected);
+			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
+			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
+			BeanUtils.copyProperties(domain, tdsAccBank);
+			Integer count=tdsAccountBankMapper.queryCount(tdsAccBank);//获取总数
+			List<TdsAccountBank> list = tdsAccountBankMapper.pageTdsAccountBank(tdsAccBank);
 			if (list.size() > 0 && list != null) {
 				//定义对象用于转换
 				TdsAccountBankDomain tdsDomain = null;
 				for (TdsAccountBank obj : list) {
 					tdsDomain = new TdsAccountBankDomain();
 					BeanUtils.copyProperties(obj, tdsDomain);
-					//增加至List<TdsAccountBankDomain>
 					listDomain.add(tdsDomain);
 				}
 				//构造计算分页参数
-				pageListDomain=new PageDomain<TdsAccountBankDomain>(currentPage, numPerPage, count);
+				pageListDomain=new PageDomain<TdsAccountBankDomain>(domain.getCurrentPage(),domain.getNumPerPage(), count);
 				pageListDomain.setTlist(listDomain);
 				result.setResultObj(pageListDomain);
 			}
@@ -59,11 +61,11 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 	}
 
 	@Override
-	public BackResult<Integer> update(TdsAccountBankDomain domain,Integer loginUserId) {
+	public BackResult<Integer> update(TdsAccountBankDomain domain) {
 		BackResult<Integer> result=new BackResult<Integer>();
 		TdsAccountBank  bank=new TdsAccountBank();
 		try {
-			domain.setUpdater(loginUserId);//修改人
+			domain.setUpdateTime(new Date());
 			BeanUtils.copyProperties(domain, bank);
 		    tdsAccountBankMapper.update(bank);
 			result.setResultObj(1);
@@ -80,7 +82,7 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 	public BackResult<Integer> isDisableById(Integer id) {
 		 BackResult<Integer> result=new BackResult<Integer>();
 		try {
-			tdsAccountBankMapper.isDisableById(id);
+			tdsAccountBankMapper.deleteById(id);
 			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,11 +94,12 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 	}
 
 	@Override
-	public BackResult<Integer> save(TdsAccountBankDomain domain,Integer loginUserId) {
+	public BackResult<Integer> save(TdsAccountBankDomain domain) {
 		 BackResult<Integer> result=new BackResult<Integer>();
 		 TdsAccountBank  bank=new TdsAccountBank();
-			try {
-				domain.setCreater(loginUserId);//新增人
+			try {	
+				domain.setCreateTime(new Date());
+				domain.setUpdateTime(new Date());
 				BeanUtils.copyProperties(domain, bank);
 				tdsAccountBankMapper.save(bank);
 				result.setResultObj(1);

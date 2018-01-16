@@ -34,10 +34,18 @@ public interface TdsCommissionMapper extends IBaseDao<TdsCommission, Integer>{
 	
 	
 	/**
-	 * 查询剩余（佣金）余额
+	 * 到账
 	 * @return
 	 */
-	String queryBySumMoney(@Param("userId") Integer userId);
+	String queryByArrivalMoney(@Param("userId") Integer userId);
+	
+	
+	/**
+	 * 提现
+	 * @return
+	 */
+	String queryByCarryMoney(@Param("userId") Integer userId);
+	
 	
 	
 	/**

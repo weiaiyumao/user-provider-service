@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.tds.TdsAccountBankService;
+import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAccountBankDomain;
@@ -26,10 +27,12 @@ public class TdsAccounBankController {
 	 * 
 	 * @param tdsFunction
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> save(@RequestBody TdsAccountBankDomain tdsAccountBankDomain,Integer loginUserId) {
-		BackResult<Integer> result =tdsAccountBankService.save(tdsAccountBankDomain,loginUserId);
+	public BackResult<Integer> save(@RequestBody TdsAccountBankDomain tdsAccountBankDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsAccountBankDomain);
+		BackResult<Integer> result =tdsAccountBankService.save(tdsAccountBankDomain);
 		return result;
 	}
 
@@ -38,10 +41,12 @@ public class TdsAccounBankController {
 	 * 
 	 * @param tdsFunction
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> update(@RequestBody TdsAccountBankDomain tdsAccountBankDomain,Integer loginUserId) {
-		BackResult<Integer> result=tdsAccountBankService.update(tdsAccountBankDomain,loginUserId);
+	public BackResult<Integer> update(@RequestBody TdsAccountBankDomain tdsAccountBankDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsAccountBankDomain);
+		BackResult<Integer> result=tdsAccountBankService.update(tdsAccountBankDomain);
 		return result;
 	}
 
@@ -66,11 +71,12 @@ public class TdsAccounBankController {
      * @param numPerPage
      * @param selected  0：全部  1：简称 2：账号名称 3：开户银行 4：开户账号
      * @return
+     * @throws Exception 
      */
 	@RequestMapping(value = "/pageTdsAccountBank", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsAccountBankDomain>> pageTdsAccountBank(String likeName,
-			Integer currentPage, Integer numPerPage, Integer selected){
-		BackResult<PageDomain<TdsAccountBankDomain>> result=tdsAccountBankService.pageTdsAccountBank(likeName, currentPage, numPerPage, selected);
+	public BackResult<PageDomain<TdsAccountBankDomain>> pageTdsAccountBank(@RequestBody TdsAccountBankDomain domain) throws Exception{
+		BeanHelper.beanHelperTrim(domain);
+		BackResult<PageDomain<TdsAccountBankDomain>> result=tdsAccountBankService.pageTdsAccountBank(domain);
         return result;
 	}
 

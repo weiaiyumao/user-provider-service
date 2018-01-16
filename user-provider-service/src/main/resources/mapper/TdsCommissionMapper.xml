@@ -154,12 +154,20 @@
 	</select>
 	
 	
-	<select id="queryBySumMoney" parameterType="HashMap" resultType="java.lang.String">
-	    SELECT SUM(serial_money) FROM tds_commission
-		where is_deleted='0'
-		and comm_status='2'
-		and user_id=#{userId} 
+	<select id="queryByArrivalMoney" parameterType="HashMap" resultType="java.lang.String">
+	    SELECT sum_money FROM USER_MONEY
+		where user_id=#{userId} and status='到账'
 	</select>
+	
+	
+	<select id="queryByCarryMoney" parameterType="HashMap" resultType="java.lang.String">
+	    SELECT sum_money FROM USER_MONEY
+		where user_id=#{userId} and status='已提现'
+	</select>
+	
+	
+	
+	
 	
 	<update id="upCommStatus" parameterType="cn.entity.tds.TdsCommission">
 		UPDATE tds_commission

@@ -133,7 +133,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	        	 listDomain.add(tdsDomain);
 				}
 	          
-	          //排序
+	         //排序
 //	         if(null!=domain.getParentId() && 0==domain.getParentId()){
 //	             Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
 //	 				@Override

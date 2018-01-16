@@ -243,8 +243,10 @@
 	      SELECT * FROM tds_money_approval
 		  where user_id=#{userId}
 	      and approval_status='1'
+	      and pname_id=#{backPname}
 	      and not ISNULL(arrive_time)
 		  and is_deleted='0'
+		  ORDER BY create_time DESC
 	</select>
 	
 

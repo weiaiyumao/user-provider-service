@@ -137,16 +137,16 @@
 		<include refid="Base_Column_List" />
 		FROM tds_account_bank
 		<where>
-			<if test="selected == 1">less_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2">account_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3">bank_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4">open_account like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0">
+			<if test="selected == 1 and likeName!=null">less_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">account_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">bank_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">open_account like concat(concat('%',#{likeName}),'%')</if>
+			 <if test="selected == 0 and likeName!=null">
 				less_name like concat(concat('%',#{likeName}),'%')
 				or account_name like concat(concat('%',#{likeName}),'%')
 				or bank_name like concat(concat('%',#{likeName}),'%')
 				or open_account like concat(concat('%',#{likeName}),'%')
-			</if>
+			</if> 
 			and is_deleted ='0'
 		</where>
 		LIMIT #{pageNumber},#{numPerPage}
@@ -156,24 +156,19 @@
 		SELECT count(1)
 		FROM tds_account_bank
 		<where>
-			<if test="selected == 1">less_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2">account_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3">bank_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4">open_account like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0">
+			<if test="selected == 1 and likeName!=null">less_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">account_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">bank_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">open_account like concat(concat('%',#{likeName}),'%')</if>
+	       <if test="selected == 0 and likeName!=null">
 				less_name like concat(concat('%',#{likeName}),'%')
 				or account_name like concat(concat('%',#{likeName}),'%')
 				or bank_name like concat(concat('%',#{likeName}),'%')
 				or open_account like concat(concat('%',#{likeName}),'%')
-			</if>
+			</if> 
 			and is_deleted ='0'
 		</where>
 	</select>
 
-
-	<update id="isDisableById" parameterType="HashMap">
-		update tds_account_bank set is_deleted='1'
-		where is_deleted='0' and id=#{id}
-	</update>
 
 </mapper>

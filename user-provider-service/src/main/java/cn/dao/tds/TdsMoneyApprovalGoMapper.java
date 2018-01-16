@@ -40,6 +40,6 @@ public interface TdsMoneyApprovalGoMapper extends IBaseDao<TdsMoneyApproval, Int
 	 * @param userId
 	 * @return
 	 */
-	List<TdsMoneyApproval> queryByOrderByUser(@Param("userId")Integer userId);
+	List<TdsMoneyApproval> queryByOrderByUser(@Param("userId")Integer userId,@Param("backPname")String backPname);
 	
 }

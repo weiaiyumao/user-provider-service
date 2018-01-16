@@ -37,4 +37,19 @@ public class TdsMoneyApprovalBackController{
 		
 	}
 	
+	
+
+	/**
+	 * 退单
+	 * @param domain
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/backOrderMoney", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> backOrderMoney(@RequestBody TdsMoneyApprovalBackDomain domain) throws Exception {
+		BeanHelper.beanHelperTrim(domain);
+		return tdsMoneyApprovalBackService.backOrderMoney(domain);
+		
+	}
+	
 }
