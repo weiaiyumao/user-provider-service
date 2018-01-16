@@ -15,10 +15,14 @@ import cn.dao.tds.TdsFunctionMapper;
 import cn.dao.tds.TdsModularMapper;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsModular;
+import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.CommonUtils;
+import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsCustomerViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsModularDomain;
 
@@ -107,30 +111,38 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	}
 
 	@Override
-	public BackResult<List<TdsFunctionDomain>> selectAll(TdsFunctionDomain domain) {
-		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
-		TdsFunction tds = new TdsFunction();
+	public BackResult<PageDomain<TdsFunctionDomain>> pageTdsFunction(TdsFunctionDomain domain) {
+		BackResult<PageDomain<TdsFunctionDomain>> result = new BackResult<PageDomain<TdsFunctionDomain>>();
+		PageDomain<TdsFunctionDomain> pageListDomain = null;
 		List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
-		try {
-			BeanUtils.copyProperties(domain, tds);
-			List<TdsFunction> list = tdsFunctionMapper.selectAll(tds);
-			if (list.size() > 0 && list != null) {
-				TdsFunctionDomain tdsDomain = null;
-				for (TdsFunction obj : list) {
-					tdsDomain = new TdsFunctionDomain();
-					BeanUtils.copyProperties(obj, tdsDomain);
-					listDomain.add(tdsDomain);
-				}
-				result.setResultObj(listDomain);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("查询功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据集合查询失败");
-		}
-		return result;
+//		try {
+//			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
+//			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
+//			Integer count = tdsUserCustomerMapper.queryCount(auto);// 获取总数
+//			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(auto);
+//			if (list.size() > 0 && list != null) {
+//
+//				// 定义对象用于转换
+//				TdsCustomerViewDomain tdsDomain = null;
+//				for (TdsCustomerView obj : list) {
+//					tdsDomain = new TdsCustomerViewDomain();
+//					BeanUtils.copyProperties(obj, tdsDomain);
+//					listDomain.add(tdsDomain);
+//				}
+//				// 构造计算分页参数
+//				pageListDomain = new PageDomain<TdsCustomerViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(),
+//						count);
+//				pageListDomain.setTlist(listDomain);
+//				result.setResultObj(pageListDomain);
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+//			result.setResultCode(ResultCode.RESULT_FAILED);
+//			result.setResultMsg("数据集合查询失败");
+//		}
+		return null;
 	}
 
 	

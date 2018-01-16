@@ -141,7 +141,7 @@
 			<if test="selected == 2 and likeName!=null">account_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 3 and likeName!=null">bank_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 4 and likeName!=null">open_account like concat(concat('%',#{likeName}),'%')</if>
-			 <if test="selected == 0 and likeName!=null">
+			<if test="selected == 0 and likeName!=null and likeName!=''">
 				less_name like concat(concat('%',#{likeName}),'%')
 				or account_name like concat(concat('%',#{likeName}),'%')
 				or bank_name like concat(concat('%',#{likeName}),'%')
@@ -160,7 +160,7 @@
 			<if test="selected == 2 and likeName!=null">account_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 3 and likeName!=null">bank_name like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 4 and likeName!=null">open_account like concat(concat('%',#{likeName}),'%')</if>
-	       <if test="selected == 0 and likeName!=null">
+	        <if test="selected == 0 and likeName!=null and likeName!=''">
 				less_name like concat(concat('%',#{likeName}),'%')
 				or account_name like concat(concat('%',#{likeName}),'%')
 				or bank_name like concat(concat('%',#{likeName}),'%')

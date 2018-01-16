@@ -22,6 +22,7 @@ import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsSerualInfo;
+import cn.entity.tds.TdsUserCustomer;
 import cn.entity.tds.TdsUserDiscount;
 import cn.service.tds.TdsMoneyApprovalService;
 import cn.utils.BeanHelper;
@@ -135,7 +136,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Transactional
 	@Override
-	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApprovalDomain domain,String appRemarks) {
+	public BackResult<Integer> approvalByUpStatusGo(TdsMoneyApprovalDomain domain, String appRemarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TransactionStatus status = this.begin();
 		domain.setUpdateTime(new Date());
@@ -200,11 +201,32 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					}
 					tdsMoApp.setApprovalStatus("1");
 					tdsMoneyApprovalGoMapper.update(tdsMoApp);
-					status = "2"; 
-				
-					// 到账成功，客户列表更新累积消费充值金额，和佣金（提取和未处理不做计算）
-					tdsUserCustomerMapper.addMoneyAndCommission(tdsMoApp.getSumMoney(), tdsCommiss.getSerialMoney(),
-							tdsCommiss.getUserId(), new Date());
+					status = "2";
+
+					// 判断下单成功是否有用户存在，不存在则新增一条
+					Integer isUser = tdsUserCustomerMapper.queryIsUserId(tdsCommiss.getUserId());
+					
+					TdsUserCustomer userCust = new TdsUserCustomer();
+					userCust.setUserId(tdsCommiss.getUserId());
+					userCust.setSumCommission(tdsCommiss.getSerialMoney());
+					userCust.setSumMoney(tdsMoApp.getSumMoney());
+					userCust.setOverplusCommission(tdsCommiss.getSerialMoney());
+					userCust.setLastMoneyTime(new Date());
+					
+					if (isUser == 1) {
+						// 到账成功，客户列表更新累积消费充值金额，和佣金（提取和未处理不做计算）加上剩余佣金额
+						userCust.setUpdateTime(new Date());
+						tdsUserCustomerMapper.addMoneyAndCommission(userCust);
+						
+					} else if (isUser == 0) {
+						// 新增一条记录统计
+						userCust.setCreateTime(new Date());
+						tdsUserCustomerMapper.save(userCust);
+						
+					} else {
+						return new BackResult<>(ResultCode.RESULT_FAILED, "该用户存在重复异常数据");
+					}
+
 					break;
 				case StatusType.APPROVAL_STATUS_4:
 
@@ -253,11 +275,6 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
 		BackResult<PageDomain<TdsMoneyApprovalDomain>> result = new BackResult<PageDomain<TdsMoneyApprovalDomain>>();

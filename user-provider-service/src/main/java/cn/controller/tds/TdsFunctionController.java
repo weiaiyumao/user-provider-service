@@ -1,7 +1,6 @@
 package cn.controller.tds;
 
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.tds.TdsFunctionService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
 
@@ -73,9 +73,9 @@ public class TdsFunctionController {
 	   * @param tdsFunction
 	   * @return List<>
 	   */
-	  @RequestMapping(value="/selectAll",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<List<TdsFunctionDomain>> selectAll(@RequestBody TdsFunctionDomain tdsFunctionDomain){
-		  BackResult<List<TdsFunctionDomain>> result=tdsFunctionService.selectAll(tdsFunctionDomain);
+	  @RequestMapping(value="/pageTdsFunction",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	  public BackResult<PageDomain<TdsFunctionDomain>> pageTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain){
+		  BackResult<PageDomain<TdsFunctionDomain>> result=tdsFunctionService.pageTdsFunction(tdsFunctionDomain);
 		  return result;
 	  }
 	  

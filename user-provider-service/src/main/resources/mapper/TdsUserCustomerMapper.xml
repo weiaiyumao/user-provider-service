@@ -14,6 +14,7 @@
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="create_time" property="createTime"></result>
 		<result column="update_time" property="updateTime"></result>
+		<result column="overplus_commission" property="overplusCommission"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -24,7 +25,8 @@
 		sum_commission,
 		is_deleted,
 		create_time,
-		update_time
+		update_time,
+		overplus_commission
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -49,6 +51,7 @@
 			<if test="sumCommission != null">and sum_commission = #{sumCommission}</if>
 			<if test="createTime != null">and create_time = #{createTime}</if>
 			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="overplusCommission != null">and overplus_commission = #{overplusCommission}</if>
 			and is_deleted ='0'
 		</where>
 	</select>
@@ -62,6 +65,7 @@
 			<if test="sumCommission != null"> sum_commission , </if>
 			<if test="createTime != null"> create_time , </if>
 			<if test="updateTime != null"> update_time , </if>
+			<if test="overplusCommission != null"> overplus_commission , </if>
 			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -71,6 +75,7 @@
 			<if test="sumCommission != null"> #{sumCommission} , </if>
 			<if test="createTime != null"> #{createTime} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="overplusCommission != null"> #{overplusCommission}, </if>
 			'0' ,
 		</trim>
 
@@ -168,9 +173,33 @@
 		update tds_user_customer
 		SET sum_money=sum_money+#{sumMoney},
 		sum_commission=sum_commission+#{sumCommission},
-		update_time = #{updateTime}
+		overplus_commission=overplus_commission+#{overplusCommission}
+		last_money_time = #{lastMoneyTime}
 		where user_id=#{userId}
 		and is_deleted='0'
 	</update>
+	
+	
+	<update id="subMoneyAndCommission" parameterType="HashMap">
+	  update tds_user_customer 
+	  set overplus_commission=overplus_commission-#{overplusCommission}
+      where user_id=#{userId}
+	</update>
+	
+	
+	<select id="queryIsUserId"  parameterType="HashMap" resultType="java.lang.Integer">
+	    SELECT count(1) FROM tds_user_customer
+		where user_id=#{userId}  and is_deleted='0'
+	</select>
+	
+	
+	<select id="loadByUserId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_customer
+		WHERE user_id=#{userId}
+		AND IS_DELETED='0'
+	</select>
 
 </mapper>

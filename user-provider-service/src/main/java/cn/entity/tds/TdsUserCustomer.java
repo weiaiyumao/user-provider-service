@@ -39,6 +39,17 @@ public class TdsUserCustomer implements Serializable{
 	//修改时间 : update_time 	
 	private java.util.Date updateTime; 
 	
+	private String overplusCommission;
+	
+	
+	public String getOverplusCommission() {
+		return overplusCommission;
+	}
+	
+	public void setOverplusCommission(String overplusCommission) {
+		this.overplusCommission = overplusCommission;
+	}
+	
 	
 
 	/**

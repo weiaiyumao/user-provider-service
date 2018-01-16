@@ -58,16 +58,16 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			//如果选择的是第一级模块名则为父级模块
 			if(null!=tdsModula && "第一级".equals(tdsModula.getName())){
 				tds.setParentId(0);  //标记为父类
-			}
-			tds.setName(domain.getName());
-			tds.setCreateTime(new Date());
-			tds.setUpdateTime(new Date());
-			
+			}					
 			//如果不选，则默认为父级模块
 			if(null==domain.getId() || "".equals(domain.getId())){
 				tds.setParentId(0);  //标记为父类
 			}
 			
+			tds.setName(domain.getName());
+			tds.setCreateTime(new Date());
+			tds.setUpdateTime(new Date());
+			tds.setRemarks(domain.getRemarks());
 			tdsModularMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -75,6 +75,31 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据保存失败");
+		}
+		return result;
+	}
+	
+	
+	@Override
+	public BackResult<Integer> updateTdsModular(String name,Integer selectedId,Integer newId,String arrModulars) {
+		BackResult<Integer> result=new BackResult<Integer>();
+		TdsModular  tds=new TdsModular();
+		try {
+			tds.setId(selectedId);
+			tds.setName(name);
+			tds.setParentId(newId);
+			tds.setRemarks(arrModulars);
+			//如果不选，则默认为父级模块
+			if(null !=newId && newId==1){  //index
+				tds.setParentId(0);  //标记为父类
+			}
+			tdsModularMapper.update(tds);
+			result.setResultObj(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("update功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据修改失败");
 		}
 		return result;
 	}
@@ -94,28 +119,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		return result;
 	}
 
-	@Override
-	public BackResult<Integer> updateTdsModular(String name,Integer selectedId,Integer newId) {
-		BackResult<Integer> result=new BackResult<Integer>();
-		TdsModular  tds=new TdsModular();
-		try {
-			tds.setId(selectedId);
-			tds.setName(name);
-			tds.setParentId(newId);
-			//如果不选，则默认为父级模块
-			if(null !=newId && newId==1){  //index
-				tds.setParentId(0);  //标记为父类
-			}
-			tdsModularMapper.update(tds);
-			result.setResultObj(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("update功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据修改失败");
-		}
-		return result;
-	}
+
 
 	@Override
 	public BackResult<List<TdsModularDomain>> selectAll(TdsModularDomain domain) {

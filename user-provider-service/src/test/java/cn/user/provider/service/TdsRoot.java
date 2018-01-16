@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.UserProviderServiceApp;
 import cn.dao.tds.TdsStateInfoMapper;
+import cn.dao.tds.TdsUserCustomerMapper;
 import cn.entity.tds.TdsAccountBank;
 import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsAccountBankService;
@@ -66,10 +67,12 @@ public class TdsRoot {
 	  private TdsMoneyApprovalService tdsMoneyApprovalService;
 	  
 	  
+	  @Autowired
+	private TdsUserCustomerMapper tdsUserCustomerMapper;
+	  
 	  @Test
-	  public void test1(){
-		  TdsMoneyApprovalDomain domain=new TdsMoneyApprovalDomain();
-		//  tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
+	  public void test1(){ 
+		  tdsUserCustomerMapper.subMoneyAndCommission(1, "400.12");
 		
 	  }
 	  

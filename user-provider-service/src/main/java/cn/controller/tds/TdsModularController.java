@@ -60,8 +60,8 @@ public class TdsModularController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> update(String name,Integer selectedId,Integer newId) throws Exception {
-		BackResult<Integer> result =tdsModularService.updateTdsModular(name,selectedId,newId);
+	public BackResult<Integer> update(String name,Integer selectedId,Integer newId,String arrModulars) throws Exception {
+		BackResult<Integer> result =tdsModularService.updateTdsModular(name,selectedId,newId,arrModulars);
 		return result;
 	}
 

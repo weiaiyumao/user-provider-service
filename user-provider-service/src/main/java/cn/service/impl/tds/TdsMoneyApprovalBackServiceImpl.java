@@ -13,15 +13,15 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsApprovalLogMapper;
-import cn.dao.tds.TdsCommissionMapper;
 import cn.dao.tds.TdsMoneyApprovalBackMapper;
 import cn.dao.tds.TdsMoneyApprovalGoMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
+import cn.dao.tds.TdsUserCustomerMapper;
 import cn.entity.tds.TdsApprovalLog;
-import cn.entity.tds.TdsCommission;
 import cn.entity.tds.TdsMoneyApproval;
 import cn.entity.tds.TdsMoneyApprovalBack;
 import cn.entity.tds.TdsSerualInfo;
+import cn.entity.tds.TdsUserCustomer;
 import cn.service.tds.TdsMoneyApprovalBackService;
 import cn.utils.OrderNo;
 import main.java.cn.common.BackResult;
@@ -48,8 +48,12 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	@Autowired
 	private TdsSerualInfoMapper tdsSerualInfoMapper;
 	
+//	@Autowired
+//	private TdsCommissionMapper tdsCommissionMapper;
+	
+	
 	@Autowired
-	private TdsCommissionMapper tdsCommissionMapper;
+	private TdsUserCustomerMapper tdsUserCustomerMapper;
     
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalBackDomain>> pageApprovalBack(TdsMoneyApprovalBackDomain domain) {
@@ -105,15 +109,16 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		try {
 			
 		
-			String arrival=tdsCommissionMapper.queryByArrivalMoney(appBack.getUserId());
-			String carr=tdsCommissionMapper.queryByCarryMoney(appBack.getUserId());
+//			String arrival=tdsCommissionMapper.queryByArrivalMoney(appBack.getUserId());
+//			String carr=tdsCommissionMapper.queryByCarryMoney(appBack.getUserId());
+//			Double money=Double.valueOf(arrival)-Double.valueOf(carr);
+			TdsUserCustomer tdsUserCustomer=tdsUserCustomerMapper.loadByUserId(appBack.getUserId());
 			//剩余佣金
-			Double money=Double.valueOf(arrival)-Double.valueOf(carr);
 			domain.setOrderNumber(ordrr);
 			domain.setSerialNumber(serial);
 			domain.setCreateTime(new Date());
 			domain.setUpdateTime(new Date());
-			domain.setSerualMoney(money.toString());
+			domain.setSerualMoney(tdsUserCustomer.getOverplusCommission());
 			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
 			domain.setPlusNumber(1215400); //测试剩余数量 TODO
 			
@@ -131,14 +136,14 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 				// 退款数量大于下单成功的数量
 			     if(backNum>moneyApp.getNumber()){
 			    	 backMoney+=Double.valueOf(moneyApp.getCommissonMoney());  //每笔下单应得佣金累加  
-			    	 backNum-=moneyApp.getNumber();//数量累减
+			    	 backNum-=moneyApp.getNumber();//减掉当前订单数量累减
 			    	 continue;
 			     }
 			   
 			     // 退款数量小于下单成功的数量
 			     if(backNum<moneyApp.getNumber()){
 			    	 Double numMultiple=(double)(moneyApp.getNumber()/backNum);  
-			    	 backMoney+=Double.valueOf(moneyApp.getCommissonMoney())/numMultiple; 
+			    	 backMoney+=Double.valueOf(moneyApp.getCommissonMoney())/numMultiple; //应得当前佣金
 			    	 break;
 			     }
 			     
@@ -183,7 +188,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		// 流水状态 1处理中（待审核） 2已处理(已审核) 3被驳回 : serial_status
 		String status = "1";
 		TdsMoneyApprovalBack appBack = new TdsMoneyApprovalBack();
-		TdsCommission tdsCommiss = new TdsCommission();
+//		TdsCommission tdsCommiss = new TdsCommission();
 		BeanUtils.copyProperties(domain, appBack);
 		try {
 			if (null != appBack.getApprovalStatus() && !"".equals(appBack.getApprovalStatus())) {
@@ -193,9 +198,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 					status = "2";
 					
 					//通过扣除佣金数量
-					System.out.println("=====通过扣除佣金和数量数量====");  //TODO
+					System.out.println("=====通过则扣除佣金和数量====");  //TODO
 					Double commiss=Double.valueOf(domain.getSerualMoney())-Double.valueOf(domain.getBackNumberCommission());
-					
+					tdsUserCustomerMapper.subMoneyAndCommission(appBack.getUserId(), commiss.toString());
+					//TODO 退款扣除剩余数量
 					
 					
 				}else if(StatusType.APPROVAL_STATUS_2.equals(appBack.getApprovalStatus())) {
@@ -221,13 +227,13 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 				tdsSerual.setSerialStatus(status);
 				tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
 
-				// 更新佣金列表
-				tdsCommiss.setUpdateTime(new Date());
-				tdsCommiss.setCommStatus(status);// 已到账
-				tdsCommiss.setOrderNumber(appBack.getOrderNumber());
-				tdsCommissionMapper.upCommStatus(tdsCommiss);
-				result.setResultObj(1);
-				this.commit(statusTran);
+//				// 更新佣金列表
+//				tdsCommiss.setUpdateTime(new Date());
+//				tdsCommiss.setCommStatus(status);// 已到账
+//				tdsCommiss.setOrderNumber(appBack.getOrderNumber());
+//				tdsCommissionMapper.upCommStatus(tdsCommiss);
+//				result.setResultObj(1);
+//				this.commit(statusTran);
 			}
 			
 		} catch (Exception e) {

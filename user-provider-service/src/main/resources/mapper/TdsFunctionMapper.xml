@@ -101,34 +101,6 @@
 	</update>
 
 
-	<!-- <select id="moduleLoadingByUsreId" resultMap="BaseResultMap"
-		parameterType="java.lang.Integer">
-		SELECT
-		*
-		FROM
-		tds_function
-		WHERE
-		id IN (
-		SELECT
-		fr.fun_id
-		FROM
-		tds_function_role fr
-		WHERE
-		fr.role_id IN (
-		SELECT
-		tur.role_id
-		FROM
-		tds_user_role tur
-		WHERE
-		tur.user_id =#{userId}
-		AND is_deleted = '0'
-		) AND
-		is_deleted = '0'
-
-		) AND is_deleted = '0';
-	</select> -->
-
-
 
    <select id="queryfunByParentId" parameterType="HashMap"  resultType="java.lang.Integer">
       SELECT ID FROM tds_function
