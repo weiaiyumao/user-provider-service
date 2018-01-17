@@ -59,6 +59,14 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Autowired
 	private TdsUserCustomerMapper tdsUserCustomerMapper;
+	
+	
+	
+	private  static String isOrderNumber="";
+	
+	/*
+	@Autowired
+	private TdsEnumMapper tdsEnumMapper;*/
 
 	/**
 	 * 客户管理--下单
@@ -93,6 +101,8 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			}
 
 			BeanUtils.copyProperties(domain, tds);
+			
+			//domain.getPnameId();
 			// 保存进账审核
 			tdsMoneyApprovalGoMapper.save(tds);
 
@@ -173,7 +183,12 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		String status = "1";
 
 		// 获取当前进账审核状态信息
-		TdsMoneyApproval isStatus = tdsMoneyApprovalGoMapper.loadById(tdsMoApp.getId());
+		String isStatus = tdsMoneyApprovalGoMapper.isStatus(tdsMoApp.getUserId(),tdsMoApp.getOrderNumber());
+		
+		if(null==isStatus){
+			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "审核数据空");
+		}
+			
 		TdsCommission tdsCommiss = new TdsCommission();
 		try {
 			// 审核(0待审核 1已审核 2驳回 3到账 4线下开票)
@@ -181,7 +196,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 				switch (tdsMoApp.getApprovalStatus()) {
 				case StatusType.APPROVAL_STATUS_1:
-					tdsMoneyApprovalGoMapper.update(tdsMoApp);
+					tdsMoneyApprovalGoMapper.upApprovalStatus(StatusType.APPROVAL_STATUS_1,tdsMoApp.getId(),null);
 					status = "1";
 					break;
 				case StatusType.APPROVAL_STATUS_2:
@@ -189,30 +204,34 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					tdsApprovalLogMapper.save(new TdsApprovalLog(tdsMoApp.getUserId(), "进账驳回", appRemarks, new Date(),
 							tdsMoApp.getOrderNumber()));
 					// 并操作驳回更新
-					tdsMoneyApprovalGoMapper.update(tdsMoApp);
+					tdsMoneyApprovalGoMapper.upApprovalStatus(StatusType.APPROVAL_STATUS_2,tdsMoApp.getId(),null);
 
 					status = "3";
 					break;
 				case StatusType.APPROVAL_STATUS_3:
-					tdsMoApp.setArriveTime(new Date());// 插入到账时间
+					
+					status = "2";
+					
+					if(isOrderNumber.equals(tdsMoApp.getOrderNumber())){
+						return new BackResult<>(ResultCode.RESULT_FAILED, "重复订单提交到账次数+1");
+					 }
+					
 					// 判断是否通过初次审核
-					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())) {
+					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus)) {
 						return new BackResult<>(ResultCode.RESULT_FAILED, "没有通过初次审核不可操作");
 					}
-					tdsMoApp.setApprovalStatus("1");
-					tdsMoneyApprovalGoMapper.update(tdsMoApp);
-					status = "2";
+					
+					tdsMoneyApprovalGoMapper.upApprovalStatus(StatusType.APPROVAL_STATUS_1,tdsMoApp.getId(),new Date());
 
 					// 判断下单成功是否有用户存在，不存在则新增一条
-					Integer isUser = tdsUserCustomerMapper.queryIsUserId(tdsCommiss.getUserId());
+					Integer isUser = tdsUserCustomerMapper.queryIsUserId(tdsMoApp.getUserId());
 					
 					TdsUserCustomer userCust = new TdsUserCustomer();
-					userCust.setUserId(tdsCommiss.getUserId());
-					userCust.setSumCommission(tdsCommiss.getSerialMoney());
+					userCust.setUserId(tdsMoApp.getUserId());
+					userCust.setSumCommission(tdsMoApp.getCommissonMoney());
 					userCust.setSumMoney(tdsMoApp.getSumMoney());
-					userCust.setOverplusCommission(tdsCommiss.getSerialMoney());
 					userCust.setLastMoneyTime(new Date());
-					
+					userCust.setOverplusCommission(tdsMoApp.getCommissonMoney());
 					if (isUser == 1) {
 						// 到账成功，客户列表更新累积消费充值金额，和佣金（提取和未处理不做计算）加上剩余佣金额
 						userCust.setUpdateTime(new Date());
@@ -226,18 +245,25 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					} else {
 						return new BackResult<>(ResultCode.RESULT_FAILED, "该用户存在重复异常数据");
 					}
-
+					
+					
+					//TODO 通过成功 保存数量 
+					
+					
+					
+					isOrderNumber=tdsMoApp.getOrderNumber();
 					break;
 				case StatusType.APPROVAL_STATUS_4:
 
 					// 判断是否通过初次审核
-					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus.getApprovalStatus())) {
+					if (!StatusType.APPROVAL_STATUS_1.equals(isStatus)) {
 						return new BackResult<>(ResultCode.RESULT_FAILED, "没有通过初次审核不可操作");
 					}
-					tdsMoApp.setBilling(StatusType.APPROVAL_BILLING_ON);
-					tdsMoApp.setApprovalStatus("1");
-					tdsMoneyApprovalGoMapper.update(tdsMoApp);
+					
+					//更新开票
+					tdsMoneyApprovalGoMapper.upBilling(tdsMoApp.getId(),StatusType.APPROVAL_BILLING_ON);
 					result.setResultObj(1);
+					
 					return result;
 				default:
 					result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
@@ -248,7 +274,6 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 				TdsSerualInfo tdsSerual = new TdsSerualInfo();
 				tdsSerual.setUpdateTime(new Date());
 				tdsSerual.setOrderNumber(tdsMoApp.getOrderNumber()); // -订单号
-				tdsSerual.setSerialNumber(tdsMoApp.getSerialNumber()); // -流水号
 				// 流水状态 1处理中 2已处理 3被驳回 : serial_status
 				tdsSerual.setSerialStatus(status);
 				tdsSerualInfoMapper.upSerialByStatus(tdsSerual);

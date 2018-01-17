@@ -163,7 +163,7 @@
 	
 	<update id="upSerialByStatus" parameterType="HashMap">
 		UPDATE tds_serual_info  set serial_status = #{serialStatus}
-		WHERE serial_number=#{serialNumber}  and order_number=#{orderNumber} 
+		WHERE  order_number=#{orderNumber} 
 		and  is_deleted ='0'
 	</update>
 	

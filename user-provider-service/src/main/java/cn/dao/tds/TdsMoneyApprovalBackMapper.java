@@ -3,6 +3,7 @@ package cn.dao.tds;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsMoneyApprovalBack;
 
@@ -34,5 +35,14 @@ public interface TdsMoneyApprovalBackMapper extends IBaseDao<TdsMoneyApprovalBac
 	 * @return
 	 */
 	Integer queryCount(TdsMoneyApprovalBack entity);
+	
+	
+	/**
+	 * 退款审核状态更新改变
+	 * @param id
+	 * @param approvalStatus
+	 * @return
+	 */
+	Integer upBackStatus(@Param("id")Integer id,@Param("approvalStatus")String approvalStatus);
   
 }

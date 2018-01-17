@@ -108,11 +108,8 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		//获取下单号
 		try {
 			
-		
-//			String arrival=tdsCommissionMapper.queryByArrivalMoney(appBack.getUserId());
-//			String carr=tdsCommissionMapper.queryByCarryMoney(appBack.getUserId());
-//			Double money=Double.valueOf(arrival)-Double.valueOf(carr);
-			TdsUserCustomer tdsUserCustomer=tdsUserCustomerMapper.loadByUserId(appBack.getUserId());
+
+			TdsUserCustomer tdsUserCustomer=tdsUserCustomerMapper.loadByUserId(domain.getUserId());
 			//剩余佣金
 			domain.setOrderNumber(ordrr);
 			domain.setSerialNumber(serial);
@@ -120,12 +117,15 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			domain.setUpdateTime(new Date());
 			domain.setSerualMoney(tdsUserCustomer.getOverplusCommission());
 			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
-			domain.setPlusNumber(1215400); //测试剩余数量 TODO
-			
 		
 			
+				
 			//根据产品和用户id获取该用户最近下订单审核通过并且已到账记录
-			List<TdsMoneyApproval> list=tdsMoneyApprovalGoMapper.queryByOrderByUser(appBack.getUserId(),appBack.getBackPname());
+			List<TdsMoneyApproval> list=tdsMoneyApprovalGoMapper.queryByOrderByUser(domain.getUserId(),domain.getPnameId());
+			
+			if(list.size()==0 || null==list){
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有查到对应的下单记录");
+			}
 			Double backMoney=0.0;//退款下单涉及佣金
 			Integer backNum=domain.getBackNumber(); //退款数量;
 			for(TdsMoneyApproval moneyApp:list){
@@ -148,6 +148,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			     }
 			     
 			}
+			
 			domain.setBackNumberCommission(backMoney.toString());
 			BeanUtils.copyProperties(domain, appBack);
 			tdsMoneyApprovalBackMapper.save(appBack); //保存退款信息审核
@@ -188,28 +189,33 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		// 流水状态 1处理中（待审核） 2已处理(已审核) 3被驳回 : serial_status
 		String status = "1";
 		TdsMoneyApprovalBack appBack = new TdsMoneyApprovalBack();
-//		TdsCommission tdsCommiss = new TdsCommission();
 		BeanUtils.copyProperties(domain, appBack);
 		try {
 			if (null != appBack.getApprovalStatus() && !"".equals(appBack.getApprovalStatus())) {
 				// 通过
 				if (StatusType.APPROVAL_STATUS_1.equals(appBack.getApprovalStatus())) {
-					tdsMoneyApprovalBackMapper.update(appBack);
-					status = "2";
+
+					tdsMoneyApprovalBackMapper.upBackStatus(appBack.getId(), StatusType.APPROVAL_STATUS_1);
 					
 					//通过扣除佣金数量
 					System.out.println("=====通过则扣除佣金和数量====");  //TODO
 					Double commiss=Double.valueOf(domain.getSerualMoney())-Double.valueOf(domain.getBackNumberCommission());
-					tdsUserCustomerMapper.subMoneyAndCommission(appBack.getUserId(), commiss.toString());
-					//TODO 退款扣除剩余数量
 					
+					// 更新退款佣金余额
+				   Integer isSub=tdsUserCustomerMapper.subMoneyAndCommission(appBack.getUserId(), commiss.toString());
+				   if(isSub<1){
+					   return new BackResult<>(ResultCode.RESULT_FAILED, "佣金扣除失败！");
+				   }
+					//TODO 退款审核通过扣除剩余数量
+				   
 					
+					status = "2";
 				}else if(StatusType.APPROVAL_STATUS_2.equals(appBack.getApprovalStatus())) {
 					// 驳回原因 记录
 					tdsApprovalLogMapper.save(new TdsApprovalLog(appBack.getUserId(), "退款驳回", appRemarks, new Date(),
 							appBack.getOrderNumber()));
 					// 并操作驳回更新
-					tdsMoneyApprovalBackMapper.update(appBack);
+					tdsMoneyApprovalBackMapper.upBackStatus(appBack.getId(), StatusType.APPROVAL_STATUS_2);
 					// 更新流水明细驳回状态
 					 status = "3";
 				}else{
@@ -226,14 +232,8 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 				// 流水状态 1处理中 2已处理 3被驳回 : serial_status
 				tdsSerual.setSerialStatus(status);
 				tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
-
-//				// 更新佣金列表
-//				tdsCommiss.setUpdateTime(new Date());
-//				tdsCommiss.setCommStatus(status);// 已到账
-//				tdsCommiss.setOrderNumber(appBack.getOrderNumber());
-//				tdsCommissionMapper.upCommStatus(tdsCommiss);
-//				result.setResultObj(1);
-//				this.commit(statusTran);
+                this.commit(statusTran);
+                result.setResultObj(1);
 			}
 			
 		} catch (Exception e) {

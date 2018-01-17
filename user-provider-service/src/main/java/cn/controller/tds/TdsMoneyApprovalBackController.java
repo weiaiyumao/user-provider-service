@@ -52,4 +52,18 @@ public class TdsMoneyApprovalBackController{
 		
 	}
 	
+	
+	/**
+	 * 退单审核状态改变
+	 * @param domain
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/approvalByUpStatusBack", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	BackResult<Integer> approvalByUpStatusBack(@RequestBody TdsMoneyApprovalBackDomain domain, String appRemarks) throws Exception{
+		BeanHelper.beanHelperTrim(domain);
+		return tdsMoneyApprovalBackService.approvalByUpStatusBack(domain,appRemarks);
+		
+	}
+	
 }

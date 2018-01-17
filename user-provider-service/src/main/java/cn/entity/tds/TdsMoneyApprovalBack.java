@@ -72,7 +72,7 @@ public class TdsMoneyApprovalBack extends BasePageParam implements Serializable 
 	private String backPname; 
 
 	// : remarks1
-	private Integer remarks1;
+	private Integer pnameId;
 
 	/**
 	 * 退款审核id : id
@@ -395,22 +395,12 @@ public class TdsMoneyApprovalBack extends BasePageParam implements Serializable 
 	}
 
 
-	/**
-	 * : remarks1
-	 * 
-	 * @return
-	 */
-	public Integer getRemarks1() {
-		return remarks1;
+     public Integer getPnameId() {
+		return pnameId;
 	}
-
-	/**
-	 * : remarks1
-	 * 
-	 * @return
-	 */
-	public void setRemarks1(Integer remarks1) {
-		this.remarks1 = remarks1;
+     
+     public void setPnameId(Integer pnameId) {
+		this.pnameId = pnameId;
 	}
 
 }

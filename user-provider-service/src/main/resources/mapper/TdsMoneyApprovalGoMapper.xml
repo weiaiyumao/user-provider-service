@@ -255,11 +255,30 @@
 		SELECT * FROM tds_money_approval
 		where user_id=#{userId}
 		and approval_status='1'
-		and pname_id=#{backPname}
+		and pname_id=#{pnameId}
 		and not ISNULL(arrive_time)
 		and is_deleted='0'
 		ORDER BY create_time DESC
 	</select>
 
 
+	<select id="isStatus" parameterType="HashMap" resultType="java.lang.String">
+		SELECT approval_status FROM tds_money_approval
+		where order_number=#{orderNumber}
+		and user_id=#{userId}
+		and is_deleted='0'
+	</select>
+	
+ 	<update id="upApprovalStatus"  parameterType="HashMap">
+	 UPDATE tds_money_approval set approval_status=#{approvalStatus}
+	 <if test="arriveTime != null">,arrive_time=#{arriveTime}</if>
+	 where id=#{id} and is_deleted='0'
+	</update>
+	 
+	
+	<update id="upBilling"  parameterType="HashMap">
+	   UPDATE tds_money_approval set billing=#{billing}
+	   where id=#{id} and is_deleted='0'
+	</update>
+	
 </mapper>

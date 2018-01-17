@@ -24,7 +24,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="updater" property="updater"></result>
 		<result column="back_pname" property="backPname"></result>
-		<result column="remarks1" property="remarks1"></result>
+		<result column="pname_id" property="pnameId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -46,7 +46,7 @@
 		creater,
 		updater,
 		back_pname,
-		remarks1
+		pname_id
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -82,7 +82,7 @@
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="backPname != null">and back_pname = #{backPname}</if>
-			<if test="remarks1 != null">and remarks1 = #{remarks1}</if>
+			<if test="pnameId != null">and pname_id = #{pnameId}</if>
 			and is_deleted ='0'
 		</where>
 	</select>
@@ -106,7 +106,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="backPname != null"> back_pname , </if>
-			<if test="remarks1 != null"> remarks1 , </if>
+			<if test="pnameId != null"> pname_id , </if>
 			 is_deleted,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -126,7 +126,7 @@
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="backPname != null"> #{backPname} , </if>
-			<if test="remarks1 != null"> #{remarks1} , </if>
+			<if test="pnameId != null"> #{pnameId} , </if>
 			'0', 
 		</trim>
 
@@ -159,7 +159,7 @@
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="backPname != null"> back_pname = #{backPname}, </if>
-			<if test="remarks1 != null"> remarks1 = #{remarks1}, </if>
+			<if test="pnameId != null"> pname_id = #{pnameId}, </if>
 		</trim>
 		WHERE id=#{id} and is_deleted='0'
 	</update>
@@ -176,11 +176,11 @@
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
-			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=null">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4 and likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=null">
+			<if test="selected == 1 and likeName!=''">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=''">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=''">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=''">AND order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=''">
 				AND user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')
@@ -200,22 +200,26 @@
 		where parent_user_id=#{parentUserId}
 		and is_deleted='0'
 		)and is_deleted='0' 
-		<where>
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
-			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=null">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4 and likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=null">
+			<if test="selected == 1 and likeName!=''">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=''">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=''">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=''">AND order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=''">
 				AND user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')
 				or order_number like concat(concat('%',#{likeName}),'%')
 			</if> 
-		</where>
 	</select>
+	
+	
+	<update id="upBackStatus"  parameterType="HashMap">
+	 UPDATE tds_money_approval_back set approval_status=#{approvalStatus}
+	 where id=#{id} and is_deleted='0'
+	</update>
 	
 	
 </mapper>

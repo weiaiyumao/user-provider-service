@@ -108,27 +108,36 @@
 
 
 
+
+
 	<select id="pageTdsCustomer" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
 		select u.id as userId,u.name as userName,d.id as departId, d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
 		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money
-		as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl,com.com_name as comName
-		from tds_user u LEFT JOIN tds_user_customer cu
+		as sumMoney,cu.sum_commission as sumCommission,com.com_url as
+		comUrl,com.com_name as comName
+		from tds_user u LEFT JOIN
+		tds_user_customer cu
 		on cu.user_id=u.id LEFT
-		JOIN tds_user_department ud ON
+		JOIN tds_user_department ud
+		ON
 		ud.user_id=u.id LEFT JOIN tds_department
-		d on d.id=ud.depart_id LEFT JOIN tds_company com
+		d on d.id=ud.depart_id LEFT
+		JOIN tds_company com
 		on com.id=u.com_id
-		where u.parent_user_id=#{parentUserId}
+		where
+		u.parent_user_id=#{parentUserId}
 		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
 		<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
 		<if test="statTime != null and statTime!=''">
 			AND u.create_time &gt;= #{statTime}
-			AND u.create_time &lt;= #{endTime}
+			AND u.create_time &lt;=
+			#{endTime}
 		</if>
 		AND u.is_deleted ='0' order by u.create_time desc
-		LIMIT #{pageNumber},#{numPerPage}
+		LIMIT
+		#{pageNumber},#{numPerPage}
 	</select>
 
 
@@ -147,14 +156,16 @@
 		<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
 		<if test="statTime != null and statTime!=''">
 			AND u.create_time &gt;= #{statTime}
-			AND u.create_time &lt;= #{endTime}
+			AND u.create_time &lt;=
+			#{endTime}
 		</if>
 		AND u.is_deleted ='0' order by u.create_time desc
 	</select>
 
 	<select id="loadByIdView" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
-		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		select u.id as userId,u.name as userName,d.id as departId,
+		d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
 		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money
 		as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl
@@ -168,30 +179,34 @@
 	</select>
 
 
-	<update id="addMoneyAndCommission" parameterType="HashMap">
-		update tds_user_customer
-		SET sum_money=sum_money+#{sumMoney},
-		sum_commission=sum_commission+#{sumCommission},
-		overplus_commission=overplus_commission+#{overplusCommission}
-		last_money_time = #{lastMoneyTime}
-		where user_id=#{userId}
-		and is_deleted='0'
+	<update id="addMoneyAndCommission" parameterType="cn.entity.tds.TdsUserCustomer">
+		UPDATE tds_user_customer
+		<trim prefix="set" suffixOverrides=",">
+			<if test="sumMoney != null"> sum_money=sum_money+#{sumMoney}, </if>
+			<if test="sumCommission != null"> sum_commission=sum_commission+#{sumCommission}, </if>
+			<if test="overplusCommission != null">overplus_commission=overplus_commission+#{overplusCommission} , </if>
+			<if test="lastMoneyTime != null"> last_money_time =#{lastMoneyTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="createTime != null"> create_time= #{createTime} , </if>
+		</trim>
+		WHERE user_id = #{userId} and is_deleted='0'
 	</update>
 	
-	
+
 	<update id="subMoneyAndCommission" parameterType="HashMap">
-	  update tds_user_customer 
-	  set overplus_commission=overplus_commission-#{overplusCommission}
-      where user_id=#{userId}
+		update tds_user_customer
+		set overplus_commission=overplus_commission-#{overplusCommission}
+		where user_id=#{userId}
 	</update>
-	
-	
-	<select id="queryIsUserId"  parameterType="HashMap" resultType="java.lang.Integer">
-	    SELECT count(1) FROM tds_user_customer
-		where user_id=#{userId}  and is_deleted='0'
+
+
+	<select id="queryIsUserId" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT count(1) FROM tds_user_customer
+		where user_id=#{userId} and
+		is_deleted='0'
 	</select>
-	
-	
+
+
 	<select id="loadByUserId" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		SELECT

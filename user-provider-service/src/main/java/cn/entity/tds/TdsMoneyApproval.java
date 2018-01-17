@@ -40,10 +40,10 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	private Integer number;
 
 	// 产品价格 : money
-	private String money;
+	private String money="0";
 
 	// 涉及金额，总金额 : sum_money
-	private String sumMoney;
+	private String sumMoney="0";
 
 	// 付款类型1进账 2出账 3退款 : payment
 	private String payment;
@@ -77,7 +77,7 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	// 修改时间 : update_time
 	private java.util.Date updateTime;
 	
-	private String commissonMoney;
+	private String commissonMoney="0";
 
 	
 	private String lessName;
