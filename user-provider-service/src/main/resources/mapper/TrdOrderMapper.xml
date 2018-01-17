@@ -141,4 +141,17 @@
 		WHERE CRE_USER_ID=#{creUserId}
 		AND DELETE_STATUS = '0' AND STATUS = '1' ORDER BY ID DESC
 	</select>
+	
+	<select id="getSumMoney" resultType="BigDecimal" parameterType="Integer">
+		SELECT SUM(MONEY) FROM trd_order
+		WHERE CRE_USER_ID=#{creUserId}
+		AND DELETE_STATUS = '0' AND STATUS = '1' 
+	</select>
+	
+	<select id="quertCountTrdOrderByProductsId" resultType="BigDecimal" parameterType="HashMap">
+		SELECT COALESCE(SUM(NUMBER),0) FROM trd_order
+		WHERE CRE_USER_ID=#{0}
+		AND DELETE_STATUS = '0' AND STATUS = '1' AND PRODUCTS_ID IN (#{1})
+	</select>
+	
 </mapper>

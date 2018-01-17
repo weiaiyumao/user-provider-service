@@ -18,6 +18,8 @@ import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsCreUserAccountLogDomain;
+import main.java.cn.domain.tds.TdsUserAccountInfoDomain;
 
 @RestController
 @RequestMapping("/userAccount")
@@ -109,6 +111,28 @@ public class UserAccountController {
 		BackResult<Boolean> result = creUserAccountService.consumeRqApiAccount(creUserId, count);
 		return result;
 	}
+	
+	/**
+	 * 获取账户信息详情
+	 * @param trdOrderDomain
+	 * @return
+	 */
+	@RequestMapping(value = "/findTdsUserAccountInfoDomainByMobile", method = RequestMethod.POST)
+	public BackResult<TdsUserAccountInfoDomain> findTdsUserAccountInfoDomainByMobile(String mobile) {
+		BackResult<TdsUserAccountInfoDomain> result = creUserAccountService.findTdsUserAccountInfoDomainByMobile(mobile);
+		return result;
+	}
+	
+	/**
+	 * 代理商系统修改客户账户信息
+	 * @param trdOrderDomain
+	 * @return
+	 */
+	@RequestMapping(value = "/updateUserAccountBytds", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Boolean> updateUserAccountByTds(@RequestBody TdsCreUserAccountLogDomain domain) {
+		BackResult<Boolean> result = creUserAccountService.updateUserAccountByTds(domain);
+		return result;
+	}	
 	
 	public static void main(String[] args) {
 		

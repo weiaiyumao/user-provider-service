@@ -17,18 +17,23 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.dao.CreUserAccountMapper;
 import cn.dao.CreUserMapper;
 import cn.dao.TrdOrderMapper;
+import cn.dao.tds.TdsCreUserAccountLogMapper;
 import cn.entity.CreUser;
 import cn.entity.CreUserAccount;
 import cn.entity.TrdOrder;
+import cn.entity.tds.TdsCreUserAccountLog;
 import cn.service.CreUserAccountService;
 import cn.utils.CommonUtils;
 import cn.utils.Constant;
+import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.ErpTradeDomain;
 import main.java.cn.domain.TrdOrderDomain;
 import main.java.cn.domain.UserAccountDomain;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsCreUserAccountLogDomain;
+import main.java.cn.domain.tds.TdsUserAccountInfoDomain;
 
 @Service
 public class CreUserAccountServiceImpl implements CreUserAccountService {
@@ -43,6 +48,9 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 	@Autowired
 	private TrdOrderMapper trdOrderMapper;
+	
+	@Autowired
+	private TdsCreUserAccountLogMapper tdsCreUserAccountLogMapper;
 
 	@Override
 	public CreUserAccount findCreUserAccountByUserId(Integer creUserId) {
@@ -511,6 +519,100 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			result.setResultMsg("数据落地异常");
 		}
 
+		return result;
+	}
+
+	@Override
+	public BackResult<TdsUserAccountInfoDomain> findTdsUserAccountInfoDomainByMobile(String mobile) {
+
+		BackResult<TdsUserAccountInfoDomain> result = new BackResult<TdsUserAccountInfoDomain>();
+		
+		// 查询账户信息
+		try {
+			List<CreUser> user = creUserMapper.findCreUserByUserPhone(mobile);
+
+			if (CommonUtils.isNotEmpty(user)) {
+				result.setResultMsg("系统未查询到该用户");
+				result.setResultCode(ResultCode.RESULT_SUCCEED);
+				return result;
+			}
+
+			CreUserAccount account = this.findCreUserAccountByUserId(user.get(0).getId());
+
+			if (null == account) {
+				result.setResultMsg("系统未查询到该用户账户信息");
+				result.setResultCode(ResultCode.RESULT_DATA_EXCEPTIONS);
+				return result;
+			}
+
+			TdsUserAccountInfoDomain tdsUserAccountInfoDomain = new TdsUserAccountInfoDomain();
+			tdsUserAccountInfoDomain.setMobile(mobile);
+			tdsUserAccountInfoDomain.setAccount(account.getAccount() == null ? 0 : account.getAccount());
+			tdsUserAccountInfoDomain.setCreUserId(user.get(0).getId());
+			tdsUserAccountInfoDomain.setApiAccount(account.getApiAccount() == null ? 0 : account.getApiAccount());
+			tdsUserAccountInfoDomain.setRqAccount(account.getRqAccount() == null ? 0 : account.getRqAccount());
+			
+			BigDecimal money = trdOrderMapper.getSumMoney(user.get(0).getId());
+			// 获取总金额
+			tdsUserAccountInfoDomain.setMoney(money == null ? BigDecimal.ZERO : money);
+			// 获取充值总条数
+			BigDecimal Caccount = trdOrderMapper.quertCountTrdOrderByProductsId(user.get(0).getId(), "1,2,3,4");
+			BigDecimal CapiAccount = trdOrderMapper.quertCountTrdOrderByProductsId(user.get(0).getId(), "5,6,7,8");
+			BigDecimal CrqAccount = trdOrderMapper.quertCountTrdOrderByProductsId(user.get(0).getId(), "9,10,11");
+			tdsUserAccountInfoDomain.setCaccount(Caccount != null ? Caccount.intValue() : 0);
+			tdsUserAccountInfoDomain.setCapiAccount(CapiAccount != null ? CapiAccount.intValue() : 0);
+			tdsUserAccountInfoDomain.setCrqAccount(CrqAccount != null ? CrqAccount.intValue() : 0);
+			
+			result.setResultObj(tdsUserAccountInfoDomain);
+		} catch (Exception e) {
+			logger.error("用户手机号：【" + mobile + "】执行获取账户信息发生系统异常：" + e.getMessage());
+			e.printStackTrace();
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+		return result;
+		
+	}
+
+	@Transactional
+	public BackResult<Boolean> updateUserAccountByTds(TdsCreUserAccountLogDomain domain) {
+		
+		BackResult<Boolean> result = new BackResult<Boolean>();
+		
+		try {
+			
+			// 获取账户信息
+			CreUserAccount creUserAccount = this.findCreUserAccountByUserId(domain.getCreUserId());
+
+			if (null == creUserAccount) {
+				result = new BackResult<Boolean>(ResultCode.RESULT_DATA_EXCEPTIONS, "数据库不存在该用户的账户记录");
+				return result;
+			}
+			
+			// 判断类型 
+			
+			if (domain.getType().equals("1")) {
+				creUserAccount.setAccount(creUserAccount.getAccount() + domain.getNumber());
+			} else if (domain.getType().equals("2")) {
+				creUserAccount.setApiAccount(creUserAccount.getApiAccount() + domain.getNumber());
+			} else if (domain.getType().equals("3")) {
+				creUserAccount.setRqAccount(creUserAccount.getRqAccount() + domain.getNumber());
+			} 
+			
+			creUserAccountMapper.updateCreUserAccount(creUserAccount);
+			result.setResultObj(Boolean.TRUE);
+			
+			// 存储日志
+			TdsCreUserAccountLog log = new TdsCreUserAccountLog();
+			// 保存流水记录
+			BeanUtils.copyProperties(domain, log);
+			log.setCreateTime(DateUtils.getCurrentDateTime());
+			tdsCreUserAccountLogMapper.insert(log);
+			
+		} catch (Exception e) {
+			logger.error("用户id：【" + domain.getCreUserId() + "】执行修改账户信息发生系统异常：" + e.getMessage());
+			result = new BackResult<Boolean>(ResultCode.RESULT_FAILED, "系统异常");
+		}
 		return result;
 	}
 
