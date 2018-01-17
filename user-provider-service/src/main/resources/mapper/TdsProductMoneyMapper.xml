@@ -125,7 +125,7 @@
 	
 	
 	
-	<select id="queryPnameByPro" parameterType="java.lang.Integer" resultType="BaseResultMap">
+	<select id="queryPnameByPro" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 	    SELECT * FROM tds_product_money
 		where product_id=#{pnameId}
 		and is_deleted='0'
