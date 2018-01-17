@@ -32,6 +32,7 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="remarks" property="remarks"></result>
+		<result column="cre_user_id" property="creUserId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -60,7 +61,8 @@
 		creater,
 		updater,
 		is_deleted,
-		remarks
+		remarks,
+		cre_user_id
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -103,11 +105,12 @@
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="creUserId != null">and cre_user_id = #{creUserId}</if>
 			and is_deleted = '0'
 		</where>
 	</select>
 
-	<insert id="save" parameterType="cn.entity.tds.TdsUser">
+	<insert id="save" parameterType="cn.entity.tds.TdsUser"  useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO tds_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="name != null"> name , </if>
@@ -134,6 +137,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
+			 <if test="creUserId != null"> cre_user_id , </if>
 			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -161,6 +165,7 @@
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
+			<if test="creUserId != null"> #{creUserId} , </if>
 			'0',
 		</trim>
 
@@ -201,6 +206,7 @@
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
+		    <if test="creUserId != null"> cre_user_id = #{creUserId}, </if>
 		</trim>
 		WHERE id=#{id} and is_deleted='0'
 	</update>
@@ -286,6 +292,7 @@
 			<if test="createTime != null"> CREATE_TIME , </if>
 			<if test="hedehref != null"> HEDEHREF , </if>
 			<if test="source != null"> SOURCE , </if>
+			 <if test="creUserId != null">cre_user_id,</if>
 			STATUS,
 			IS_DELETED
 		</trim>
@@ -300,6 +307,7 @@
 			<if test="createTime != null"> #{createTime} , </if>
 			<if test="hedehref != null"> #{hedehref} , </if>
 			<if test="source != null"> #{source} , </if>
+		    <if test="creUserId != null">#{creUserId}, </if>
 			'0',
 			'0'
 		</trim>
@@ -316,14 +324,13 @@
 
 	<select id="queryUserByRoleName" parameterType="HashMap"
 		resultType="java.util.HashMap">
-		select u.id as userId,u.contact,u.name,com.com_name as comName from
+		select u.id,u.contact,u.name,com.com_name as comName from
 		tds_user
 		u,
 		tds_company com
 		where u.com_id=com.id
 		<if test="contact != null and contact!=''">and u.contact like concat(concat('%',#{contact}),'%')</if>
 		and u.is_deleted='0'
-		and not ISNULL(u.contact)
 		LIMIT 10
 	</select>
 

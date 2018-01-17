@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.service.tds.TdsApprovalService;
 import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
 
@@ -29,9 +28,9 @@ public class TdsApperovalController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/pageTdsApproval", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsApproval(@RequestBody PageAuto auto) throws Exception{
-		BeanHelper.beanHelperTrim(auto);//去掉空格
-		return tdsApprovalService.pageTdsApproval(auto);
+	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsApproval(@RequestBody TdsCustomerViewDomain domain) throws Exception{
+		BeanHelper.beanHelperTrim(domain);//去掉空格
+		return tdsApprovalService.pageTdsApproval(domain);
 	}
 	
 	

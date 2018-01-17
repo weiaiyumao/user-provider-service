@@ -4,44 +4,48 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dao.CreUserMapper">
 
-	<!-- 配置resultMap属性，进行表字段与实体类属性映射 -->  
-    <resultMap id="BaseResultMap" type="cn.entity.CreUser" >  
-       <result column="id" property="id"></result>  
-       <result column="cl_account_id" property="clAccountId"></result>  
-       <result column="company_id" property="companyId"></result>  
-       <result column="user_name" property="userName"></result>  
-       <result column="user_phone" property="userPhone"></result>  
-       <result column="user_password" property="userPassword"></result>  
-       <result column="user_email" property="userEmail"></result>  
-       <result column="user_qq" property="userQq"></result>  
-       <result column="user_department" property="userDepartment"></result>
-       <result column="user_position" property="userPosition"></result>  
-       <result column="user_thumbs" property="userThumbs"></result>  
-       <result column="wx_openid" property="wxOpenid"></result>
-       <result column="last_login_time" property="lastLoginTime"></result>  
-       <result column="last_login_ip" property="lastLoginIp"></result>  
-       <result column="delete_status" property="deleteStatus"></result>
-       <result column="version" property="version"></result>  
-       <result column="create_user" property="createUser"></result>  
-       <result column="create_time" property="createTime"></result>
-       <result column="update_time" property="updateTime"></result>  
-       <result column="agent_id" property="agentId"></result>  
-       <result column="nick_name" property="nickName"></result>
-       <result column="bit_onoff" property="bitOnoff"></result>
-    </resultMap> 
+	<!-- 配置resultMap属性，进行表字段与实体类属性映射 -->
+	<resultMap id="BaseResultMap" type="cn.entity.CreUser">
+		<result column="id" property="id"></result>
+		<result column="cl_account_id" property="clAccountId"></result>
+		<result column="company_id" property="companyId"></result>
+		<result column="user_name" property="userName"></result>
+		<result column="user_phone" property="userPhone"></result>
+		<result column="user_password" property="userPassword"></result>
+		<result column="user_email" property="userEmail"></result>
+		<result column="user_qq" property="userQq"></result>
+		<result column="user_department" property="userDepartment"></result>
+		<result column="user_position" property="userPosition"></result>
+		<result column="user_thumbs" property="userThumbs"></result>
+		<result column="wx_openid" property="wxOpenid"></result>
+		<result column="last_login_time" property="lastLoginTime"></result>
+		<result column="last_login_ip" property="lastLoginIp"></result>
+		<result column="delete_status" property="deleteStatus"></result>
+		<result column="version" property="version"></result>
+		<result column="create_user" property="createUser"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="agent_id" property="agentId"></result>
+		<result column="nick_name" property="nickName"></result>
+		<result column="bit_onoff" property="bitOnoff"></result>
+	</resultMap>
 
-	<select id="findCreUserByUserPhone" resultMap="BaseResultMap" parameterType="HashMap">
-		SELECT * FROM cre_user WHERE USER_PHONE = #{userPhone} AND DELETE_STATUS = '0'
+	<select id="findCreUserByUserPhone" resultMap="BaseResultMap"
+		parameterType="HashMap">
+		SELECT * FROM cre_user WHERE USER_PHONE = #{userPhone}
+		AND DELETE_STATUS = '0'
 	</select>
-	
-	<select id="findByUserId" resultMap="BaseResultMap" parameterType="HashMap">
-		SELECT * FROM cre_user WHERE CL_ACCOUNT_ID = #{clAccountId} AND DELETE_STATUS = '0'
+
+	<select id="findByUserId" resultMap="BaseResultMap"
+		parameterType="HashMap">
+		SELECT * FROM cre_user WHERE CL_ACCOUNT_ID =
+		#{clAccountId} AND DELETE_STATUS = '0'
 	</select>
-	
+
 	<select id="findById" resultMap="BaseResultMap" parameterType="HashMap">
 		SELECT * FROM cre_user WHERE ID = #{id} AND DELETE_STATUS = '0'
 	</select>
-	
+
 	<update id="updateCreUser" parameterType="cn.entity.CreUser">
 		UPDATE cre_user
 		<trim prefix="set" suffixOverrides=",">
@@ -106,52 +110,75 @@
 		</trim>
 		WHERE ID=#{id} and VERSION = #{version}
 	</update>
-	
-	 <insert id ="saveCreUser" parameterType="cn.entity.CreUser" >
+
+	<insert id="saveCreUser" parameterType="cn.entity.CreUser">
 		INSERT INTO cre_user(
-			CL_ACCOUNT_ID,
-			COMPANY_ID,
-			USER_NAME,
-			USER_PHONE,
-			USER_PASSWORD,
-			USER_EMAIL,
-			USER_QQ,
-			USER_DEPARTMENT,
-			USER_POSITION,
-			USER_THUMBS,
-			WX_OPENID,
-			LAST_LOGIN_TIME,
-			LAST_LOGIN_IP,
-			DELETE_STATUS,
-			CREATE_USER,
-			CREATE_TIME,
-			UPDATE_TIME,
-			AGENT_ID,
-			NICK_NAME,
-			BIT_ONOFF)
+		CL_ACCOUNT_ID,
+		COMPANY_ID,
+		USER_NAME,
+		USER_PHONE,
+		USER_PASSWORD,
+		USER_EMAIL,
+		USER_QQ,
+		USER_DEPARTMENT,
+		USER_POSITION,
+		USER_THUMBS,
+		WX_OPENID,
+		LAST_LOGIN_TIME,
+		LAST_LOGIN_IP,
+		DELETE_STATUS,
+		CREATE_USER,
+		CREATE_TIME,
+		UPDATE_TIME,
+		AGENT_ID,
+		NICK_NAME,
+		BIT_ONOFF)
 		VALUES (
-			#{clAccountId},
-			#{companyId},
-			#{userName},
-			#{userPhone},
-			#{userPassword},
-			#{userEmail},
-			#{userQq},
-			#{userDepartment},
-			#{userPosition},
-			#{userThumbs},
-			#{wxOpenid},
-			#{lastLoginTime},
-			#{lastLoginIp},
-			#{deleteStatus},
-			#{createUser},
-			#{createTime},
-			#{updateTime},
-			#{agentId},
-			#{nickName},
-			#{bitOnoff}
+		#{clAccountId},
+		#{companyId},
+		#{userName},
+		#{userPhone},
+		#{userPassword},
+		#{userEmail},
+		#{userQq},
+		#{userDepartment},
+		#{userPosition},
+		#{userThumbs},
+		#{wxOpenid},
+		#{lastLoginTime},
+		#{lastLoginIp},
+		#{deleteStatus},
+		#{createUser},
+		#{createTime},
+		#{updateTime},
+		#{agentId},
+		#{nickName},
+		#{bitOnoff}
 		)
-	 </insert>
+	</insert>
 
 
+
+	<insert id="addCreAndTdsByUser"  parameterType="HashMap"  useGeneratedKeys="true" keyProperty="id" >
+		INSERT INTO cre_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userName != null"> user_name , </if>
+			<if test="userPhone != null"> user_phone , </if>
+			<if test="userPassword != null"> user_password , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="nickName != null"> nick_name , </if>
+			delete_status ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userName != null"> #{userName} , </if>
+			<if test="userPhone != null"> #{userPhone} , </if>
+			<if test="userPassword != null"> #{userPassword} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="nickName != null"> #{nickName} , </if>
+	     	'0' , 
+		</trim>
+	</insert>
+	
 </mapper>

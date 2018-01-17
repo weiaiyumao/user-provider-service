@@ -3,13 +3,15 @@ package cn.entity.tds.view;
 import java.io.Serializable;
 import java.util.Date;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
  * 客户列表视图
  * 
  * @author ChuangLan
  *
  */
-public class TdsCustomerView implements Serializable {
+public class TdsCustomerView extends BasePageParam implements Serializable {
 
 	/**
 	 * 
@@ -33,6 +35,8 @@ public class TdsCustomerView implements Serializable {
 	private String com_url;
 
 	private String source; // 来源
+	
+	private String comName;
 
 	// 最近充值时间 : last_money_time
 	private java.util.Date lastMoneyTime;
@@ -44,7 +48,13 @@ public class TdsCustomerView implements Serializable {
 	private String sumCommission;
 	
 	
+	public String getComName() {
+		return comName;
+	}
 	
+	public void setComName(String comName) {
+		this.comName = comName;
+	}
 
 	public java.util.Date getLastMoneyTime() {
 		return lastMoneyTime;

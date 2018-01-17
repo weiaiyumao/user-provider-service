@@ -22,7 +22,6 @@ import cn.service.tds.TdsApprovalService;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
 
@@ -49,29 +48,31 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 	private TdsUserCustomerMapper tdsUserCustomerMapper;
 
 	@Override
-	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsApproval(PageAuto auto) {
+	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsApproval(TdsCustomerViewDomain domain) {
 		BackResult<PageDomain<TdsCustomerViewDomain>> result = new BackResult<PageDomain<TdsCustomerViewDomain>>();
 		PageDomain<TdsCustomerViewDomain> listDomain = null;
 		List<TdsCustomerViewDomain> list = new ArrayList<TdsCustomerViewDomain>();
+		TdsCustomerView tdsCusView=new TdsCustomerView();
 		try {
 
 		   // yyyy-mm-dd 天数加1
-			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
-				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
-				auto.setStatTime(auto.getStatTime()); // 开始时间
-				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
+			if (null != domain.getStatTime() && !"".equals(domain.getStatTime())) {
+				Date endTime = DateUtils.addDay(domain.getStatTime(), 1);
+				domain.setStatTime(domain.getStatTime()); // 开始时间
+				domain.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
 			
+			BeanUtils.copyProperties(domain, tdsCusView);
 			// 客户注册审核，第注册成功 is_deleted 默认为2
 			// 查询isDeleted为2的客户信息
-			Integer count = tdsApprovalMapper.queryCount(auto);
+			Integer count = tdsApprovalMapper.queryCount(tdsCusView);
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
 			}
-			Integer cur = auto.getCurrentPage() <= 0 ? 1 : auto.getCurrentPage();
-			auto.setPageNumber((cur - 1) * auto.getNumPerPage());
+			Integer cur = tdsCusView.getCurrentPage() <= 0 ? 1 : tdsCusView.getCurrentPage();
+			tdsCusView.setPageNumber((cur - 1) * tdsCusView.getNumPerPage());
 
-			List<TdsCustomerView> pageList = tdsApprovalMapper.pageTdsApproval(auto);
+			List<TdsCustomerView> pageList = tdsApprovalMapper.pageTdsApproval(tdsCusView);
 			if (pageList.size() <= 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
 			}
@@ -82,7 +83,7 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 				list.add(obj);
 			}
 
-			listDomain = new PageDomain<TdsCustomerViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(), count);
+			listDomain = new PageDomain<TdsCustomerViewDomain>(domain.getCurrentPage(),domain.getNumPerPage(), count);
 			listDomain.setTlist(list);
 			result.setResultObj(listDomain);
 

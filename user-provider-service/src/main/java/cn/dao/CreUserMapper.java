@@ -18,4 +18,7 @@ public interface CreUserMapper {
 	int saveCreUser(CreUser creUser);
 	
 	int updateCreUser(CreUser creUser);
+	
+	
+    int addCreAndTdsByUser(CreUser creUser);
 }

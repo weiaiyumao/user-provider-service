@@ -95,6 +95,18 @@ public class TdsUser implements Serializable {
 	private String remarks;
 
 	private String token;
+	
+	
+	private Integer creUserId;
+	
+	
+	public Integer getCreUserId() {
+		return creUserId;
+	}
+	
+	public void setCreUserId(Integer creUserId) {
+		this.creUserId = creUserId;
+	}
 
 	public String getToken() {
 		return token;

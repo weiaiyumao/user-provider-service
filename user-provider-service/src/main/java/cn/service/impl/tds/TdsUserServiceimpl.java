@@ -13,13 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.CreUserMapper;
 import cn.dao.tds.TdsCompanyMapper;
 import cn.dao.tds.TdsUserMapper;
+import cn.dao.tds.TdsUserRoleMapper;
+import cn.entity.CreUser;
 import cn.entity.tds.TdsCompany;
 import cn.entity.tds.TdsUser;
+import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.common.StatusType;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCompanyDomain;
@@ -36,6 +41,12 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 
 	@Autowired
 	private TdsCompanyMapper tdsCompanyMapper;
+	
+	@Autowired
+	private CreUserMapper creUserMapper;
+	
+	@Autowired
+	private TdsUserRoleMapper tdsUserRoleMapper;
 
 	@Override
 	public BackResult<TdsUserDomain> loadById(Integer id) {
@@ -64,25 +75,48 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	@Override
 	public BackResult<Integer> save(TdsUserDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
-		TdsUser tds = new TdsUser();
-
-		Integer isUserName = 0;
-		isUserName = tdsUserMapper.isUserName(domain.getPhone());
+		TdsUser tdsUser = new TdsUser();
+		TransactionStatus status=this.begin();
+		Integer isUserName = tdsUserMapper.isUserName(domain.getPhone());
 		if (isUserName >= 1) {
 			return new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "你手机号已注册");
 		}
-		// 注册加密
+		// 注册密码加密
 		if (null != domain.getPassword() || "".equals(domain.getPassword()))
 			domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
+		BeanUtils.copyProperties(domain, tdsUser);
 		try {
+		
+			//保存 cre_user  用户表
+			CreUser creUser=new CreUser();
+			creUser.setUserPassword(domain.getPassword());
+			creUser.setUserPhone(domain.getPhone());
+			creUser.setUserName(domain.getPhone());//没有用户名，先默认手机号码
+			creUser.setCreateTime(new Date());
+			creUser.setUpdateTime(new Date());
+			creUser.setNickName("nic_"+domain.getPhone());
+			creUserMapper.addCreAndTdsByUser(creUser);
+				   
+			//保存  tds_user   用户表
+			tdsUser.setCreateTime(new Date());
+			tdsUser.setUpdateTime(new Date());
+			tdsUser.setStatus("0");  //正常注册
+			tdsUser.setCreUserId(creUser.getId());  //关联 cre_user 表 用户同步
+			BeanUtils.copyProperties(domain,tdsUser);
+			tdsUserMapper.save(tdsUser);
+						
+			//新用户默认为业务员角色
+			TdsUserRole userRole=new TdsUserRole();
+			userRole.setCreateTime(new Date());
+			userRole.setUserId(tdsUser.getId());
+			userRole.setRoleId(StatusType.ROLE_YWY); //业务员角色
+			tdsUserRoleMapper.save(userRole);
 
-			domain.setCreateTime(new Date());
-			domain.setUpdateTime(new Date());
-			BeanUtils.copyProperties(domain, tds);
-			tdsUserMapper.save(tds);
+			this.commit(status);
 			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
+			this.rollback(status);
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
 		}

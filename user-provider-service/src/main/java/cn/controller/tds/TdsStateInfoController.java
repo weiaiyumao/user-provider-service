@@ -94,5 +94,9 @@ public class TdsStateInfoController {
 		return result;
 	}
 	
-	
+	@RequestMapping(value="/deleteByProId", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> deleteByProId(Integer id){
+		 BackResult<Integer> result = tdsStateInfoService.deleteByProId(id);
+		return result;
+	}
 }

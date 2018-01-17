@@ -22,7 +22,11 @@ public interface TdsStateInfoSerrvice extends TdsStateInfoBusSerrvice{
 	BackResult<Integer> deleteById(Integer id);
 	
 	
-	
-
+	/**
+	 * 删除  产品价格
+	 * @param id
+	 * @return
+	 */
+	BackResult<Integer> deleteByProId(Integer id);
 
 }

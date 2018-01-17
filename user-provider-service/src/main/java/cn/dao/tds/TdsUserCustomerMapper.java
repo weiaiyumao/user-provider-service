@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsUserCustomer;
 import cn.entity.tds.view.TdsCustomerView;
-import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -24,7 +23,7 @@ public interface TdsUserCustomerMapper extends IBaseDao<TdsUserCustomer, Integer
 	 * @param auto
 	 * @return
 	 */
-	List<TdsCustomerView> pageTdsCustomer(PageAuto auto);
+	List<TdsCustomerView> pageTdsCustomer(TdsCustomerView view);
 	
 	
 	/**
@@ -32,7 +31,7 @@ public interface TdsUserCustomerMapper extends IBaseDao<TdsUserCustomer, Integer
 	 * @param auto
 	 * @return
 	 */
-	Integer queryCount(PageAuto auto);
+	Integer queryCount(TdsCustomerView view);
 	
 	
 

@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.view.TdsCustomerView;
-import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -24,14 +23,14 @@ public interface TdsApprovalLogMapper extends IBaseDao<TdsApprovalLog, Integer>{
 	 * @param auto
 	 * @return
 	 */
-	List<TdsCustomerView> pageTdsApproval(PageAuto auto);
+	List<TdsCustomerView> pageTdsApproval(TdsCustomerView view);
 	
 	/**
 	 * 统计
 	 * @param auto
 	 * @return
 	 */
-	Integer queryCount(PageAuto auto);
+	Integer queryCount(TdsCustomerView view);
 	
 	
   

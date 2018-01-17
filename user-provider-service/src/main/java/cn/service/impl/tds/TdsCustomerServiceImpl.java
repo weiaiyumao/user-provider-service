@@ -30,7 +30,6 @@ import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.common.StatusType;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAttornLogDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
@@ -79,7 +78,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			TdsCompany com = new TdsCompany();
 			com.setComUrl(domain.getCom_url());
 			com.setId(tur.getComId());
-			com.setComName(domain.getCom_name());
+			com.setComName(domain.getComName());
 			com.setUpdateTime(new Date());
 			com.setUpdater(loginUserId);
 			tdsCompanyMapper.update(com);
@@ -114,24 +113,30 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		return result;
 	}
 
+	
+	
 	@Override
-	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsCustomer(PageAuto auto) {
+	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsCustomer(TdsCustomerViewDomain domain) {
 		BackResult<PageDomain<TdsCustomerViewDomain>> result = new BackResult<PageDomain<TdsCustomerViewDomain>>();
 		PageDomain<TdsCustomerViewDomain> pageListDomain = null;
 		List<TdsCustomerViewDomain> listDomain = new ArrayList<TdsCustomerViewDomain>();
+		TdsCustomerView tdsCusView=new TdsCustomerView();
 		try {
 
-			if (null != auto.getCreateTime() || "".equals(auto.getCreateTime())) {
-				Date endTime = DateUtils.addDay(auto.getCreateTime(), 1);
-				auto.setStatTime(auto.getStatTime()); // 开始时间
-				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
+			if (null != domain.getStatTime() || "".equals(domain.getStatTime())) {
+				Date endTime = DateUtils.addDay(domain.getStatTime(), 1);
+				domain.setStatTime(domain.getStatTime()); // 开始时间
+				domain.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
-			Integer cur = auto.getCurrentPage() <= 0 ? 1 : auto.getCurrentPage();
-			auto.setPageNumber((cur - 1) * auto.getNumPerPage());
-			Integer count = tdsUserCustomerMapper.queryCount(auto);// 获取总数
-			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(auto);
+			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
+			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
+			
+			BeanUtils.copyProperties(domain, tdsCusView);
+			
+			Integer count = tdsUserCustomerMapper.queryCount(tdsCusView);// 获取总数
+			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(tdsCusView);
+			
 			if (list.size() > 0 && list != null) {
-
 				// 定义对象用于转换
 				TdsCustomerViewDomain tdsDomain = null;
 				for (TdsCustomerView obj : list) {
@@ -140,7 +145,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 					listDomain.add(tdsDomain);
 				}
 				// 构造计算分页参数
-				pageListDomain = new PageDomain<TdsCustomerViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(),
+				pageListDomain = new PageDomain<TdsCustomerViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
 						count);
 				pageListDomain.setTlist(listDomain);
 				result.setResultObj(pageListDomain);
@@ -195,10 +200,10 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			}
 
 			// 新增用户的时候判断公司名字和地址是否存在，存在则修改，否则更新信息
-			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getCom_url(), domain.getCom_name());
+			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getCom_url(), domain.getComName());
 			TdsCompany tdsCom = new TdsCompany();
 			tdsCom.setComUrl(domain.getCom_url());
-			tdsCom.setComName(domain.getCom_name());
+			tdsCom.setComName(domain.getComName());
 			if (null == isTdsCom) {
 				// 保存
 				tdsCom.setCreateTime(new Date());

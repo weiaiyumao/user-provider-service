@@ -66,13 +66,14 @@
 			<if test="appRemarks != null"> #{appRemarks} , </if>
 			<if test="spare1 != null"> #{spare1} , </if>
 			<if test="createTime != null"> #{createTime} , </if>
-		   '0' , 
+			'0' ,
 		</trim>
 	</insert>
 
 
 	<update id="deleteById" parameterType="java.lang.Integer">
-		UPDATE tds_approval_log SET IS_DELETED='1'
+		UPDATE tds_approval_log
+		SET IS_DELETED='1'
 		WHERE id=#{id}
 	</update>
 
@@ -91,51 +92,50 @@
 		</trim>
 		WHERE id=#{id}
 	</update>
-	
-	
 
-     <!-- parent_id=2 为父级部门类  u.is_deleted=2 注册审核-->
+
+
+	<!-- is_deleted=2 注册审核 -->
 	<select id="pageTdsApproval" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
-		select u.id as userId,u.name as userName,d.id as departId, d.name as
+		SELECT u.id as userId,u.name as userName,d.id as departId, d.name as
 		departName,u.contact,u.phone,u.create_time,
-		u.source,com.com_url as
-		comUrl,u.is_deleted
-		from tds_user u,
-		tds_user_department
-		ud,tds_department d,
-		tds_company com
-		where u.id=ud.user_id and
-		d.id=ud.depart_id and com.id=u.com_id
-		and d.parent_id=2
-			<if test="departId != null">AND d.id = #{departId}</if>
-			<if test="userName != null">AND u.name = #{userName}</if>
-			<if test="statTime != null">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='2' order by u.create_time desc
-	
+		u.source,com.com_name as
+		comName,com.com_url as
+		comUrl,u.is_deleted,u.parent_user_id from
+		tds_user u LEFT JOIN tds_user_department ud
+		ON u.id=ud.user_id LEFT JOIN tds_department d
+		on d.id=ud.depart_id LEFT JOIN tds_company com ON
+		com.id=u.com_id where u.id in (
+		select id from tds_user
+		where parent_user_id=#{parentUserId} and is_deleted='2'
+		)
+		<if test="departId != null">AND d.id = #{departId}</if>
+		<if test="userName != null">AND u.name = #{userName}</if>
+		<if test="statTime != null">
+			AND u.create_time &gt;= #{statTime}
+			AND u.create_time &lt;= #{endTime}
+		</if>
+	    order by u.create_time desc
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
 
-	<select id="queryCount" resultType="java.lang.Integer" parameterType="Hashmap">
-		select count(1)
-		from tds_user u,
-		tds_user_department ud,tds_department
-		d,
-		tds_company com
-		where u.id=ud.user_id and d.id=ud.depart_id and
-		com.id=u.com_id
-		and d.parent_id=2
-			<if test="departId != null">AND d.id = #{departId}</if>
-			<if test="contact != null">AND u.contact = #{contact}</if>
-			<if test="statTime != null">
-				AND u.create_time &gt;= #{statTime}
-				AND u.create_time &lt;= #{endTime}
-			</if>
-			AND u.is_deleted ='2' order by u.create_time desc
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Hashmap">
+		SELECT count(1) from tds_user u LEFT JOIN tds_user_department ud
+		ON u.id=ud.user_id  LEFT JOIN tds_department d
+		on d.id=ud.depart_id LEFT JOIN tds_company com  ON
+		com.id=u.com_id  where  u.id in (
+		 select id from tds_user 
+		 where parent_user_id=#{parentUserId}  and is_deleted='2'
+		 )
+		<if test="departId != null">AND d.id = #{departId}</if>
+		<if test="contact != null">AND u.contact = #{contact}</if>
+		<if test="statTime != null">
+			AND u.create_time &gt;= #{statTime}
+			AND u.create_time &lt;= #{endTime}
+		</if>
 	</select>
-	
+
 </mapper>
