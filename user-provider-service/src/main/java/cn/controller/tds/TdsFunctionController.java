@@ -43,9 +43,9 @@ public class TdsFunctionController {
 	 * @throws Exception 
 	   */
 	  @RequestMapping(value="/save",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunctionDomain> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
+	  public BackResult<Integer> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
 		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
-		  BackResult<TdsFunctionDomain>  result=tdsFunctionService.saveTdsFunction(tdsFunctionDomain);
+		  BackResult<Integer>  result=tdsFunctionService.saveTdsFunction(tdsFunctionDomain);
 		  return result;
 	  }
 	  
@@ -56,9 +56,9 @@ public class TdsFunctionController {
 	 * @throws Exception 
 	   */
 	  @RequestMapping(value="/update",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunctionDomain>  update(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
+	  public BackResult<Integer>  update(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
 		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
-	      BackResult<TdsFunctionDomain>  result=tdsFunctionService.updateTdsFunction(tdsFunctionDomain);
+	      BackResult<Integer>  result=tdsFunctionService.updateTdsFunction(tdsFunctionDomain);
 		  return result;
 	  }
 	  

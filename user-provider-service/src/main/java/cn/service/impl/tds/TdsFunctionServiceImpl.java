@@ -53,15 +53,15 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	}
 
 	@Override
-	public BackResult<TdsFunctionDomain> saveTdsFunction(TdsFunctionDomain domain) {
-		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
+	public BackResult<Integer> saveTdsFunction(TdsFunctionDomain domain) {
+		BackResult<Integer> result = new BackResult<Integer>();
 		TdsFunction tds = new TdsFunction();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
 		try {
 			BeanUtils.copyProperties(domain, tds);
 			tdsFunctionMapper.save(tds);
-			result.setResultObj(domain);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
@@ -87,14 +87,14 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	}
 
 	@Override
-	public BackResult<TdsFunctionDomain> updateTdsFunction(TdsFunctionDomain domain) {
-		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
+	public BackResult<Integer> updateTdsFunction(TdsFunctionDomain domain) {
+		BackResult<Integer> result = new BackResult<Integer>();
 		domain.setUpdateTime(new Date());
 		TdsFunction tds = new TdsFunction();
 		try {
 			BeanUtils.copyProperties(domain, tds);
 			tdsFunctionMapper.update(tds);
-			result.setResultObj(domain);
+			result.setResultObj(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
@@ -139,7 +139,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
 		}
-		return null;
+		return result;
 	}
 
 	
