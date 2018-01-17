@@ -123,7 +123,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		TdsCustomerView tdsCusView=new TdsCustomerView();
 		try {
 
-			if (null != domain.getStatTime() || "".equals(domain.getStatTime())) {
+			if (null != domain.getStatTime() && !"".equals(domain.getStatTime())) {
 				Date endTime = DateUtils.addDay(domain.getStatTime(), 1);
 				domain.setStatTime(domain.getStatTime()); // 开始时间
 				domain.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
