@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsCreUserAccountLogMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsCreUserAccountLog">
+		<result column="id" property="id"></result>
+		<result column="cre_user_id" property="creUserId"></result>
+		<result column="number" property="number"></result>
+		<result column="type" property="type"></result>
+		<result column="creater" property="creater"></result>
+		<result column="create_time" property="createTime"></result>
+	</resultMap>
+
+
+	<select id="loadById" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT
+		id as "id" ,
+		cre_user_id as "creUserId" ,
+		number as "number" ,
+		type as "type" ,
+		creater as "creater" ,
+		create_time as "createTime"
+		FROM tds_cre_user_account_log
+		WHERE
+		id=#{id}
+	</select>
+
+	<insert id="insert" parameterType="cn.entity.tds.TdsCreUserAccountLog">
+		INSERT INTO tds_cre_user_account_log (
+		cre_user_id,
+		number,
+		type,
+		creater,
+		create_time
+		) VALUES (
+		#{creUserId},
+		#{number},
+		#{type},
+		#{creater},
+		#{createTime}
+		)
+	</insert>
+
+
+</mapper>

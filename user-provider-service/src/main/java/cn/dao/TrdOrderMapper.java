@@ -1,5 +1,6 @@
 package cn.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -23,4 +24,8 @@ public interface TrdOrderMapper {
     List<TrdOrder> pageFindTrdOrderByCreUserId(Map<String,Object> map);
     
     Integer quertCountTrdOrder(Integer creUserId);
+    
+    BigDecimal getSumMoney(Integer creUserId);
+    
+    BigDecimal quertCountTrdOrderByProductsId(Integer creUserId,String productids);
 }
