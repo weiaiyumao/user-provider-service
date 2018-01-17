@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.tds.TdsFunctionService;
+import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
 
@@ -27,9 +29,9 @@ public class TdsFunctionController {
 	   * @param id
 	   * @return  obj
 	   */
-	  @RequestMapping(value="/loadById",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunctionDomain> loadById(Integer id){
-			 BackResult<TdsFunctionDomain> result=tdsFunctionService.loadById(id);
+	  @RequestMapping(value="/loadByIdView",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	  public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id){
+			 BackResult<TdsFunMoViewDomain> result=tdsFunctionService.loadByIdView(id);
 	         return result;
 	   }
 	  
@@ -38,9 +40,11 @@ public class TdsFunctionController {
 	   * 保存
 	   * @param tdsFunction
 	   * @return
+	 * @throws Exception 
 	   */
 	  @RequestMapping(value="/save",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunctionDomain> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain){
+	  public BackResult<TdsFunctionDomain> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
+		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
 		  BackResult<TdsFunctionDomain>  result=tdsFunctionService.saveTdsFunction(tdsFunctionDomain);
 		  return result;
 	  }
@@ -49,10 +53,12 @@ public class TdsFunctionController {
 	   * 修改
 	   * @param tdsFunction
 	   * @return
+	 * @throws Exception 
 	   */
 	  @RequestMapping(value="/update",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunctionDomain>  update(@RequestBody TdsFunctionDomain TdsFunctionDomain){
-	      BackResult<TdsFunctionDomain>  result=tdsFunctionService.updateTdsFunction(TdsFunctionDomain);
+	  public BackResult<TdsFunctionDomain>  update(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
+		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
+	      BackResult<TdsFunctionDomain>  result=tdsFunctionService.updateTdsFunction(tdsFunctionDomain);
 		  return result;
 	  }
 	  
@@ -68,14 +74,15 @@ public class TdsFunctionController {
 	  }
 	  
 	  
+	  
 	  /**
 	   * 查询  
 	   * @param tdsFunction
 	   * @return List<>
 	   */
 	  @RequestMapping(value="/pageTdsFunction",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<PageDomain<TdsFunctionDomain>> pageTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain){
-		  BackResult<PageDomain<TdsFunctionDomain>> result=tdsFunctionService.pageTdsFunction(tdsFunctionDomain);
+	  public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain){
+		  BackResult<PageDomain<TdsFunMoViewDomain>> result=tdsFunctionService.pageTdsFunction(domain);
 		  return result;
 	  }
 	  

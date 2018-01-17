@@ -132,8 +132,6 @@ public class TdsRoot {
 	  
 	 @Test
 	  public void queryTdsUser(){
-		 BackResult<TdsFunctionDomain> d=tdsFunctionService.loadById(67);
-		 System.out.println(d);
 	  }
 	  
 	  @Test

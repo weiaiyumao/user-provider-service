@@ -168,7 +168,11 @@
 	
 	<select id="pageApprovalBack" parameterType="HashMap" resultMap="BaseResultMap">
 		SELECT * FROM tds_money_approval_back
-		WHERE is_deleted='0'
+		where user_id in (
+		select user_id from tds_user
+		where parent_user_id=#{parentUserId}
+		and is_deleted='0'
+		)and is_deleted='0'
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
@@ -190,7 +194,12 @@
 
 	<select id="queryCount" resultType="java.lang.Integer"
 		parameterType="Hashmap">
-		SELECT count(1) FROM tds_money_approval_back 
+		SELECT count(1) FROM tds_money_approval_back
+		where user_id in (
+		select user_id from tds_user
+		where parent_user_id=#{parentUserId}
+		and is_deleted='0'
+		)and is_deleted='0' 
 		<where>
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
@@ -205,7 +214,6 @@
 				or id like concat(concat('%',#{likeName}),'%')
 				or order_number like concat(concat('%',#{likeName}),'%')
 			</if> 
-			and is_deleted='0'
 		</where>
 	</select>
 	

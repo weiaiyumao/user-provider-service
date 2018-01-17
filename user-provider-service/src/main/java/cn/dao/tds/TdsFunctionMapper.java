@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsFunction;
+import cn.entity.tds.view.TdsFunMoView;
 
 
 /**
@@ -27,5 +28,23 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	List<Integer> queryfunByParentId(@Param("parentId") Integer parentId);
 	
 	
+	/**
+	 * 分页条件查询
+	 * @param view
+	 * @return
+	 */
+	List<TdsFunMoView> pageTdsFunction(TdsFunMoView view);
+	
+	
+	
+	Integer queryCount(@Param("funName")String funName);
+	
+	
+	/**
+	 * 根据id获取对象
+	 * @param id
+	 * @return
+	 */
+	TdsFunMoView loadByIdView(@Param("id")Integer id);
    	
 }

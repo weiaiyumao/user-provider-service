@@ -144,6 +144,8 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		return result;
 	}
 
+	
+	
 	@Override
 	public BackResult<List<TdsFunctionDomain>> funByuserId(Integer usreId) {
 		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
@@ -263,7 +265,8 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		return result;
 	}
 
-	@Transactional
+	
+	
 	@Override
 	public BackResult<Integer> addFun(TdsFunctionDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();

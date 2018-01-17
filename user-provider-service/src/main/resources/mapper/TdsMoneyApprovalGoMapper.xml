@@ -189,65 +189,77 @@
 	</update>
 
 
-	<select id="pageMoneyApprovalGo" parameterType="HashMap" resultMap="BaseResultMap">
-		SELECT app.*,b.less_name as lessName FROM tds_money_approval app,
-		tds_account_bank b
-		WHERE app.is_deleted='0'  and b.id=app.bank_id
-			<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
-			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
-	        <if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
-			<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
-			<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
-			<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
-			<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=null">
-				AND app.user_name like concat(concat('%',#{likeName}),'%')
-				or app.pname like concat(concat('%',#{likeName}),'%')
-				or b.less_name like concat(concat('%',#{likeName}),'%')
-			</if> 
-		    order by app.create_time desc 
-		   LIMIT #{pageNumber},#{numPerPage}
+	<select id="pageMoneyApprovalGo" parameterType="HashMap"
+		resultMap="BaseResultMap">
+		SELECT *,b.less_name as lessName FROM tds_money_approval
+		app,tds_account_bank b
+		where user_id in (
+		select id from tds_user
+		where
+		parent_user_id=#{parentUserId}
+		AND is_deleted='0'
+		)and app.bank_id=b.id
+		and app.is_deleted='0'
+		order by app.create_time desc
+		<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
+		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
+		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
+		<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
+		<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
+		<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 0 and likeName!=null">
+			AND app.user_name like concat(concat('%',#{likeName}),'%')
+			or app.pname like concat(concat('%',#{likeName}),'%')
+			or b.less_name like concat(concat('%',#{likeName}),'%')
+		</if>
+		order by app.create_time desc
+		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
 
 
 	<select id="queryCount" resultType="java.lang.Integer"
 		parameterType="Hashmap">
-		SELECT count(1) FROM tds_money_approval app,
-		tds_account_bank b
-		<where>
-		   	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
-			<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
-			<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
-			<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
-			<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
-			<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
-			<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=null">
-				AND app.user_name like concat(concat('%',#{likeName}),'%')
-				or app.pname like concat(concat('%',#{likeName}),'%')
-				or b.less_name like concat(concat('%',#{likeName}),'%')
-			</if> 
-			and  b.id=app.bank_id
-			AND app.is_deleted ='0'
-		</where>
+		SELECT count(1) FROM tds_money_approval app,tds_account_bank b
+		where
+		user_id in (
+		select id from tds_user
+		where parent_user_id=#{parentUserId}
+		AND
+		is_deleted='0'
+		)and app.bank_id=b.id
+		and app.is_deleted='0'
+		<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
+		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
+		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
+		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
+		<if test="startArrivTime != null and startArrivTime!=''">AND app.arrive_time &gt;= #{startArrivTime}</if>
+		<if test="endArrivTime != null and endArrivTime!=''">AND app.arrive_time &lt;= #{endArrivTime}</if>
+		<if test="selected == 1 and likeName!=null">AND app.user_name like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 2 and likeName!=null">AND app.pname like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 3 and likeName!=null">AND b.less_name like concat(concat('%',#{likeName}),'%')</if>
+		<if test="selected == 0 and likeName!=null">
+			AND app.user_name like concat(concat('%',#{likeName}),'%')
+			or app.pname like concat(concat('%',#{likeName}),'%')
+			or b.less_name like concat(concat('%',#{likeName}),'%')
+		</if>
 	</select>
-	
-	
-	
-	<select id="queryByOrderByUser" parameterType="HashMap" resultMap="BaseResultMap">
-	      SELECT * FROM tds_money_approval
-		  where user_id=#{userId}
-	      and approval_status='1'
-	      and pname_id=#{backPname}
-	      and not ISNULL(arrive_time)
-		  and is_deleted='0'
-		  ORDER BY create_time DESC
+
+
+
+	<select id="queryByOrderByUser" parameterType="HashMap"
+		resultMap="BaseResultMap">
+		SELECT * FROM tds_money_approval
+		where user_id=#{userId}
+		and approval_status='1'
+		and pname_id=#{backPname}
+		and not ISNULL(arrive_time)
+		and is_deleted='0'
+		ORDER BY create_time DESC
 	</select>
-	
+
 
 </mapper>

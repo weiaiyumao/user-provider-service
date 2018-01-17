@@ -87,4 +87,12 @@ public class TdsStateInfoController {
 		 BackResult<List<TdsEnumDomain>> result = tdsStateInfoService.queryByTypeCode(codeName);
 		return result;
 	}
+	
+	@RequestMapping(value="/queryPnameByPro", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsProductMoneyDomain>> queryPnameByPro(Integer pnameId){
+		 BackResult<List<TdsProductMoneyDomain>> result = tdsStateInfoService.queryPnameByPro(pnameId);
+		return result;
+	}
+	
+	
 }

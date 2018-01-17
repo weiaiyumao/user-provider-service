@@ -121,4 +121,16 @@
 		</trim>
 		WHERE id=#{id} and is_deleted='0'
 	</update>
+	
+	
+	
+	
+	<select id="queryPnameByPro" parameterType="java.lang.Integer" resultType="BaseResultMap">
+	    SELECT * FROM tds_product_money
+		where product_id=#{pnameId}
+		and is_deleted='0'
+		ORDER BY create_time 
+	</select>
+	
+	
 </mapper>

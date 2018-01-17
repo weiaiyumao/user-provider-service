@@ -9,20 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsFunctionMapper;
 import cn.dao.tds.TdsModularMapper;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsModular;
-import cn.entity.tds.view.TdsCustomerView;
+import cn.entity.tds.view.TdsFunMoView;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.CommonUtils;
-import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageDomain;
-import main.java.cn.domain.tds.TdsCustomerViewDomain;
+import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsModularDomain;
 
@@ -38,11 +36,11 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	private TdsModularMapper tdsModularMapper;
 
 	@Override
-	public BackResult<TdsFunctionDomain> loadById(Integer id) {
-		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
+	public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id) {
+		BackResult<TdsFunMoViewDomain> result = new BackResult<TdsFunMoViewDomain>();
 		try {
-			TdsFunctionDomain domain = new TdsFunctionDomain();
-			TdsFunction entity = tdsFunctionMapper.loadById(id);
+			TdsFunMoViewDomain domain = new TdsFunMoViewDomain();
+			TdsFunMoView entity = tdsFunctionMapper.loadByIdView(id);
 			BeanUtils.copyProperties(entity, domain);
 			result.setResultObj(domain);
 		} catch (Exception e) {
@@ -50,12 +48,10 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据查询失败");
-
 		}
 		return result;
 	}
 
-	@Transactional
 	@Override
 	public BackResult<TdsFunctionDomain> saveTdsFunction(TdsFunctionDomain domain) {
 		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
@@ -75,7 +71,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
-	@Transactional
 	@Override
 	public BackResult<Integer> deleteById(Integer id) {
 		BackResult<Integer> result = new BackResult<Integer>();
@@ -91,7 +86,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
-	@Transactional
 	@Override
 	public BackResult<TdsFunctionDomain> updateTdsFunction(TdsFunctionDomain domain) {
 		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
@@ -111,37 +105,40 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	}
 
 	@Override
-	public BackResult<PageDomain<TdsFunctionDomain>> pageTdsFunction(TdsFunctionDomain domain) {
-		BackResult<PageDomain<TdsFunctionDomain>> result = new BackResult<PageDomain<TdsFunctionDomain>>();
-		PageDomain<TdsFunctionDomain> pageListDomain = null;
-		List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
-//		try {
-//			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
-//			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
-//			Integer count = tdsUserCustomerMapper.queryCount(auto);// 获取总数
-//			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(auto);
-//			if (list.size() > 0 && list != null) {
-//
-//				// 定义对象用于转换
-//				TdsCustomerViewDomain tdsDomain = null;
-//				for (TdsCustomerView obj : list) {
-//					tdsDomain = new TdsCustomerViewDomain();
-//					BeanUtils.copyProperties(obj, tdsDomain);
-//					listDomain.add(tdsDomain);
-//				}
-//				// 构造计算分页参数
-//				pageListDomain = new PageDomain<TdsCustomerViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(),
-//						count);
-//				pageListDomain.setTlist(listDomain);
-//				result.setResultObj(pageListDomain);
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			logger.error("查询功能信息出现系统异常：" + e.getMessage());
-//			result.setResultCode(ResultCode.RESULT_FAILED);
-//			result.setResultMsg("数据集合查询失败");
-//		}
+	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(TdsFunMoViewDomain domain) {
+		BackResult<PageDomain<TdsFunMoViewDomain>> result = new BackResult<PageDomain<TdsFunMoViewDomain>>();
+		PageDomain<TdsFunMoViewDomain> pageListDomain = null;
+		List<TdsFunMoViewDomain> listDomain = new ArrayList<TdsFunMoViewDomain>();
+		TdsFunMoView tdsFun=new TdsFunMoView();
+		try {
+			BeanUtils.copyProperties(domain, tdsFun);
+			Integer cur = tdsFun.getCurrentPage() <= 0 ? 1 : tdsFun.getCurrentPage();
+			tdsFun.setPageNumber((cur - 1) * tdsFun.getNumPerPage());
+			Integer count = tdsFunctionMapper.queryCount(tdsFun.getFunName());
+			List<TdsFunMoView> list = tdsFunctionMapper.pageTdsFunction(tdsFun);
+			if (list.size() > 0 && list != null) {
+
+				// 定义对象用于转换
+				TdsFunMoViewDomain tdsDomain = null;
+				for (TdsFunMoView obj : list) {
+					tdsDomain = new TdsFunMoViewDomain();
+					BeanUtils.copyProperties(obj, tdsDomain);
+					listDomain.add(tdsDomain);
+				}
+				// 构造计算分页参数
+				pageListDomain = new PageDomain<TdsFunMoViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
+						count);
+				pageListDomain.setTlist(listDomain);
+				result.setResultObj(pageListDomain);
+			}
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
 		return null;
 	}
 
@@ -156,7 +153,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			if (CommonUtils.isNotEmpty(list)) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户id没有模块加载列表");
 			}
-
 			TdsModularDomain tdsDomain = null;
 			for (TdsModular obj : list) {
 				tdsDomain = new TdsModularDomain();

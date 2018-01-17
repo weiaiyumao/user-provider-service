@@ -101,11 +101,40 @@
 	</update>
 
 
+	<select id="queryfunByParentId" parameterType="HashMap"
+		resultType="java.lang.Integer">
+		SELECT ID FROM tds_function
+		WHERE PARENT_ID=#{parentId}
+		AND IS_DELETED='0'
+	</select>
 
-   <select id="queryfunByParentId" parameterType="HashMap"  resultType="java.lang.Integer">
-      SELECT ID FROM tds_function
-	  WHERE PARENT_ID=#{parentId} 
-	  AND IS_DELETED='0'
-   </select>
-    
+
+	<select id="pageTdsFunction" parameterType="HashMap"
+		resultType="cn.entity.tds.view.TdsFunMoView">
+		SELECT f.id,f.name as funName,f.url,m.name as moName,f.remarks FROM
+		tds_function f,tds_modular m
+		where m.id=f.parent_id and f.is_deleted='0'
+		<if test="funName!=null and funName!=''">
+			and f.name=#{funName}
+		</if>
+		ORDER BY m.name,f.create_time desc
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+
+
+	<select id="queryCount" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT count(1) FROM tds_function f,tds_modular m
+		where m.id=f.parent_id and f.is_deleted='0'
+		<if test="funName!=null and funName!=''">
+			and f.name=#{funName}
+		</if>
+	</select>
+	
+	
+    <select id="loadByIdView" parameterType="HashMap"  resultType="cn.entity.tds.view.TdsFunMoView">
+		 SELECT * FROM tds_function f,tds_modular m
+		 where m.id=f.parent_id  and f.is_deleted='0'
+		 and f.id=#{id}
+	</select>
+
 </mapper>

@@ -106,14 +106,18 @@ public class TdsApprovalServiceImpl extends BaseTransactService implements TdsAp
 				TdsUser tUser = new TdsUser();
 				tUser.setIsDeleted("0");
 				tUser.setId(userId);
-				// tUser.setUpdater(userId);
 				tdsUserMapper.update(tUser);
+				
+				
 				//客户列表开通账号，审核通过，列表用户消费数据新增
-                
 				TdsUserCustomer userCust=new TdsUserCustomer();
 				userCust.setUserId(userId);
 				userCust.setCreateTime(new Date());
 				userCust.setUpdateTime(new Date());
+				userCust.setSumCommission("0");
+				userCust.setSumMoney("0");
+				userCust.setOverplusCommission("0");
+				userCust.setLastMoneyTime(new Date());
 			    tdsUserCustomerMapper.save(userCust);
 				
 				

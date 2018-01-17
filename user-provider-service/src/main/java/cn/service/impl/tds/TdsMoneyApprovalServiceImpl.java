@@ -275,6 +275,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 
+	
+	
+	
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
 		BackResult<PageDomain<TdsMoneyApprovalDomain>> result = new BackResult<PageDomain<TdsMoneyApprovalDomain>>();

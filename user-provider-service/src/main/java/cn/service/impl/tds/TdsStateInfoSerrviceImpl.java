@@ -171,6 +171,9 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		}
 		return result;
 	}
+	
+	
+	
 
 	
 	
@@ -188,6 +191,31 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 				TdsEnumDomain tdsDomain=null;
 	          for(TdsEnum obj:list){
 	        	 tdsDomain=new TdsEnumDomain();
+	        	 BeanUtils.copyProperties(obj,tdsDomain);
+	        	 listDomain.add(tdsDomain);
+				}
+	          result.setResultObj(listDomain);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("项目列表信息查询出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public BackResult<List<TdsProductMoneyDomain>> queryPnameByPro(Integer pnameId) {
+		BackResult<List<TdsProductMoneyDomain>> result=new BackResult<List<TdsProductMoneyDomain>>();
+		List<TdsProductMoneyDomain>  listDomain=new ArrayList<TdsProductMoneyDomain>();
+		try {
+			List<TdsProductMoney> list=tdsProductMoneyMapper.queryPnameByPro(pnameId);
+			if(list.size()>0 && list!=null){
+				TdsProductMoneyDomain tdsDomain=null;
+	          for(TdsProductMoney obj:list){
+	        	 tdsDomain=new TdsProductMoneyDomain();
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}

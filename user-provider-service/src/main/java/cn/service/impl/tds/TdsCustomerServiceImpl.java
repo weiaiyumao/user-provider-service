@@ -223,6 +223,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setCreater(loginUserId);
 			tdsUser.setCreateTime(new Date());
 			tdsUserMapper.save(tdsUser); // 用户信息保存
+			
 
 			// 保存部门用户关系
 			TdsUserDepartment tdsUserDepa = new TdsUserDepartment();
