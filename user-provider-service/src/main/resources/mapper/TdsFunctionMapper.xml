@@ -132,7 +132,7 @@
 	
 	
     <select id="loadByIdView" parameterType="HashMap"  resultType="cn.entity.tds.view.TdsFunMoView">
-		 SELECT * FROM tds_function f,tds_modular m
+		 SELECT f.id,f.name as funName,f.url,m.name as moName,f.remarks FROM tds_function f,tds_modular m
 		 where m.id=f.parent_id  and f.is_deleted='0'
 		 and f.id=#{id}
 	</select>
