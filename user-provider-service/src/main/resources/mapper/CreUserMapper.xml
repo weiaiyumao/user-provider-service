@@ -159,7 +159,7 @@
 
 
 
-	<insert id="addCreAndTdsByUser"  parameterType="HashMap"  useGeneratedKeys="true" keyProperty="id" >
+<!-- 	<insert id="addCreAndTdsByUser"  parameterType="HashMap"  useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO cre_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="userName != null"> user_name , </if>
@@ -179,6 +179,6 @@
 			<if test="nickName != null"> #{nickName} , </if>
 	     	'0' , 
 		</trim>
-	</insert>
+	</insert> -->
 	
 </mapper>

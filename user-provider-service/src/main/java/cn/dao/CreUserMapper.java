@@ -20,5 +20,5 @@ public interface CreUserMapper {
 	int updateCreUser(CreUser creUser);
 	
 	
-    int addCreAndTdsByUser(CreUser creUser);
+ /*   int addCreAndTdsByUser(CreUser creUser);*/
 }

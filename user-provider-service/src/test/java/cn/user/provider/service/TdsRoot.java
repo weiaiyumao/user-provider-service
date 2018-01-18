@@ -1,5 +1,7 @@
 package cn.user.provider.service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -90,9 +92,12 @@ public class TdsRoot {
 	  
 	  @Test
 	  public void list3(){
-		  TdsStateInfoDomain domai=new TdsStateInfoDomain();
-		  domai.setStateOpe("OPE003");
-		  domai.setStatePro("PRO002");
+		try {
+			System.out.println(InetAddress.getLocalHost().toString());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		 // tdsStateInfoSerrvice.pageTdsStateInfo(domai,1,2,"2017-12-20");
 	  }
 	   

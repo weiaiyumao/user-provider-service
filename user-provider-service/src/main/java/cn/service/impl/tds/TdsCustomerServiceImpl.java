@@ -1,5 +1,6 @@
 package cn.service.impl.tds;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import cn.entity.tds.TdsUserDepartment;
 import cn.entity.tds.TdsUserDiscount;
 import cn.entity.tds.view.TdsCustomerView;
 import cn.service.tds.TdsCustomerService;
+import cn.service.tds.TdsUserService;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -34,6 +36,7 @@ import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAttornLogDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
 import main.java.cn.domain.tds.TdsUserDiscountDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.hhtp.util.MD5Util;
 
 @Service
@@ -58,6 +61,10 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 	@Autowired
 	private TdsUserDiscountMapper tdsUserDiscountMapper;
+	
+	
+	@Autowired
+	private TdsUserService tdsUserService;
 
 	@Transactional
 	@Override
@@ -216,18 +223,51 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				tdsCompanyMapper.update(tdsCom);
 			}
 
+			String md5Pass=MD5Util.getInstance().getMD5Code(passWord);
+			
+			TdsUserDomain userDomain=new TdsUserDomain();
+			
+			userDomain.setPassword(md5Pass);
+			
+			userDomain.setPhone(domain.getPhone());
+			
+			userDomain.setLoginIp(InetAddress.getLocalHost().toString());
+			
+			//保存creuser表数据
+			BackResult<Integer> creUid=tdsUserService.addCreUser(userDomain);
+			
+			if(null==creUid.getResultObj()){
+				
+				return creUid;
+			}
+			
 			TdsUser tdsUser = new TdsUser();
+			
+			tdsUser.setCreUserId(creUid.getResultObj());
+			
 			tdsUser.setUserName(domain.getUserName()); // 客户名称
-			tdsUser.setPassword(MD5Util.getInstance().getMD5Code(passWord)); // 密码
+			
+			tdsUser.setPassword(md5Pass); // 密码
+			
 			tdsUser.setPhone(domain.getPhone()); // 手机号码
+			
 			tdsUser.setContact(domain.getContact()); // 联系人
+			
 			tdsUser.setSource(StatusType.ADD_ADMIN); // 注册来源
+			
 			tdsUser.setIsDeleted("2");// 客户注册审核，第注册成功 is_deleted 默认为 2
+			
 			tdsUser.setParentUserId(loginUserId); // 归属父id
+			
 			tdsUser.setComId(tdsCom.getId());
+			
 			tdsUser.setCreater(loginUserId);
+			
 			tdsUser.setCreateTime(new Date());
+			
 			tdsUserMapper.save(tdsUser); // 用户信息保存
+			
+			
 			
 
 			// 保存部门用户关系

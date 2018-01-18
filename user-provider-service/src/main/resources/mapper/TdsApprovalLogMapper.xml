@@ -108,11 +108,12 @@
 		on d.id=ud.depart_id LEFT JOIN tds_company com ON
 		com.id=u.com_id where u.id in (
 		select id from tds_user
-		where parent_user_id=#{parentUserId} and is_deleted='2'
+		where parent_user_id=#{parentUserId}
+		and is_deleted='2'
 		)
-		<if test="departId != null">AND d.id = #{departId}</if>
-		<if test="userName != null">AND u.name = #{userName}</if>
-		<if test="statTime != null">
+		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+		<if test="userName != null and userName!=''">AND u.name = #{userName}</if>
+		<if test="statTime != null and statTime!=''">
 			AND u.create_time &gt;= #{statTime}
 			AND u.create_time &lt;= #{endTime}
 		</if>
@@ -127,12 +128,13 @@
 		ON u.id=ud.user_id  LEFT JOIN tds_department d
 		on d.id=ud.depart_id LEFT JOIN tds_company com  ON
 		com.id=u.com_id  where  u.id in (
-		 select id from tds_user 
-		 where parent_user_id=#{parentUserId}  and is_deleted='2'
+		select id from tds_user 
+		where parent_user_id=#{parentUserId} 
+		 and is_deleted='2'
 		 )
-		<if test="departId != null">AND d.id = #{departId}</if>
-		<if test="contact != null">AND u.contact = #{contact}</if>
-		<if test="statTime != null">
+		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
+		<if test="contact != null  and contact!=''">AND u.contact = #{contact}</if>
+		<if test="statTime != null and statTime!=''">
 			AND u.create_time &gt;= #{statTime}
 			AND u.create_time &lt;= #{endTime}
 		</if>
