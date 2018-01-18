@@ -87,9 +87,11 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			domain.setBilling(StatusType.APPROVAL_BILLING_OFF); // 未开票
 			domain.setOrderNumber(ordrr); // 下单 -订单号
 			domain.setSerialNumber(OrderNo.getSerial16()); // 下单 -进账审核流水号
-			domain.setCreateTime(new Date()); // 下单 订单时间
+			domain.setCreateTime(new Date()); //下单 订单时间
 			domain.setUpdateTime(new Date());
 			domain.setPayment("1");// 进账类型
+			
+			
 
 			// 查询折扣
 			TdsUserDiscount discount = tdsUserDiscountMapper.getDiscount(domain.getUserId(), domain.getSumMoney());

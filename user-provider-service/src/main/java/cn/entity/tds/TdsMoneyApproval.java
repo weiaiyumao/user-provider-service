@@ -52,7 +52,7 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	private String bankId;
 
 	// 订单时间 : create_tiem
-	private java.util.Date createTime;
+   private java.util.Date createTime;
 
 	// 到账时间 : arrive_time
 	private java.util.Date arriveTime;
