@@ -215,7 +215,6 @@
 			or app.pname like concat(concat('%',#{likeName}),'%')
 			or b.less_name like concat(concat('%',#{likeName}),'%')
 		</if>
-		order by app.create_time desc
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 

@@ -176,11 +176,11 @@
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
-			<if test="selected == 1 and likeName!=''">AND user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=''">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=''">AND id like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4 and likeName!=''">AND order_number like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=''">
+			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and likeName!=null">
 				AND user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')
@@ -203,11 +203,11 @@
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
-			<if test="selected == 1 and likeName!=''">AND user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=''">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=''">AND id like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4 and likeName!=''">AND order_number like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 0 and likeName!=''">
+			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and  likeName!=null">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and  likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and  likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 0 and  likeName!=null">
 				AND user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')

@@ -13,18 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.dao.CreUserMapper;
 import cn.dao.tds.TdsCompanyMapper;
 import cn.dao.tds.TdsUserMapper;
 import cn.dao.tds.TdsUserRoleMapper;
-import cn.entity.CreUser;
 import cn.entity.tds.TdsCompany;
 import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserRole;
+import cn.service.CreUserService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.common.StatusType;
+import main.java.cn.domain.CreUserDomain;
 import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCompanyDomain;
@@ -43,10 +43,10 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	private TdsCompanyMapper tdsCompanyMapper;
 	
 	@Autowired
-	private CreUserMapper creUserMapper;
+	private TdsUserRoleMapper tdsUserRoleMapper;
 	
 	@Autowired
-	private TdsUserRoleMapper tdsUserRoleMapper;
+	private CreUserService creUserService;
 
 	@Override
 	public BackResult<TdsUserDomain> loadById(Integer id) {
@@ -84,24 +84,19 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		// 注册密码加密
 		if (null != domain.getPassword() || "".equals(domain.getPassword()))
 			domain.setPassword(MD5Util.getInstance().getMD5Code(domain.getPassword()));
-		BeanUtils.copyProperties(domain, tdsUser);
+		
+		
 		try {
 		
-			//保存 cre_user  用户表
-			CreUser creUser=new CreUser();
-			creUser.setUserPassword(domain.getPassword());
-			creUser.setUserPhone(domain.getPhone());
-			creUser.setUserName(domain.getPhone());//没有用户名，先默认手机号码
-			creUser.setCreateTime(new Date());
-			creUser.setUpdateTime(new Date());
-			creUser.setNickName("nic_"+domain.getPhone());
-			creUserMapper.addCreAndTdsByUser(creUser);
-				   
 			//保存  tds_user   用户表
-			tdsUser.setCreateTime(new Date());
-			tdsUser.setUpdateTime(new Date());
-			tdsUser.setStatus("0");  //正常注册
-			tdsUser.setCreUserId(creUser.getId());  //关联 cre_user 表 用户同步
+			BackResult<Integer> creUid=this.addCreUser(domain);
+			if(null==creUid.getResultObj()){
+				return creUid;
+			}
+			domain.setCreUserId(creUid.getResultObj());  //关联 cre_user 表 用户同步
+			domain.setCreateTime(new Date());
+			domain.setUpdateTime(new Date());
+			domain.setStatus("0");  //正常注册
 			BeanUtils.copyProperties(domain,tdsUser);
 			tdsUserMapper.save(tdsUser);
 						
@@ -122,6 +117,37 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		}
 		return result;
 	}
+	
+	
+	
+    @Override
+	public BackResult<Integer> addCreUser(TdsUserDomain domain) {
+		   BackResult<Integer> result=new BackResult<Integer>();
+		    CreUserDomain creUser=new CreUserDomain();
+			try {
+				creUser.setUserPassword(domain.getPassword());
+				creUser.setUserPhone(domain.getPhone());
+				creUser.setUserName("用户名_"+domain.getPhone());//没有用户名，先默认手机号码
+				creUser.setCreateTime(new Date());
+				creUser.setUpdateTime(new Date());
+				creUser.setNickName("nic_"+domain.getPhone());
+				creUser.setLastLoginIp(domain.getLoginIp());
+				BackResult<CreUserDomain> cuDomain=creUserService.findOrsaveUser(creUser);
+				CreUserDomain creUserDomain=cuDomain.getResultObj();
+				if(null==creUserDomain){
+					 return new BackResult<>(ResultCode.RESULT_FAILED, cuDomain.getResultMsg());
+				}
+				  result.setResultObj(creUserDomain.getId());
+			  } catch (Exception e) {
+				e.printStackTrace();
+			    logger.info("注册数据同步 cre_user表错误！");
+			    return new BackResult<>(ResultCode.RESULT_FAILED, "CreUser表用户数据保存失败");
+		 	} 
+			return result;
+		}
+	
+	
+	
 
 	@Transactional
 	@Override
@@ -335,5 +361,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		}
 		return result;
 	}
+
 
 }
