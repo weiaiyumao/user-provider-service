@@ -206,9 +206,10 @@
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
 		    <if test="creUserId != null"> cre_user_id = #{creUserId}, </if>
 		</trim>
-		WHERE id=#{id} and is_deleted='0'
+		WHERE id=#{id}
 	</update>
 
 	<select id="loadByPhone" parameterType="java.lang.String"
