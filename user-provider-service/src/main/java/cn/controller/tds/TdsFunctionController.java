@@ -1,6 +1,7 @@
 package cn.controller.tds;
 
-
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,79 +13,106 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.BasePageParam;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
-
 @RestController
 @RequestMapping("/function")
 public class TdsFunctionController {
-     
-	  @Autowired
-	  private TdsFunctionService  tdsFunctionService;
-	  
-	  /**
-	   * 根据id查询
-	   * @param id
-	   * @return  obj
-	   */
-	  @RequestMapping(value="/loadByIdView",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id){
-			 BackResult<TdsFunMoViewDomain> result=tdsFunctionService.loadByIdView(id);
-	         return result;
-	   }
-	  
-	  
-	  /**
-	   * 保存
-	   * @param tdsFunction
-	   * @return
-	 * @throws Exception 
-	   */
-	  @RequestMapping(value="/save",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<Integer> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
-		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
-		  BackResult<Integer>  result=tdsFunctionService.saveTdsFunction(tdsFunctionDomain);
-		  return result;
-	  }
-	  
-	  /**
-	   * 修改
-	   * @param tdsFunction
-	   * @return
-	 * @throws Exception 
-	   */
-	  @RequestMapping(value="/update",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<Integer>  update(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception{
-		  BeanHelper.beanHelperTrim(tdsFunctionDomain);
-	      BackResult<Integer>  result=tdsFunctionService.updateTdsFunction(tdsFunctionDomain);
-		  return result;
-	  }
-	  
-	  /**
-	   * 删除
-	   * @param id
-	   * @return
-	   */
-	  @RequestMapping(value="/deleteById",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<Integer> deleteById(Integer id){
-		  BackResult<Integer> result=tdsFunctionService.deleteById(id);
-		  return result;
-	  }
-	  
-	  
-	  
-	  /**
-	   * 查询  
-	   * @param tdsFunction
-	   * @return List<>
-	   */
-	  @RequestMapping(value="/pageTdsFunction",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	  public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain){
-		  BackResult<PageDomain<TdsFunMoViewDomain>> result=tdsFunctionService.pageTdsFunction(domain);
-		  return result;
-	  }
-	  
-	  
+
+	@Autowired
+	private TdsFunctionService tdsFunctionService;
+
+	/**
+	 * 根据id查询
+	 * 
+	 * @param id
+	 * @return obj
+	 */
+	@RequestMapping(value = "/loadByIdView", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id) {
+		BackResult<TdsFunMoViewDomain> result = tdsFunctionService.loadByIdView(id);
+		return result;
+	}
+
+	/**
+	 * 保存
+	 * 
+	 * @param tdsFunction
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> saveTdsFunction(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsFunctionDomain);
+		BackResult<Integer> result = tdsFunctionService.saveTdsFunction(tdsFunctionDomain);
+		return result;
+	}
+
+	/**
+	 * 修改
+	 * 
+	 * @param tdsFunction
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> update(@RequestBody TdsFunctionDomain tdsFunctionDomain) throws Exception {
+		BeanHelper.beanHelperTrim(tdsFunctionDomain);
+		BackResult<Integer> result = tdsFunctionService.updateTdsFunction(tdsFunctionDomain);
+		return result;
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> deleteById(Integer id) {
+		BackResult<Integer> result = tdsFunctionService.deleteById(id);
+		return result;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param tdsFunction
+	 * @return List<>
+	 */
+	@RequestMapping(value = "/pageTdsFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain) {
+		BackResult<PageDomain<TdsFunMoViewDomain>> result = tdsFunctionService.pageTdsFunction(domain);
+		return result;
+	}
+
+	/**
+	 * 层级查询
+	 * 
+	 * @param tdsFunction
+	 * @return List<>
+	 */
+	@RequestMapping(value = "/queryFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsFunctionDomain>> queryFunction() {
+		BackResult<List<TdsFunctionDomain>> result = tdsFunctionService.queryFunction();
+		return result;
+	}
+
+	@RequestMapping(value = "/pageByFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, @RequestBody BasePageParam basePageParam)
+			throws Exception {
+		 BeanHelper.beanHelperTrim(name);
+		 if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
+		 if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
+		return tdsFunctionService.pageByFunction(name, basePageParam);
+	}
+	
+	
+	@RequestMapping(value = "/loadingByUsreIdRole", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsFunctionDomain>> loadingByUsreIdRole(Integer userId){
+		return tdsFunctionService.loadingByUsreIdRole(userId);
+	}
 }

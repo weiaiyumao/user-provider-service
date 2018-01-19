@@ -137,19 +137,6 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	        	 listDomain.add(tdsDomain);
 				}
 	          
-	         //排序
-//	         if(null!=domain.getParentId() && 0==domain.getParentId()){
-//	             Collections.sort(listDomain, new Comparator<TdsModularDomain>() {
-//	 				@Override
-//	 				public int compare(TdsModularDomain o1, TdsModularDomain o2) {
-//	 					int o=0;
-//	 					if(null!=o1.getSort()){
-//	 						o=o1.getSort()-o2.getSort();
-//	 					}
-//	 					return o;
-//	 				 }  
-//	 	          });  
-//	         }
 	          result.setResultObj(listDomain);
 			}
 		} catch (Exception e) {
@@ -173,8 +160,6 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		BackResult<PageDomain<Map<String, Object>>> result =new  BackResult<PageDomain<Map<String, Object>>>();
 		PageDomain<Map<String, Object>> pageListDomain = null;
 		try {
-			if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
-			if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
 			Integer count=tdsModularMapper.queryCount(name);
 			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
 			List<Map<String,Object>> listMap = tdsModularMapper.pageByModular(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
@@ -192,8 +177,78 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 		return result;
 	}
 
+	
+	
+	
+	@Override
+	public BackResult<List<TdsModularDomain>> queryModular() {
+		BackResult<List<TdsModularDomain>>  result=new BackResult<List<TdsModularDomain>>();
+		
+		try {
+			//获取所有的父 ，子 菜单
+			List<TdsModular> list = tdsModularMapper.queryModular(null);
+			List<TdsModularDomain> domain=new ArrayList<TdsModularDomain>();
+			TdsModularDomain obj=null;
+			  for(TdsModular item:list){
+				     obj=new TdsModularDomain();
+		        	 BeanUtils.copyProperties(item,obj);
+		        	 domain.add(obj);
+				}
+			
+			// 根据一级菜单id查询所有的菜单
+			List<TdsModularDomain> listDomain = new ArrayList<TdsModularDomain>();
+			
+			for (TdsModularDomain menuVo : domain) {
+//				if (menuVo.getName().equals("第一级")) {
+//					continue;
+//				}
+				// 一级菜单
+			    //获取所有的父
+				if (menuVo.getParentId() == 0) {
+					//递归
+					List<TdsModularDomain> iterateMenus = recursion(domain, menuVo.getId());   
+					menuVo.setTdsModular(iterateMenus);
+					listDomain.add(menuVo);
+				}
+
+			}
+			
+			result.setResultObj(listDomain);
+			 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("模块功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+	  	return result;
+	}
 
 
+
+	/**
+	 * 递归循环
+	 * @param list
+	 * @param pid
+	 * @return
+	 */
+	 public List<TdsModularDomain> recursion(List<TdsModularDomain> list,Integer pid){ 
+		 List<TdsModularDomain> result = new ArrayList<TdsModularDomain>();  
+		  //获取父亲的
+		 for(TdsModularDomain menuVo:list){
+			   Integer moId=menuVo.getId();  //获取菜单id
+			   Integer parentid = menuVo.getParentId();//获取菜单的父id  
+			   if(parentid!=0){  
+	                if(parentid.equals(pid)){  
+	                    List<TdsModularDomain> iterateMenu =recursion(list,moId);  
+	                    menuVo.setTdsModular(iterateMenu);  
+	                    result.add(menuVo);  
+	                }  
+	            }  
+		  }
+		 return result;
+	  }
 	
 	
 

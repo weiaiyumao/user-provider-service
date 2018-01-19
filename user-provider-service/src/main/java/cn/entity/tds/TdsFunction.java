@@ -1,6 +1,9 @@
 package cn.entity.tds;
 
 import java.io.Serializable;
+import java.util.List;
+
+import main.java.cn.domain.tds.TdsFunctionDomain;
 
 /**
  * : 功能实体
@@ -43,6 +46,19 @@ public class TdsFunction implements Serializable{
 	
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
+	
+	
+	private List<TdsFunctionDomain>  tdsFunctions;
+	
+	
+	public List<TdsFunctionDomain> getTdsFunctions() {
+		return tdsFunctions;
+	}
+	
+	public void setTdsFunctions(List<TdsFunctionDomain> tdsFunctions) {
+		this.tdsFunctions = tdsFunctions;
+	}
+
 	
 
 	/**

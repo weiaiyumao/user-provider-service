@@ -39,5 +39,8 @@ public interface TdsModularMapper extends IBaseDao<TdsModular, Integer>{
 	 * @return
 	 */
 	Integer queryCount(@Param("name")String name);
+	
+	
+	List<TdsModular> queryModular(@Param("parentId")String parentId);
    
 }

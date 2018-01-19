@@ -51,6 +51,18 @@ public class TdsModular implements Serializable{
 	private List<TdsFunction> listFun;
 	
 	
+	private List<TdsModular>  tdsModular;
+	
+	
+	
+	public void setTdsModular(List<TdsModular> tdsModular) {
+		this.tdsModular = tdsModular;
+	}
+	
+	public List<TdsModular> getTdsModular() {
+		return tdsModular;
+	}
+	
 	
 	public List<TdsFunction> getListFun() {
 		return listFun;

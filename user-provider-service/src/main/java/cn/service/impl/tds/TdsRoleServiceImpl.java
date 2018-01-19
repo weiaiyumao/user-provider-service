@@ -12,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.tds.TdsFunctionMapper;
 import cn.dao.tds.TdsRoleMapper;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsRole;
 import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.page.BasePageParam;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
@@ -28,6 +31,9 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 
 	@Autowired
 	private TdsRoleMapper  tdsRoleMapper;
+	
+	@Autowired
+	private TdsFunctionMapper TdsFunctionMapper;
 	
 	@Override
 	public BackResult<TdsRole> loadById(Integer id) {
@@ -128,38 +134,115 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 		}
 		return result;
 	}
-
+    
 	@Override
-	public BackResult<List<TdsFunctionDomain>> queryfunByRoleId(Integer roleId) {
-		BackResult<List<TdsFunctionDomain>> result=new BackResult<List<TdsFunctionDomain>>();
-		List<TdsFunctionDomain>  listDomain=new ArrayList<TdsFunctionDomain>();
+	public BackResult<List<TdsFunctionDomain>> loadingBydRoleId(Integer roleId) {
+		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
+
 		try {
-			List<TdsFunction> list=tdsRoleMapper.queryfunByRoleId(roleId);
-			if(list.size()>0 && list!=null){
-				TdsFunctionDomain tdsDomain=null;
-	          for(TdsFunction obj:list){
-	        	 tdsDomain=new TdsFunctionDomain();
-	        	 BeanUtils.copyProperties(obj,tdsDomain);
-	        	 listDomain.add(tdsDomain);
-				}
-	          result.setResultObj(listDomain);
+			// 获取所有的父 ，子 菜单
+			List<TdsFunction> list=TdsFunctionMapper.loadingBydRoleId(roleId);
+			List<TdsFunctionDomain> domain = new ArrayList<TdsFunctionDomain>();
+			TdsFunctionDomain obj = null;
+			for (TdsFunction item : list) {
+				obj = new TdsFunctionDomain();
+				BeanUtils.copyProperties(item, obj);
+				domain.add(obj);
 			}
-		} catch (Exception e) {
+
+			
+			// 根据一级菜单id查询所有的菜单
+			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
+
+			for (TdsFunctionDomain menuVo : domain) {
+				// 一级菜单
+				// 获取所有的父
+				if (menuVo.getParentId() == 0) {
+					// 递归
+					List<TdsFunctionDomain> iterateMenus = recursion(domain, menuVo.getId());
+					menuVo.setTdsFunctions(iterateMenus);
+					listDomain.add(menuVo);
+				}
+
+			}
+
+			result.setResultObj(listDomain);
+
+		 } catch (Exception e) {
 			e.printStackTrace();
-			logger.error("根据角色查询权限信息出现系统异常：" + e.getMessage());
+			logger.error("模块功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
 		}
-		
 		return result;
 	}
      
 	
+	
+	/**
+	 * 递归循环
+	 * 
+	 * @param list
+	 * @param pid
+	 * @return
+	 */
+	public List<TdsFunctionDomain> recursion(List<TdsFunctionDomain> list, Integer pid) {
+		List<TdsFunctionDomain> result = new ArrayList<TdsFunctionDomain>();
+		// 获取父亲的
+		for (TdsFunctionDomain menuVo : list) {
+			Integer moId = menuVo.getId(); // 获取菜单id
+			Integer parentid = menuVo.getParentId();// 获取菜单的父id
+			if (parentid != 0) {
+				if (parentid.equals(pid)) {
+					List<TdsFunctionDomain> iterateMenu = recursion(list, moId);
+					menuVo.setTdsFunctions(iterateMenu);
+					result.add(menuVo);
+				}
+			}
+		}
+		return result;
+	}
 
+	@Override
+	public BackResult<PageDomain<TdsRoleDomain>> pageByRole(String roleName, BasePageParam basePageParam) {
+		BackResult<PageDomain<TdsRoleDomain>> result = new BackResult<PageDomain<TdsRoleDomain>>();
+		PageDomain<TdsRoleDomain> pageListDomain = null;
+		List<TdsRoleDomain> listDomain = new ArrayList<TdsRoleDomain>();
+		try {
+
+			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
+			basePageParam.setPageNumber((cur - 1) * basePageParam.getNumPerPage());
+			
+			Integer count = tdsRoleMapper.queryCount(roleName);// 获取总数
+			List<TdsRole> list = tdsRoleMapper.pageByRole(roleName, basePageParam.getPageNumber(), basePageParam.getNumPerPage());
+			
+			if (list.size() > 0 && list != null) {
+				// 定义对象用于转换
+				TdsRoleDomain tdsDomain = null;
+				for (TdsRole obj : list) {
+					tdsDomain = new TdsRoleDomain();
+					BeanUtils.copyProperties(obj, tdsDomain);
+					listDomain.add(tdsDomain);
+				}
+				// 构造计算分页参数
+				pageListDomain = new PageDomain<TdsRoleDomain>(basePageParam.getCurrentPage(), basePageParam.getNumPerPage(),
+						count);
+				pageListDomain.setTlist(listDomain);
+				result.setResultObj(pageListDomain);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
 
 	
 	
-
+   
 	
 
 }

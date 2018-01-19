@@ -102,7 +102,16 @@ public class TdsModularController {
 	 @RequestMapping(value = "/pageByModular", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	 BackResult<PageDomain<Map<String,Object>>> pageByModular(String name,@RequestBody BasePageParam basePageParam) throws Exception{
 		 BeanHelper.beanHelperTrim(name);
+		 if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
+		 if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
 		 return tdsModularService.pageByModular(name,basePageParam);
 	 }
+	 
+	 
+	 @RequestMapping(value = "/queryModular", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	 BackResult<List<TdsModularDomain>> queryModular(){
+		 return tdsModularService.queryModular();
+	 }
 
+	 
 }

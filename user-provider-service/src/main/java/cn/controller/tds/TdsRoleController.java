@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.entity.tds.TdsRole;
 import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
+import main.java.cn.domain.page.BasePageParam;
+import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
@@ -91,10 +93,15 @@ public class TdsRoleController {
 	 * @param tdsFunction
 	 * @return List<>
 	 */
-	@RequestMapping(value = "/queryfunByRoleId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<TdsFunctionDomain>> queryfunByRoleId(Integer roleId) {
-		BackResult<List<TdsFunctionDomain>> result =tdsRoleService.queryfunByRoleId(roleId);
+	@RequestMapping(value = "/loadingBydRoleId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsFunctionDomain>> loadingBydRoleId(Integer roleId) {
+		BackResult<List<TdsFunctionDomain>> result =tdsRoleService.loadingBydRoleId(roleId);
 		return result;
 	}
 	
+	
+	@RequestMapping(value = "/pageByRole", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<PageDomain<TdsRoleDomain>> pageByRole(String roleName,@RequestBody BasePageParam basePageParam){
+		return tdsRoleService.pageByRole(roleName, basePageParam);
+	}
 }

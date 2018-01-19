@@ -99,15 +99,24 @@
 		</trim>
 		WHERE ID=#{id} AND IS_DELETED='0'
 	</update>
-
-
-	<select id="queryfunByRoleId" parameterType="HashMap" resultType="cn.entity.tds.TdsFunction">
-		select * from tds_function
-		where id in(
-		select fun_id from tds_function_role
-		where role_id=#{roleId} and is_deleted='0'
-		)and is_deleted='0'
+	
+	
+	
+	<select id="pageByRole" resultMap="BaseResultMap"  parameterType="HashMap">
+		SELECT * FROM tds_role
+		where is_deleted='0'
+		<if test="roleName!=null and roleName!=''">
+			and role_name like concat(concat('%',#{roleName}),'%')
+		</if>
+		LIMIT #{pageNumber},#{numPerPage}
 	</select>
+	
 
-
+    <select id="queryCount" resultType="java.lang.Integer" parameterType="HashMap">
+		SELECT count(1) FROM tds_role
+		where is_deleted='0'
+		<if test="roleName!=null and roleName!=''">
+			and role_name like concat(concat('%',#{roleName}),'%')
+		</if>
+	</select>
 </mapper>

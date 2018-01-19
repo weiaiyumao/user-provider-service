@@ -2,12 +2,12 @@ package cn.dao.tds;
 
 
 
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsRole;
 
 
@@ -20,14 +20,8 @@ import cn.entity.tds.TdsRole;
 @Mapper
 public interface TdsRoleMapper extends IBaseDao<TdsRole, Integer>{
 	
-	/**
-	 * 根据角色查询权限功能
-	 * @param roleId
-	 * @return
-	 */
-	List<TdsFunction> queryfunByRoleId(@Param("roleId") Integer roleId);
 	
+	List<TdsRole> pageByRole(@Param("roleName")String roleName,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage);
 	
-	
-	
+	Integer queryCount(@Param("roleName")String roleName);
 }

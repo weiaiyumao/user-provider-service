@@ -63,8 +63,10 @@
 		and m.is_deleted='0'
 		and
 		f.is_deleted='0'
-
 	</select>
+
+
+
 
 
 	<sql id="Base_Column_List">
@@ -158,7 +160,7 @@
 		<if test="name!=null and name!=''">
 			and name like concat(concat('%',#{name}),'%')
 		</if>
-		ORDER BY parentName='第一级' desc,parentName desc 
+		ORDER BY parentName='第一级' desc,id
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
 
@@ -170,5 +172,17 @@
 		<if test="name!=null and name!=''">
 			and name like concat(concat('%',#{name}),'%')
 		</if>
+	</select>
+
+
+
+
+	<select id="queryModular" resultMap="BaseResultMap"
+		parameterType="HashMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_modular
+		where IS_DELETED='0'
+		<if test="parentId != null">AND PARENT_ID=#{parentId}</if>
 	</select>
 </mapper>

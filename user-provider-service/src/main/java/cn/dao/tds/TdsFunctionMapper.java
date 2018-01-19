@@ -2,6 +2,7 @@ package cn.dao.tds;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -46,5 +47,38 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	 * @return
 	 */
 	TdsFunMoView loadByIdView(@Param("id")Integer id);
+	
+	
+	
+	/**
+	 * 加载所有的功能
+	 */
+	List<TdsFunction> queryFunction(@Param("parentId")Integer parentId);
+	
+	
+	/**
+	 * 查询权限列表<分页>
+	 * @param name  模块名称
+	 * @return
+	 */
+	List<Map<String,Object>> pageByFunction(@Param("name")String name,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage);
    	
+	
+	
+	/**
+	 * 根据用户加载角色对应权限
+	 * @param userId
+	 * @return
+	 */
+	List<TdsFunction> loadingByUsreIdRole(@Param("userId")Integer userId);
+	
+	
+	
+	/**
+	 * 根据角色查询权限功能
+	 * @param roleId
+	 * @return
+	 */
+	List<TdsFunction> loadingBydRoleId(@Param("roleId") Integer roleId);
+	
 }

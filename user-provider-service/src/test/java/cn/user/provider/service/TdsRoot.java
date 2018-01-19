@@ -2,10 +2,12 @@ package cn.user.provider.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import cn.UserProviderServiceApp;
+import cn.dao.tds.TdsModularMapper;
 import cn.dao.tds.TdsStateInfoMapper;
 import cn.dao.tds.TdsUserCustomerMapper;
 import cn.entity.tds.TdsAccountBank;
@@ -25,6 +28,7 @@ import cn.service.tds.TdsMoneyApprovalService;
 import cn.service.tds.TdsStateInfoSerrvice;
 import cn.service.tds.TdsUserRoleService;
 import cn.service.tds.TdsUserService;
+import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAccountBankDomain;
@@ -70,20 +74,49 @@ public class TdsRoot {
 	  
 	  
 	  @Autowired
-	private TdsUserCustomerMapper tdsUserCustomerMapper;
+	  private TdsUserCustomerMapper tdsUserCustomerMapper;
 	  
-	  @Test
-	  public void test1(){ 
-		  tdsUserCustomerMapper.subMoneyAndCommission(1, "400.12");
-		
+	  @Autowired
+	  private TdsModularMapper tdsModularMapper;
+	  
+	 
+	  public List<TdsModular> testModule(List<TdsModular> list,Integer pid){ 
+		 List<TdsModular> result = new ArrayList<TdsModular>();  
+		  //获取父亲的
+		 for(TdsModular menuVo:list){
+			   Integer moId=menuVo.getId();  //获取菜单id
+			   Integer parentid = menuVo.getParentId();//获取菜单的父id  
+			   if(parentid!=0){  
+	                if(parentid.equals(pid)){  
+	                    List<TdsModular> iterateMenu =testModule(list,moId);  
+	                    menuVo.setTdsModular(iterateMenu);  
+	                    result.add(menuVo);  
+	                }  
+	            }  
+		  }
+		 return result;
 	  }
 	  
 	  @Test
 	  public void list(){
-		   TdsDepartmentDomain tds=new TdsDepartmentDomain();
-		   BackResult<List<TdsDepartmentDomain>>  list=tdsDepartmentService.selectAll(tds);
-		   System.out.println(list);
-	  }
+		  List<TdsModular> list=tdsModularMapper.queryModular(null);
+		  //根据一级菜单id查询所有的菜单  
+		  List<TdsModular> userMenuVos = new ArrayList<TdsModular>();
+          for (TdsModular menuVo :list) {  
+        	    //一级菜单
+        	    if(menuVo.getName().equals("第一级")){
+        	    	continue;
+        	    }
+        	    if(menuVo.getParentId()==0){
+                    List<TdsModular> iterateMenus = testModule(list, menuVo.getId());  
+                    menuVo.setTdsModular(iterateMenus);  
+                    userMenuVos.add(menuVo);  
+        	    }
+        	    
+              } 
+               System.out.println(userMenuVos);
+          } 
+	  
 	  
 	  @Test
 	  public void list2(){

@@ -23,7 +23,6 @@ public interface TdsModularService extends TdsModularBusService{
 	   	
 	      BackResult<Integer> deleteById(Integer id);
 	      
-	      
 	    /**
 	  	 * 查询模块列表<分页>
 	  	 * @param name  模块名称
@@ -31,6 +30,8 @@ public interface TdsModularService extends TdsModularBusService{
 	  	 */
 	      BackResult<PageDomain<Map<String,Object>>> pageByModular(String name,BasePageParam basePageParam);
 	     
+	      
+	    
 	      
 	      
 }
