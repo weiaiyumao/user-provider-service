@@ -83,7 +83,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			TdsUser tur = tdsUserMapper.loadById(domain.getUserId());
 			// 网址修改
 			TdsCompany com = new TdsCompany();
-			com.setComUrl(domain.getCom_url());
+			com.setComUrl(domain.getComUrl());
 			com.setId(tur.getComId());
 			com.setComName(domain.getComName());
 			com.setUpdateTime(new Date());
@@ -207,9 +207,9 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			}
 
 			// 新增用户的时候判断公司名字和地址是否存在，存在则修改，否则更新信息
-			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getCom_url(), domain.getComName());
+			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getComUrl(), domain.getComName());
 			TdsCompany tdsCom = new TdsCompany();
-			tdsCom.setComUrl(domain.getCom_url());
+			tdsCom.setComUrl(domain.getComUrl());
 			tdsCom.setComName(domain.getComName());
 			if (null == isTdsCom) {
 				// 保存

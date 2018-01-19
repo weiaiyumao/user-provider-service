@@ -32,7 +32,7 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 
 	private Date create_time;
 
-	private String com_url;
+	private String comUrl;
 
 	private String source; // 来源
 	
@@ -136,12 +136,12 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 		this.create_time = create_time;
 	}
 
-	public String getCom_url() {
-		return com_url;
+    public String getComUrl() {
+		return comUrl;
 	}
-
-	public void setCom_url(String com_url) {
-		this.com_url = com_url;
+    
+    public void setComUrl(String comUrl) {
+		this.comUrl = comUrl;
 	}
 
 	public String getSource() {
