@@ -45,9 +45,10 @@ public class TdsHomeServiceImpl implements  TdsHomeService {
 			TdsUser tdsUser=tdsUserMapper.loadById(userId);
 			
 			CreUserAccount account=creUserAccountService.findCreUserAccountByUserId(tdsUser.getCreUserId());
-			
-			map.put("countNumber", account.getAccount()+account.getApiAccount()+account.getRqAccount());//产品总条数
-			
+			BigDecimal b1 = new BigDecimal(account.getAccount()==null?0:account.getAccount());
+			BigDecimal b2 = new BigDecimal(account.getApiAccount()==null?0:account.getApiAccount());
+			BigDecimal b3 = new BigDecimal(account.getRqAccount()==null?0:account.getRqAccount());
+			map.put("countNumber",b1.add(b2).add(b3));//产品总条数
 			result.setResultObj(map);
 		} catch (Exception e) {
 			e.printStackTrace();
