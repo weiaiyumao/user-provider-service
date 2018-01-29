@@ -25,6 +25,16 @@ public class TdsFunctionController {
 	@Autowired
 	private TdsFunctionService tdsFunctionService;
 
+	
+	
+	
+	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<TdsFunctionDomain>> selectAll(Integer parentId){
+		BackResult<List<TdsFunctionDomain>> result = tdsFunctionService.selectAll(parentId);
+		return result;
+	}
+	
+	
 	/**
 	 * 根据id查询
 	 * 

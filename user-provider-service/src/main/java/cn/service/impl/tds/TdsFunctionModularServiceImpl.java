@@ -56,7 +56,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
 			tds.setParentId(domain.getId());
 			//如果选择的是第一级模块名则为父级模块
-			if(null!=tdsModula && "第一级".equals(tdsModula.getName())){
+			if(null!=tdsModula && tdsModula.getName().indexOf("第一级")!=-1){
 				tds.setParentId(0);  //标记为父类
 			}					
 			//如果不选，则默认为父级模块

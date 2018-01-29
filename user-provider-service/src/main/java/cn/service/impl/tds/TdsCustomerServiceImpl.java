@@ -225,6 +225,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 			String md5Pass=MD5Util.getInstance().getMD5Code(passWord);
 			
+			//=======
 			TdsUserDomain userDomain=new TdsUserDomain();
 			
 			userDomain.setPassword(md5Pass);
@@ -240,6 +241,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				
 				return creUid;
 			}
+			//=========
 			
 			TdsUser tdsUser = new TdsUser();
 			
@@ -264,6 +266,8 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setCreater(loginUserId);
 			
 			tdsUser.setCreateTime(new Date());
+			
+			tdsUser.setStatus("0");
 			
 			tdsUserMapper.save(tdsUser); // 用户信息保存
 			

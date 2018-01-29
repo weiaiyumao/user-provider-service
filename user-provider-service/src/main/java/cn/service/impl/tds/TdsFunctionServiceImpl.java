@@ -297,4 +297,33 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
+	
+	
+	@Override
+	public BackResult<List<TdsFunctionDomain>> selectAll(Integer parentId) {
+		BackResult<List<TdsFunctionDomain>> result=new BackResult<List<TdsFunctionDomain>>();
+		TdsFunction tds=new TdsFunction();
+		List<TdsFunctionDomain>  listDomain=new ArrayList<TdsFunctionDomain>();
+		try {
+			tds.setParentId(parentId);
+			List<TdsFunction> list=tdsFunctionMapper.selectAll(tds);
+			if(list.size()>0 && list!=null){
+				TdsFunctionDomain tdsDomain=null;
+	          for(TdsFunction obj:list){
+	        	 tdsDomain=new TdsFunctionDomain();
+	        	 BeanUtils.copyProperties(obj,tdsDomain);
+	        	 listDomain.add(tdsDomain);
+				}
+	          result.setResultObj(listDomain);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
+
 }

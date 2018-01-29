@@ -137,8 +137,8 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
-			 <if test="creUserId != null"> cre_user_id , </if>
-			is_deleted ,
+		    <if test="creUserId != null"> cre_user_id , </if>
+		    <if test="isDeleted != null"> is_deleted , </if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null"> #{name} , </if>
@@ -166,7 +166,7 @@
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
 			<if test="creUserId != null"> #{creUserId} , </if>
-			'0',
+			<if test="isDeleted != null"> #{isDeleted}, </if>
 		</trim>
 
 	</insert>
