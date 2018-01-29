@@ -55,14 +55,25 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
+	
 	@Override
 	public BackResult<Integer> saveTdsFunction(TdsFunctionDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsFunction tds = new TdsFunction();
-		domain.setCreateTime(new Date());
-		domain.setUpdateTime(new Date());
 		try {
-			BeanUtils.copyProperties(domain, tds);
+			TdsFunction fun=tdsFunctionMapper.loadById(domain.getId());
+			//如果选择的是第一级模块名则为父级模块
+			if(null!=fun && fun.getName().indexOf("第一级")!=-1){
+				tds.setParentId(0);  //标记为父类
+			}					
+			//如果不选，则默认为父级模块
+			if(null==domain.getId() || "".equals(domain.getId())){
+				tds.setParentId(0);  //标记为父类
+			}
+			tds.setName(domain.getName());
+			tds.setUrl(domain.getUrl());
+			tds.setCreateTime(new Date());
+			tds.setUpdateTime(new Date());
 			tdsFunctionMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {
@@ -96,6 +107,10 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		TdsFunction tds = new TdsFunction();
 		try {
 			BeanUtils.copyProperties(domain, tds);
+			
+			if(tds.getName().indexOf("第一级")!=-1){  
+				tds.setParentId(0);  //标记为父类
+			}
 			tdsFunctionMapper.update(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {

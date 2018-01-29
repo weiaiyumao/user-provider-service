@@ -53,8 +53,11 @@ public class MoneyCommission {
 	
 
 	public static void main(String[] args) {
-		Double big = MoneyCommission.getCommission("2345", "0%");
-		System.out.println(big);
+//		Double big = MoneyCommission.getCommission("2345", "0%");
+//		System.out.println(big);
+		
+		String str="第一";
+		System.out.println(str.indexOf("第一级"));
 	}
 
 }
