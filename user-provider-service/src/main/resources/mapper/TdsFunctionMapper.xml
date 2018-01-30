@@ -105,79 +105,77 @@
 		resultType="java.lang.Integer">
 		SELECT ID FROM tds_function
 		WHERE PARENT_ID=#{parentId}
-		AND IS_DELETED='0'
+		AND
+		IS_DELETED='0'
 	</select>
 
 
-	<select id="pageTdsFunction" parameterType="HashMap"
+
+	<select id="loadByIdView" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsFunMoView">
-		SELECT f.id,f.name as funName,f.url,m.name as moName,f.remarks FROM
-		tds_function f,tds_modular m
-		where m.id=f.parent_id and f.is_deleted='0'
-		<if test="funName!=null and funName!=''">
-			and f.name=#{funName}
-		</if>
-		ORDER BY m.name,f.create_time desc
-		LIMIT #{pageNumber},#{numPerPage}
+		SELECT f.id as funId,f.name as funName,f.url,f.parent_id
+		moId,m.name as moName
+		FROM tds_function f,tds_modular m
+		where f.parent_id=m.id
+		and f.is_deleted='0' and m.is_deleted='0'
+		and f.id=#{id}
 	</select>
 
 
-	<select id="queryCount" parameterType="HashMap" resultType="java.lang.Integer">
-		SELECT count(1) FROM tds_function f,tds_modular m
-		where m.id=f.parent_id and f.is_deleted='0'
-		<if test="funName!=null and funName!=''">
-			and f.name=#{funName}
-		</if>
-	</select>
-	
-	
-     <select id="loadByIdView" parameterType="HashMap"  resultType="cn.entity.tds.view.TdsFunMoView">
-		 SELECT f.id,f.name as funName,f.url
-		 FROM tds_function f
-		 where  f.is_deleted='0'
-		 and f.id=#{id}
-	</select>
-	
-	
-	   <select id="pageByFunction" resultType="java.util.HashMap"  parameterType="HashMap">
+	<select id="pageByFunction" resultType="java.util.HashMap"
+		parameterType="HashMap">
 		SELECT * FROM view_function
 		where is_deleted='0'
 		<if test="name!=null and name!=''">
 			and name like concat(concat('%',#{name}),'%')
 		</if>
-		ORDER BY parentName='第一级' desc,id 
+		ORDER BY parentName='第一级' desc,id
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
-	
-	
-	<select id="queryFunction" resultMap="BaseResultMap" parameterType="HashMap">
+
+	<select id="queryCount" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT count(1) FROM view_function
+		where is_deleted='0'
+		<if test="funName!=null and funName!=''">
+			and f.name=#{funName}
+		</if>
+	</select>
+
+
+
+	<select id="queryFunction" resultMap="BaseResultMap"
+		parameterType="HashMap">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_function
-        where IS_DELETED='0'
-        <if test="parentId != null">AND PARENT_ID=#{parentId}</if>
+		where IS_DELETED='0'
+		<if test="parentId != null">AND PARENT_ID=#{parentId}</if>
 	</select>
-	
-	
-    <select id="loadingByUsreIdRole" parameterType="HashMap" resultMap="BaseResultMap">
+
+
+	<select id="loadingByUsreIdRole" parameterType="HashMap"
+		resultMap="BaseResultMap">
 		SELECT * from tds_function
 		where id in(
-		select fun_id from tds_function_role
+		select fun_id from
+		tds_function_role
 		where role_id in(
 		select role_id from tds_user_role
 		where is_deleted='0' and user_id=#{userId})
 		and is_deleted='0'
-		) and is_deleted='0'
+		) and
+		is_deleted='0'
 
 	</select>
-	
-	
-	
+
+
+
 	<select id="loadingBydRoleId" parameterType="HashMap" resultMap="BaseResultMap">
 		select * from tds_function
 		where id in(
-		select fun_id from tds_function_role
-		where role_id=#{roleId} 
+		select fun_id from
+		tds_function_role
+		where role_id=#{roleId}
 		and is_deleted='0'
 		)and is_deleted='0'
 	</select>

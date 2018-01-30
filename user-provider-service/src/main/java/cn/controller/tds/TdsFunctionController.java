@@ -87,17 +87,17 @@ public class TdsFunctionController {
 		return result;
 	}
 
-	/**
-	 * 查询
-	 * 
-	 * @param tdsFunction
-	 * @return List<>
-	 */
-	@RequestMapping(value = "/pageTdsFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain) {
-		BackResult<PageDomain<TdsFunMoViewDomain>> result = tdsFunctionService.pageTdsFunction(domain);
-		return result;
-	}
+//	/**
+//	 * 查询
+//	 * 
+//	 * @param tdsFunction
+//	 * @return List<>
+//	 */
+//	@RequestMapping(value = "/pageTdsFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain) {
+//		BackResult<PageDomain<TdsFunMoViewDomain>> result = tdsFunctionService.pageTdsFunction(domain);
+//		return result;
+//	}
 
 	/**
 	 * 层级查询

@@ -68,16 +68,14 @@ public class TdsHomeServiceImpl implements  TdsHomeService {
 		Integer  countNumber=0;
 		try {
 			TdsUser tdsUser=tdsUserMapper.loadById(userId);
-			
 			CreUserAccount account=creUserAccountService.findCreUserAccountByUserId(tdsUser.getCreUserId());
-			
 			//实号检测
 			if(pnameId==1){
-				countNumber=account.getAccount();//实号检测目前账户剩余条数
+				countNumber=account.getAccount()==null?0:account.getAccount();//实号检测目前账户剩余条数
 			 }else if(pnameId==2){
-				countNumber=account.getRqAccount();//账户二次清洗剩余条数
+				countNumber=account.getRqAccount()==null?0:account.getRqAccount();//账户二次清洗剩余条数
 		  	 }else if(pnameId==3){
-				countNumber=account.getApiAccount();  //api账户剩余条数
+				countNumber=account.getApiAccount()==null?0:account.getApiAccount();  //api账户剩余条数
 			 }
 			result.setResultObj(countNumber);
 			

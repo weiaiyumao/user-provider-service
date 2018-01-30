@@ -2,21 +2,26 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
- * : 提现
+ * : 提现佣金
  * 
  * 
  * @author Gen
  */
-public class TdsCarry implements Serializable{
+public class TdsCarry extends  BasePageParam implements Serializable{
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1327686900272019021L;
+	private static final long serialVersionUID = 7804559556499367251L;
 
 	//提现id : id 	
 	private Integer id; 
+	
+	//关联用户id : user_id 	
+	private Integer userId; 
 	
 	//提现流水 : carry_serial 	
 	private String carrySerial; 
@@ -24,8 +29,8 @@ public class TdsCarry implements Serializable{
 	//提现订单 : carry_order 	
 	private String carryOrder; 
 	
-	//所涉及银行id : bank_id 	
-	private String bankId; 
+	//所涉及银行id : bank_name 	
+	private String bankName; 
 	
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
@@ -33,10 +38,7 @@ public class TdsCarry implements Serializable{
 	//提现金额 : carr_money 	
 	private String carrMoney; 
 	
-	//之金额 : bef_money 	
-	private String befMoney; 
-	
-	//提现状态 : carr_status 	
+	//提现状态  1处理中 2已到账 3被驳回 : carr_status 	
 	private String carrStatus; 
 	
 	//创建时间 : create_time 	
@@ -53,9 +55,6 @@ public class TdsCarry implements Serializable{
 	
 	//备注 : remarks 	
 	private String remarks; 
-	
-	// : uid 	
-	private Integer uid; 
 	
 
 	/**
@@ -74,6 +73,23 @@ public class TdsCarry implements Serializable{
 	 */
 	public void setId (Integer id) {
 		this.id = id;
+	}
+	/**
+	 * 关联用户id : user_id
+	 * 
+	 * @return 
+	 */
+	public Integer getUserId () {
+		return userId;
+	}
+	
+	/**
+	 * 关联用户id : user_id
+	 * 
+	 * @return 
+	 */
+	public void setUserId (Integer userId) {
+		this.userId = userId;
 	}
 	/**
 	 * 提现流水 : carry_serial
@@ -110,21 +126,21 @@ public class TdsCarry implements Serializable{
 		this.carryOrder = carryOrder;
 	}
 	/**
-	 * 所涉及银行id : bank_id
+	 * 所涉及银行id : bank_name
 	 * 
 	 * @return 
 	 */
-	public String getBankId () {
-		return bankId;
+	public String getBankName () {
+		return bankName;
 	}
 	
 	/**
-	 * 所涉及银行id : bank_id
+	 * 所涉及银行id : bank_name
 	 * 
 	 * @return 
 	 */
-	public void setBankId (String bankId) {
-		this.bankId = bankId;
+	public void setBankName (String bankName) {
+		this.bankName = bankName;
 	}
 	/**
 	 * 删除状态：0正常，1已删除 : is_deleted
@@ -161,24 +177,7 @@ public class TdsCarry implements Serializable{
 		this.carrMoney = carrMoney;
 	}
 	/**
-	 * 之金额 : bef_money
-	 * 
-	 * @return 
-	 */
-	public String getBefMoney () {
-		return befMoney;
-	}
-	
-	/**
-	 * 之金额 : bef_money
-	 * 
-	 * @return 
-	 */
-	public void setBefMoney (String befMoney) {
-		this.befMoney = befMoney;
-	}
-	/**
-	 * 提现状态 : carr_status
+	 * 提现状态  1处理中 2已到账 3被驳回 : carr_status
 	 * 
 	 * @return 
 	 */
@@ -187,7 +186,7 @@ public class TdsCarry implements Serializable{
 	}
 	
 	/**
-	 * 提现状态 : carr_status
+	 * 提现状态  1处理中 2已到账 3被驳回 : carr_status
 	 * 
 	 * @return 
 	 */
@@ -278,23 +277,6 @@ public class TdsCarry implements Serializable{
 	 */
 	public void setRemarks (String remarks) {
 		this.remarks = remarks;
-	}
-	/**
-	 *  : uid
-	 * 
-	 * @return 
-	 */
-	public Integer getUid () {
-		return uid;
-	}
-	
-	/**
-	 *  : uid
-	 * 
-	 * @return 
-	 */
-	public void setUid (Integer uid) {
-		this.uid = uid;
 	}
 
 

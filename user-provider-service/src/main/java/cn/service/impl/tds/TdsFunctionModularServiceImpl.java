@@ -163,6 +163,12 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			Integer count=tdsModularMapper.queryCount(name);
 			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
 			List<Map<String,Object>> listMap = tdsModularMapper.pageByModular(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
+		   
+//			for(Map<String,Object> map:listMap){
+//		    	 for (Entry<String, Object> entry : map.entrySet()) {
+//		    	      System.out.println(entry.getKey());
+//		    	    }
+//		    }
 			// 构造计算分页参数
 			pageListDomain = new PageDomain<>( basePageParam.getCurrentPage(),basePageParam.getNumPerPage(),count);
 			pageListDomain.setTlist(listMap);

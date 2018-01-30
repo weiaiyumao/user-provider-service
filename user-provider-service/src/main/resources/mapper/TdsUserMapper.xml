@@ -17,8 +17,6 @@
 		<result column="user_email" property="userEmail"></result>
 		<result column="user_identity" property="userIdentity"></result>
 		<result column="user_number" property="userNumber"></result>
-		<result column="bank" property="bank"></result>
-		<result column="alipay" property="alipay"></result>
 		<result column="password" property="password"></result>
 		<result column="parent_user_id" property="parentUserId"></result>
 		<result column="hedehref" property="hedehref"></result>
@@ -47,8 +45,6 @@
 		user_email,
 		user_identity,
 		user_number,
-		bank,
-		alipay,
 		password,
 		parent_user_id,
 		hedehref,
@@ -91,8 +87,6 @@
 			<if test="userEmail != null">and user_email = #{userEmail}</if>
 			<if test="userIdentity != null">and user_identity = #{userIdentity}</if>
 			<if test="userNumber != null">and user_number = #{userNumber}</if>
-			<if test="bank != null">and bank = #{bank}</if>
-			<if test="alipay != null">and alipay = #{alipay}</if>
 			<if test="password != null">and password = #{password}</if>
 			<if test="parentUserId != null">and parent_user_id = #{parentUserId}</if>
 			<if test="hedehref != null">and hedehref = #{hedehref}</if>
@@ -123,8 +117,6 @@
 			<if test="userEmail != null"> user_email , </if>
 			<if test="userIdentity != null"> user_identity , </if>
 			<if test="userNumber != null"> user_number , </if>
-			<if test="bank != null"> bank , </if>
-			<if test="alipay != null"> alipay , </if>
 			<if test="password != null"> password , </if>
 			<if test="parentUserId != null"> parent_user_id , </if>
 			<if test="hedehref != null"> hedehref , </if>
@@ -151,8 +143,6 @@
 			<if test="userEmail != null"> #{userEmail} , </if>
 			<if test="userIdentity != null"> #{userIdentity} , </if>
 			<if test="userNumber != null"> #{userNumber} , </if>
-			<if test="bank != null"> #{bank} , </if>
-			<if test="alipay != null"> #{alipay} , </if>
 			<if test="password != null"> #{password} , </if>
 			<if test="parentUserId != null"> #{parentUserId} , </if>
 			<if test="hedehref != null"> #{hedehref} , </if>
@@ -192,8 +182,6 @@
 			<if test="userEmail != null"> user_email = #{userEmail}, </if>
 			<if test="userIdentity != null"> user_identity = #{userIdentity}, </if>
 			<if test="userNumber != null"> user_number = #{userNumber}, </if>
-			<if test="bank != null"> bank = #{bank}, </if>
-			<if test="alipay != null"> alipay = #{alipay}, </if>
 			<if test="password != null"> password = #{password}, </if>
 			<if test="parentUserId != null"> parent_user_id = #{parentUserId}, </if>
 			<if test="hedehref != null"> hedehref = #{hedehref}, </if>

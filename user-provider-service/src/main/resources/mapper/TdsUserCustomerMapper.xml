@@ -36,8 +36,9 @@
 		FROM tds_user_customer
 		WHERE
 		id=#{id} AND IS_DELETED='0'
-
 	</select>
+	
+	
 
 	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserCustomer">
 		SELECT

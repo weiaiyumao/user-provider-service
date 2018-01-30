@@ -62,6 +62,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		TdsFunction tds = new TdsFunction();
 		try {
 			TdsFunction fun=tdsFunctionMapper.loadById(domain.getId());
+			tds.setParentId(domain.getId());
 			//如果选择的是第一级模块名则为父级模块
 			if(null!=fun && fun.getName().indexOf("第一级")!=-1){
 				tds.setParentId(0);  //标记为父类
@@ -122,42 +123,42 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
-	@Override
-	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(TdsFunMoViewDomain domain) {
-		BackResult<PageDomain<TdsFunMoViewDomain>> result = new BackResult<PageDomain<TdsFunMoViewDomain>>();
-		PageDomain<TdsFunMoViewDomain> pageListDomain = null;
-		List<TdsFunMoViewDomain> listDomain = new ArrayList<TdsFunMoViewDomain>();
-		TdsFunMoView tdsFun = new TdsFunMoView();
-		try {
-			BeanUtils.copyProperties(domain, tdsFun);
-			Integer cur = tdsFun.getCurrentPage() <= 0 ? 1 : tdsFun.getCurrentPage();
-			tdsFun.setPageNumber((cur - 1) * tdsFun.getNumPerPage());
-			Integer count = tdsFunctionMapper.queryCount(tdsFun.getFunName());
-			List<TdsFunMoView> list = tdsFunctionMapper.pageTdsFunction(tdsFun);
-			if (list.size() > 0 && list != null) {
-
-				// 定义对象用于转换
-				TdsFunMoViewDomain tdsDomain = null;
-				for (TdsFunMoView obj : list) {
-					tdsDomain = new TdsFunMoViewDomain();
-					BeanUtils.copyProperties(obj, tdsDomain);
-					listDomain.add(tdsDomain);
-				}
-				// 构造计算分页参数
-				pageListDomain = new PageDomain<TdsFunMoViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
-						count);
-				pageListDomain.setTlist(listDomain);
-				result.setResultObj(pageListDomain);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("查询功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据集合查询失败");
-		}
-		return result;
-	}
+//	@Override
+//	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(TdsFunMoViewDomain domain) {
+//		BackResult<PageDomain<TdsFunMoViewDomain>> result = new BackResult<PageDomain<TdsFunMoViewDomain>>();
+//		PageDomain<TdsFunMoViewDomain> pageListDomain = null;
+//		List<TdsFunMoViewDomain> listDomain = new ArrayList<TdsFunMoViewDomain>();
+//		TdsFunMoView tdsFun = new TdsFunMoView();
+//		try {
+//			BeanUtils.copyProperties(domain, tdsFun);
+//			Integer cur = tdsFun.getCurrentPage() <= 0 ? 1 : tdsFun.getCurrentPage();
+//			tdsFun.setPageNumber((cur - 1) * tdsFun.getNumPerPage());
+//			Integer count = tdsFunctionMapper.queryCount(tdsFun.getFunName());
+//			List<TdsFunMoView> list = tdsFunctionMapper.pageTdsFunction(tdsFun);
+//			if (list.size() > 0 && list != null) {
+//
+//				// 定义对象用于转换
+//				TdsFunMoViewDomain tdsDomain = null;
+//				for (TdsFunMoView obj : list) {
+//					tdsDomain = new TdsFunMoViewDomain();
+//					BeanUtils.copyProperties(obj, tdsDomain);
+//					listDomain.add(tdsDomain);
+//				}
+//				// 构造计算分页参数
+//				pageListDomain = new PageDomain<TdsFunMoViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
+//						count);
+//				pageListDomain.setTlist(listDomain);
+//				result.setResultObj(pageListDomain);
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+//			result.setResultCode(ResultCode.RESULT_FAILED);
+//			result.setResultMsg("数据集合查询失败");
+//		}
+//		return result;
+//	}
 
 	@Override
 	public BackResult<List<TdsModularDomain>> moduleLoadingByUsreId(Integer userId) {
@@ -257,7 +258,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		BackResult<PageDomain<Map<String, Object>>> result =new  BackResult<PageDomain<Map<String, Object>>>();
 		PageDomain<Map<String, Object>> pageListDomain = null;
 		try {
-			Integer count=tdsModularMapper.queryCount(name);
+			Integer count=tdsFunctionMapper.queryCount(name);
 			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
 			List<Map<String,Object>> listMap = tdsFunctionMapper.pageByFunction(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
 			// 构造计算分页参数
