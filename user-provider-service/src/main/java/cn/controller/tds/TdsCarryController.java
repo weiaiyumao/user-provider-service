@@ -36,5 +36,10 @@ public class TdsCarryController{
 		return tdsMoneyApprovalCarryService.getCarryByUserId(userId);
 	}
 	
+	
+	@RequestMapping(value = "/getSubCarry", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> getSubCarry(@RequestBody TdsCarryDomain domain, String type){
+		return tdsMoneyApprovalCarryService.getSubCarry(domain.getUserId(),domain.getCarrMoney(),type);
+	}
 
 }

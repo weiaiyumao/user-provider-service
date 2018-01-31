@@ -23,6 +23,7 @@ import cn.entity.tds.TdsMoneyApprovalBack;
 import cn.entity.tds.TdsSerualInfo;
 import cn.entity.tds.TdsUserCustomer;
 import cn.service.tds.TdsMoneyApprovalBackService;
+import cn.service.tds.TdsSerualService;
 import cn.utils.OrderNo;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -48,12 +49,13 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 	@Autowired
 	private TdsSerualInfoMapper tdsSerualInfoMapper;
 	
-//	@Autowired
-//	private TdsCommissionMapper tdsCommissionMapper;
-	
 	
 	@Autowired
 	private TdsUserCustomerMapper tdsUserCustomerMapper;
+	
+	
+	@Autowired
+	private TdsSerualService tdsSerualService;
     
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalBackDomain>> pageApprovalBack(TdsMoneyApprovalBackDomain domain) {
@@ -155,18 +157,25 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			
 
 			// 进入流水明细保存
-			TdsSerualInfo tdsSerual = new TdsSerualInfo();
-			tdsSerual.setCreateTime(new Date());
-			tdsSerual.setUpdateTime(new Date());
-			tdsSerual.setOrderNumber(ordrr); // 保存退款单-订单号
-			tdsSerual.setSerialNumber(OrderNo.getSerial16()); // 保存退款-流水号
-			tdsSerual.setSerialStatus("1"); // 处理中
-			// 流水类型：1佣金;2提现，3退款，4充值，5进账 6出账 : serial_type
-			tdsSerual.setSerialType("3");// 退款类型
-			tdsSerual.setUserId(appBack.getUserId());
-			tdsSerual.setCreater(appBack.getCreater());
-			tdsSerual.setSerialMoney(appBack.getBackMoney());// 退款金额 涉及金额
-			tdsSerualInfoMapper.save(tdsSerual);		
+//			TdsSerualInfo tdsSerual = new TdsSerualInfo();
+//			tdsSerual.setCreateTime(new Date());
+//			tdsSerual.setUpdateTime(new Date());
+//			tdsSerual.setOrderNumber(ordrr); // 保存退款单-订单号
+//			tdsSerual.setSerialNumber(OrderNo.getSerial16()); // 保存退款-流水号
+//			tdsSerual.setSerialStatus("1"); // 处理中
+//			// 流水类型：1佣金;2提现，3退款，4充值，5进账 6出账 : serial_type
+//			tdsSerual.setSerialType("3");// 退款类型
+//			tdsSerual.setUserId(appBack.getUserId());
+//			tdsSerual.setCreater(appBack.getCreater());
+//			tdsSerual.setSerialMoney(appBack.getBackMoney());// 退款金额 涉及金额		
+//			tdsSerualInfoMapper.save(tdsSerual);	
+			
+			result=tdsSerualService.addSerual("1","3", appBack.getUserId(), appBack.getBackMoney(), ordrr);
+			 if(result.getResultCode().equals(ResultCode.RESULT_FAILED)){
+	            	return new BackResult<>(result.getResultCode(), result.getResultMsg());
+	          }
+	            
+			
 			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {

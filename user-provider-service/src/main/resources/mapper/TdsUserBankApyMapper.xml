@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dao.tds.TdsUserBankApyMapper">
+
+	<resultMap id="BaseResultMap" type="cn.entity.tds.TdsUserBankApy">
+		<result column="id" property="id"></result>
+		<result column="user_id" property="userId"></result>
+		<result column="bank_openr" property="bankOpenr"></result>
+		<result column="bank_no" property="bankNo"></result>
+		<result column="bank_name" property="bankName"></result>
+		<result column="alipayr" property="alipayr"></result>
+		<result column="alipay_name" property="alipayName"></result>
+		<result column="user_phone" property="userPhone"></result>
+		<result column="is_deleted" property="isDeleted"></result>
+		<result column="create_time" property="createTime"></result>
+		<result column="update_time" property="updateTime"></result>
+		<result column="creater" property="creater"></result>
+		<result column="updater" property="updater"></result>
+		<result column="remarks" property="remarks"></result>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		user_id,
+		bank_openr,
+		bank_no,
+		bank_name,
+		alipayr,
+		alipay_name,
+		user_phone,
+		is_deleted,
+		create_time,
+		update_time,
+		creater,
+		updater,
+		remarks
+	</sql>
+
+	<select id="loadById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_bank_apy
+		WHERE
+		id=#{id} 
+		AND IS_DELETED='0'
+	</select>
+	
+	<select id="loadByUserId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_bank_apy
+		WHERE
+		user_id=#{userId} 
+		AND IS_DELETED='0'
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserBankApy">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tds_user_bank_apy
+		<where>
+			<if test="id != null">and id = #{id}</if>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="bankOpenr != null">and bank_openr = #{bankOpenr}</if>
+			<if test="bankNo != null">and bank_no = #{bankNo}</if>
+			<if test="bankName != null">and bank_name = #{bankName}</if>
+			<if test="alipayr != null">and alipayr = #{alipayr}</if>
+			<if test="alipayName != null">and alipay_name = #{alipayName}</if>
+			<if test="userPhone != null">and user_phone = #{userPhone}</if>
+			<if test="createTime != null">and create_time = #{createTime}</if>
+			<if test="updateTime != null">and update_time = #{updateTime}</if>
+			<if test="creater != null">and creater = #{creater}</if>
+			<if test="updater != null">and updater = #{updater}</if>
+			<if test="remarks != null">and remarks = #{remarks}</if>
+			and is_deleted = '0'
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.entity.tds.TdsUserBankApy">
+		INSERT INTO tds_user_bank_apy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> user_id , </if>
+			<if test="bankOpenr != null"> bank_openr , </if>
+			<if test="bankNo != null"> bank_no , </if>
+			<if test="bankName != null"> bank_name , </if>
+			<if test="alipayr != null"> alipayr , </if>
+			<if test="alipayName != null"> alipay_name , </if>
+			<if test="userPhone != null"> user_phone , </if>
+			<if test="isDeleted != null"> is_deleted , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="updateTime != null"> update_time , </if>
+			<if test="creater != null"> creater , </if>
+			<if test="updater != null"> updater , </if>
+			<if test="remarks != null"> remarks , </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null"> #{userId} , </if>
+			<if test="bankOpenr != null"> #{bankOpenr} , </if>
+			<if test="bankNo != null"> #{bankNo} , </if>
+			<if test="bankName != null"> #{bankName} , </if>
+			<if test="alipayr != null"> #{alipayr} , </if>
+			<if test="alipayName != null"> #{alipayName} , </if>
+			<if test="userPhone != null"> #{userPhone} , </if>
+			<if test="isDeleted != null"> #{isDeleted} , </if>
+			<if test="createTime != null"> #{createTime} , </if>
+			<if test="updateTime != null"> #{updateTime} , </if>
+			<if test="creater != null"> #{creater} , </if>
+			<if test="updater != null"> #{updater} , </if>
+			<if test="remarks != null"> #{remarks} , </if>
+		</trim>
+
+	</insert>
+
+
+	<update id="deleteById" parameterType="java.lang.Integer">
+		UPDATE tds_user_bank_apy SET IS_DELETED='1'
+		WHERE id=#{id}
+	</update>
+
+
+
+	<update id="update" parameterType="cn.entity.tds.TdsUserBankApy">
+		UPDATE tds_user_bank_apy
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null"> user_id = #{userId}, </if>
+			<if test="bankOpenr != null"> bank_openr = #{bankOpenr}, </if>
+			<if test="bankNo != null"> bank_no = #{bankNo}, </if>
+			<if test="bankName != null"> bank_name = #{bankName}, </if>
+			<if test="alipayr != null"> alipayr = #{alipayr}, </if>
+			<if test="alipayName != null"> alipay_name = #{alipayName}, </if>
+			<if test="userPhone != null"> user_phone = #{userPhone}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+</mapper>

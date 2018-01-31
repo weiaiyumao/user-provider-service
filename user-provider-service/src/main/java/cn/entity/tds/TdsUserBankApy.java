@@ -2,46 +2,44 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
-import main.java.cn.domain.page.BasePageParam;
-
 /**
- * : 提现列表
+ * : 用户绑定信息
  * 
  * 
  * @author Gen
  */
-public class TdsCarry extends BasePageParam implements Serializable{
+public class TdsUserBankApy implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6301889330784988221L;
+	private static final long serialVersionUID = 8327341882746568033L;
 
-	//提现id : id 	
+	//用户详细信息表 : id 	
 	private Integer id; 
 	
-	//关联用户id : user_id 	
+	//关联id : user_id 	
 	private Integer userId; 
 	
-	//提现流水 : carry_serial 	
-	private String carrySerial; 
+	//开户人 : bank_openr 	
+	private String bankOpenr; 
 	
-	//提现订单 : carry_order 	
-	private String carryOrder; 
+	//银行卡号 : bank_no 	
+	private String bankNo; 
 	
-	//提现方式  1对公转账银行卡 2支付宝 : carry_type 	
-	private String carryType; 
+	//银行卡 : bank_name 	
+	private String bankName; 
 	
-	//提现方式账号 : carry_type_name 	
-	private String carryTypeName; 
+	//支付宝姓名人 : alipayr 	
+	private String alipayr; 
+	
+	//支付账号 : alipay_name 	
+	private String alipayName; 
+	
+	//用户手机号码 : user_phone 	
+	private String userPhone; 
 	
 	//删除状态：0正常，1已删除 : is_deleted 	
 	private String isDeleted; 
-	
-	//提现金额 : carr_money 	
-	private String carrMoney; 
-	
-	//提现状态  1处理中 2已到账 3被驳回 : carr_status 	
-	private String carrStatus; 
 	
 	//创建时间 : create_time 	
 	private java.util.Date createTime; 
@@ -60,7 +58,7 @@ public class TdsCarry extends BasePageParam implements Serializable{
 	
 
 	/**
-	 * 提现id : id
+	 * 用户详细信息表 : id
 	 * 
 	 * @return 
 	 */
@@ -69,7 +67,7 @@ public class TdsCarry extends BasePageParam implements Serializable{
 	}
 	
 	/**
-	 * 提现id : id
+	 * 用户详细信息表 : id
 	 * 
 	 * @return 
 	 */
@@ -77,7 +75,7 @@ public class TdsCarry extends BasePageParam implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * 关联用户id : user_id
+	 * 关联id : user_id
 	 * 
 	 * @return 
 	 */
@@ -86,7 +84,7 @@ public class TdsCarry extends BasePageParam implements Serializable{
 	}
 	
 	/**
-	 * 关联用户id : user_id
+	 * 关联id : user_id
 	 * 
 	 * @return 
 	 */
@@ -94,72 +92,106 @@ public class TdsCarry extends BasePageParam implements Serializable{
 		this.userId = userId;
 	}
 	/**
-	 * 提现流水 : carry_serial
+	 * 开户人 : bank_openr
 	 * 
 	 * @return 
 	 */
-	public String getCarrySerial () {
-		return carrySerial;
+	public String getBankOpenr () {
+		return bankOpenr;
 	}
 	
 	/**
-	 * 提现流水 : carry_serial
+	 * 开户人 : bank_openr
 	 * 
 	 * @return 
 	 */
-	public void setCarrySerial (String carrySerial) {
-		this.carrySerial = carrySerial;
+	public void setBankOpenr (String bankOpenr) {
+		this.bankOpenr = bankOpenr;
 	}
 	/**
-	 * 提现订单 : carry_order
+	 * 银行卡号 : bank_no
 	 * 
 	 * @return 
 	 */
-	public String getCarryOrder () {
-		return carryOrder;
-	}
-	
-	/**
-	 * 提现订单 : carry_order
-	 * 
-	 * @return 
-	 */
-	public void setCarryOrder (String carryOrder) {
-		this.carryOrder = carryOrder;
-	}
-	/**
-	 * 提现方式  1对公转账银行卡 2支付宝 : carry_type
-	 * 
-	 * @return 
-	 */
-	public String getCarryType () {
-		return carryType;
+	public String getBankNo () {
+		return bankNo;
 	}
 	
 	/**
-	 * 提现方式  1对公转账银行卡 2支付宝 : carry_type
+	 * 银行卡号 : bank_no
 	 * 
 	 * @return 
 	 */
-	public void setCarryType (String carryType) {
-		this.carryType = carryType;
+	public void setBankNo (String bankNo) {
+		this.bankNo = bankNo;
 	}
 	/**
-	 * 提现方式账号 : carry_type_name
+	 * 银行卡 : bank_name
 	 * 
 	 * @return 
 	 */
-	public String getCarryTypeName () {
-		return carryTypeName;
+	public String getBankName () {
+		return bankName;
 	}
 	
 	/**
-	 * 提现方式账号 : carry_type_name
+	 * 银行卡 : bank_name
 	 * 
 	 * @return 
 	 */
-	public void setCarryTypeName (String carryTypeName) {
-		this.carryTypeName = carryTypeName;
+	public void setBankName (String bankName) {
+		this.bankName = bankName;
+	}
+	/**
+	 * 支付宝姓名人 : alipayr
+	 * 
+	 * @return 
+	 */
+	public String getAlipayr () {
+		return alipayr;
+	}
+	
+	/**
+	 * 支付宝姓名人 : alipayr
+	 * 
+	 * @return 
+	 */
+	public void setAlipayr (String alipayr) {
+		this.alipayr = alipayr;
+	}
+	/**
+	 * 支付账号 : alipay_name
+	 * 
+	 * @return 
+	 */
+	public String getAlipayName () {
+		return alipayName;
+	}
+	
+	/**
+	 * 支付账号 : alipay_name
+	 * 
+	 * @return 
+	 */
+	public void setAlipayName (String alipayName) {
+		this.alipayName = alipayName;
+	}
+	/**
+	 * 用户手机号码 : user_phone
+	 * 
+	 * @return 
+	 */
+	public String getUserPhone () {
+		return userPhone;
+	}
+	
+	/**
+	 * 用户手机号码 : user_phone
+	 * 
+	 * @return 
+	 */
+	public void setUserPhone (String userPhone) {
+		this.userPhone = userPhone;
 	}
 	/**
 	 * 删除状态：0正常，1已删除 : is_deleted
@@ -177,40 +209,6 @@ public class TdsCarry extends BasePageParam implements Serializable{
 	 */
 	public void setIsDeleted (String isDeleted) {
 		this.isDeleted = isDeleted;
-	}
-	/**
-	 * 提现金额 : carr_money
-	 * 
-	 * @return 
-	 */
-	public String getCarrMoney () {
-		return carrMoney;
-	}
-	
-	/**
-	 * 提现金额 : carr_money
-	 * 
-	 * @return 
-	 */
-	public void setCarrMoney (String carrMoney) {
-		this.carrMoney = carrMoney;
-	}
-	/**
-	 * 提现状态  1处理中 2已到账 3被驳回 : carr_status
-	 * 
-	 * @return 
-	 */
-	public String getCarrStatus () {
-		return carrStatus;
-	}
-	
-	/**
-	 * 提现状态  1处理中 2已到账 3被驳回 : carr_status
-	 * 
-	 * @return 
-	 */
-	public void setCarrStatus (String carrStatus) {
-		this.carrStatus = carrStatus;
 	}
 	/**
 	 * 创建时间 : create_time

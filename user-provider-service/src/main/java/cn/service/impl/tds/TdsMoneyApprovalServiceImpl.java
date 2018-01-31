@@ -25,6 +25,7 @@ import cn.entity.tds.TdsSerualInfo;
 import cn.entity.tds.TdsUserCustomer;
 import cn.entity.tds.TdsUserDiscount;
 import cn.service.tds.TdsMoneyApprovalService;
+import cn.service.tds.TdsSerualService;
 import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import cn.utils.MoneyCommission;
@@ -62,11 +63,13 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	
 	
 	
+	@Autowired
+	private TdsSerualService tdsSerualService;
+	
+	
+	
 	private  static String isOrderNumber="";
 	
-	/*
-	@Autowired
-	private TdsEnumMapper tdsEnumMapper;*/
 
 	/**
 	 * 客户管理--下单
@@ -104,24 +107,14 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 			BeanUtils.copyProperties(domain, tds);
 			
-			//domain.getPnameId();
 			// 保存进账审核
 			tdsMoneyApprovalGoMapper.save(tds);
 
-			// 进入流水明细保存进账数据
-			TdsSerualInfo tdsSerual = new TdsSerualInfo();
-			tdsSerual.setCreateTime(new Date());
-			tdsSerual.setUpdateTime(new Date());
-			tdsSerual.setOrderNumber(ordrr); // 保存下单-订单号
-			tdsSerual.setSerialNumber(OrderNo.getSerial16()); // 进账流水号
-			tdsSerual.setSerialStatus("1"); // 处理中
-			// 流水类型：1佣金;2提现，3退款，4充值，5进账 6出账 : serial_type
-			tdsSerual.setSerialType("5");// 下单进账类型
-			tdsSerual.setUserId(tds.getUserId());
-			tdsSerual.setCreater(domain.getCreater());
-			tdsSerual.setSerialMoney(domain.getSumMoney());// 下单金额 涉及金额
-			tdsSerualInfoMapper.save(tdsSerual);
-
+			//保存流水明细
+			result=tdsSerualService.addSerual("1", "5", tds.getUserId(), domain.getSumMoney(), ordrr);
+			if(result.getResultCode().equals(ResultCode.RESULT_FAILED)){
+            	return new BackResult<>(result.getResultCode(), result.getResultMsg());
+            }
 			// TODO
 			// 佣金列表增加一条数据
 			TdsCommission tdsCommiss = new TdsCommission();

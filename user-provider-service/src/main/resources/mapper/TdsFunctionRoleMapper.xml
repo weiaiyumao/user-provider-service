@@ -92,10 +92,10 @@
 	</update>
 	
 	<insert id="addArrByfunId" parameterType="Hashmap">
-	  insert into tds_function_role(role_id,fun_id,create_time,creater,is_deleted)
+	  insert into tds_function_role(role_id,fun_id,create_time,update_time,creater,updater,is_deleted)
 	  VALUES
 	  <foreach collection="arr" item="item" index="index" separator=",">
-             (#{item.roleId},#{item.funId},#{item.createTime},#{item.creater},0)
+             (#{item.roleId},#{item.funId},#{item.createTime},#{item.createTime},#{item.creater},#{item.creater},0)
       </foreach>
 	</insert>
 	

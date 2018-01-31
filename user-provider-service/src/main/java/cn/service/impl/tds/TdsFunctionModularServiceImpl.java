@@ -205,9 +205,7 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			List<TdsModularDomain> listDomain = new ArrayList<TdsModularDomain>();
 			
 			for (TdsModularDomain menuVo : domain) {
-//				if (menuVo.getName().equals("第一级")) {
-//					continue;
-//				}
+
 				// 一级菜单
 			    //获取所有的父
 				if (menuVo.getParentId() == 0) {

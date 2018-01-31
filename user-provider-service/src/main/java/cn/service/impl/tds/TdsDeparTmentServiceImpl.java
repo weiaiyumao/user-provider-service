@@ -238,7 +238,9 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		try {
 			TdsRole trole = new TdsRole();
 			trole.setCreater(loginUserId);
+			trole.setUpdater(loginUserId);
 			trole.setCreateTime(new Date());
+			trole.setUpdateTime(new Date());
 			trole.setIsDefault(StatusType.CUSTOM_ROLES);
 			trole.setRoleName(soleName);
 			tdsRoleMapper.save(trole);
