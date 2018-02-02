@@ -14,10 +14,12 @@ import cn.dao.ApiAccountInfoMapper;
 import cn.dao.CreUserAccountMapper;
 import cn.entity.ApiAccountInfo;
 import cn.entity.CreUserAccount;
+import cn.redis.RedisClient;
 import cn.service.ApiAccountInfoService;
 import cn.utils.CommonUtils;
 import cn.utils.UUIDTool;
 import main.java.cn.common.BackResult;
+import main.java.cn.common.RedisKeys;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.ApiAccountInfoDomain;
 
@@ -31,6 +33,9 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 	
 	@Autowired
 	private CreUserAccountMapper creUserAccountMapper;
+	
+	@Autowired
+	private RedisClient redisClient;
 
 	@Override
 	public ApiAccountInfo findByCreUserIdAndName(Integer creUserId, String name) {
@@ -202,22 +207,64 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 				
 			}
 			
-			// 3、检测剩余可消费条数信息
-			List<CreUserAccount> listUserAccount = creUserAccountMapper.findCreUserAccountByUserId(list.get(0).getCreUserId());
+			// 从redis中获取可以使用的条数 如果没有取数据库中的
+			String KHAPIcountKey = RedisKeys.getInstance().getKHAPIcountKey(list.get(0).getCreUserId().toString());
+			String count = redisClient.get(KHAPIcountKey);
 			
-			if (CommonUtils.isNotEmpty(listUserAccount)) {
-				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
-				result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
-				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
-				return result;
+			// 将key 加入keys队列
+			String KHAPIcountKeys = RedisKeys.getInstance().getKHAPIcountKeys();
+			String keys = redisClient.get(KHAPIcountKeys);
+			if (CommonUtils.isNotString(keys)) {
+				redisClient.set(KHAPIcountKeys, list.get(0).getCreUserId().toString() + ",");
+			} else {
+				
+				// 查看队列中是否存在
+				String[] khkey = keys.split(","); 
+				
+				Boolean fag = false;
+				for (String string : khkey) {
+					if (string.equals(list.get(0).getCreUserId().toString())) {
+						// 存在
+						fag = true;
+					} 
+				}
+				
+				// 不存在
+				if (!fag) {
+					redisClient.set(KHAPIcountKeys, keys + list.get(0).getCreUserId().toString() + ",");
+				}
+				
 			}
 			
-			if (listUserAccount.get(0).getApiAccount() < checkCount) {
-				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
-				result.setResultMsg("API商户信息剩余可消费条数为：" + listUserAccount.get(0).getApiAccount() + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
-				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
-				return result;
+			
+			if (CommonUtils.isNotString(count)) {
+				// 3、检测剩余可消费条数信息
+				List<CreUserAccount> listUserAccount = creUserAccountMapper.findCreUserAccountByUserId(list.get(0).getCreUserId());
+				
+				if (CommonUtils.isNotEmpty(listUserAccount)) {
+					result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+					result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+					logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
+					return result;
+				}
+				
+				if (listUserAccount.get(0).getApiAccount() < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("API商户信息剩余可消费条数为：" + listUserAccount.get(0).getApiAccount() + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
+				
+				// 设置剩余条数到redis
+				redisClient.set(KHAPIcountKey, listUserAccount.get(0).getApiAccount().toString());
+			} else {
+				if (Integer.valueOf(count) < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("API商户信息剩余可消费条数为：" + count + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
 			}
+			
+			
 			
 			result.setResultObj(list.get(0).getCreUserId());
 			result.setResultMsg("账户检测正常");
@@ -267,23 +314,49 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 				}
 
 			}
+			
+			// 从redis中获取可以使用的条数 如果没有取数据库中的
+			String RQAPIcountKey = RedisKeys.getInstance().getRQAPIcountKey(list.get(0).getCreUserId().toString());
+			String count = redisClient.get(RQAPIcountKey);
 
-			// 3、检测剩余可消费条数信息
-			List<CreUserAccount> listUserAccount = creUserAccountMapper.findCreUserAccountByUserId(list.get(0).getCreUserId());
+			if (CommonUtils.isNotString(count)) { 
+				// 3、检测剩余可消费条数信息
+				List<CreUserAccount> listUserAccount = creUserAccountMapper.findCreUserAccountByUserId(list.get(0).getCreUserId());
 
-			if (CommonUtils.isNotEmpty(listUserAccount)) {
-				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
-				result.setResultMsg("账户二次清洗API商户信息不存在，或者已经删除请联系数据中心客户人员！");
-				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
-				return result;
+				if (CommonUtils.isNotEmpty(listUserAccount)) {
+					result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+					result.setResultMsg("账户二次清洗API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+					logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
+					return result;
+				}
+
+				if (listUserAccount.get(0).getRqAccount() < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("账户二次清洗API商户信息剩余可消费条数为：" + listUserAccount.get(0).getApiAccount() + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
+				
+				
+				// 将key 加入keys队列
+				String RQAPIcountKeys = RedisKeys.getInstance().getRQAPIcountKeys();
+				String keys = redisClient.get(RQAPIcountKeys);
+				if (CommonUtils.isNotString(keys)) {
+					redisClient.set(RQAPIcountKeys, list.get(0).getCreUserId().toString() + ",");
+				} else {
+					redisClient.set(RQAPIcountKeys, keys + list.get(0).getCreUserId().toString() + ",");
+				}
+				
+				// 设置剩余条数到redis
+				redisClient.set(RQAPIcountKey, listUserAccount.get(0).getRqAccount().toString());
+			} else {
+				if (Integer.valueOf(count) < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("账户二次清洗API商户信息剩余可消费条数为：" + count + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
 			}
-
-			if (listUserAccount.get(0).getRqAccount() < checkCount) {
-				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
-				result.setResultMsg("账户二次清洗API商户信息剩余可消费条数为：" + listUserAccount.get(0).getApiAccount() + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
-				logger.error("用户id为：" + list.get(0).getCreUserId() + "的账户出现数据完整性异常");
-				return result;
-			}
+			
+			
 
 			result.setResultObj(list.get(0).getCreUserId());
 			result.setResultMsg("账户检测正常");

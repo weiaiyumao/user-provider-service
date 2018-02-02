@@ -19,7 +19,7 @@ public class CommonUtils {
 	 * @return
 	 */
 	public static Boolean isNotString(String str){
-		return (null == str || "".equals(str));
+		return (null == str || "".equals(str) || "null".equals(str));
 	}
 	
 	public static void main(String[] args) {
