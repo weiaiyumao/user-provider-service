@@ -11,6 +11,8 @@ import cn.service.tds.TdsMoneyApprovalService;
 import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsApprovalOutDomain;
+import main.java.cn.domain.tds.TdsApprovalOutQueryDomain;
 import main.java.cn.domain.tds.TdsCommissionDomain;
 import main.java.cn.domain.tds.TdsMoneyApprovalDomain;
 import main.java.cn.domain.tds.TdsSerualInfoDomain;
@@ -113,18 +115,28 @@ public class TdsMoneyApprovalController{
 //		return result;
 //	}
 	
-//	/**
-//	 * 出账分页查询
-//	 * 
-//	 * @param domain
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/pageApprovalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageApprovalByUpStatusOut(
-//			@RequestBody TdsMoneyApprovalDomain domain) {
-//		domain.setApprovalType("2");
-//		return tdsMoneyApprovalService.pageMoneyApprovalAll(domain);
-//	}
+	/**
+	 * 出账分页查询
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	@RequestMapping(value = "/pageApprovalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<PageDomain<TdsApprovalOutDomain>> pageApprovalByUpStatusOut(
+			@RequestBody TdsApprovalOutQueryDomain domain) {
+		return tdsMoneyApprovalService.pageMoneyApprovalOut(domain);
+	}
+	
+	/**
+	 * 出账审核状态修改
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	@RequestMapping(value = "/updatePageApprovalByUpStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> updatePageApprovalByUpStatus(String userId,String tdsCarryId,String status) {
+		return tdsMoneyApprovalService.updatePageApprovalByUpStatus(userId,tdsCarryId,status);
+	}
 //
 //	/**
 //	 * 退账分页查询

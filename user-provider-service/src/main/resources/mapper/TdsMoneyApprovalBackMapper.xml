@@ -172,7 +172,7 @@
 		select user_id from tds_user
 		where parent_user_id=#{parentUserId}
 		and is_deleted='0'
-		)and is_deleted='0'
+		) and is_deleted='0'
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
@@ -181,10 +181,10 @@
 			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 4 and likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 0 and likeName!=null">
-				AND user_name like concat(concat('%',#{likeName}),'%')
+				AND (user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')
-				or order_number like concat(concat('%',#{likeName}),'%')
+				or order_number like concat(concat('%',#{likeName}),'%'))
 			</if> 
 		   order by create_time desc 
 		   LIMIT #{pageNumber},#{numPerPage}
@@ -199,7 +199,7 @@
 		select user_id from tds_user
 		where parent_user_id=#{parentUserId}
 		and is_deleted='0'
-		)and is_deleted='0' 
+		) and is_deleted='0' 
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
 			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
@@ -208,16 +208,17 @@
 			<if test="selected == 3 and  likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 4 and  likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 0 and  likeName!=null">
-				AND user_name like concat(concat('%',#{likeName}),'%')
+				AND (user_name like concat(concat('%',#{likeName}),'%')
 				or back_pname like concat(concat('%',#{likeName}),'%')
 				or id like concat(concat('%',#{likeName}),'%')
-				or order_number like concat(concat('%',#{likeName}),'%')
+				or order_number like concat(concat('%',#{likeName}),'%'))
 			</if> 
 	</select>
 	
 	
 	<update id="upBackStatus"  parameterType="HashMap">
-	 UPDATE tds_money_approval_back set approval_status=#{approvalStatus}
+	 UPDATE tds_money_approval_back 
+	 set approval_status=#{approvalStatus}
 	 where id=#{id} and is_deleted='0'
 	</update>
 	

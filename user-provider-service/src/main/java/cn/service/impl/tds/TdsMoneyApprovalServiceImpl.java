@@ -2,8 +2,11 @@ package cn.service.impl.tds;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.dao.tds.TdsApprovalLogMapper;
 import cn.dao.tds.TdsCommissionMapper;
 import cn.dao.tds.TdsMoneyApprovalGoMapper;
+import cn.dao.tds.TdsMoneyApprovalOutMapper;
 import cn.dao.tds.TdsSerualInfoMapper;
 import cn.dao.tds.TdsUserCustomerMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
@@ -34,6 +38,8 @@ import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.common.StatusType;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsApprovalOutDomain;
+import main.java.cn.domain.tds.TdsApprovalOutQueryDomain;
 import main.java.cn.domain.tds.TdsCommissionDomain;
 import main.java.cn.domain.tds.TdsMoneyApprovalDomain;
 import main.java.cn.domain.tds.TdsSerualInfoDomain;
@@ -45,6 +51,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Autowired
 	private TdsMoneyApprovalGoMapper tdsMoneyApprovalGoMapper;
+	
+	@Autowired
+	private TdsMoneyApprovalOutMapper tdsMoneyApprovalOutMapper;
 
 	@Autowired
 	private TdsApprovalLogMapper tdsApprovalLogMapper;
@@ -295,8 +304,40 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		return result;
 	}
 
-	
-	
+	@Override
+	public BackResult<PageDomain<TdsApprovalOutDomain>> pageMoneyApprovalOut(TdsApprovalOutQueryDomain domain) {
+		BackResult<PageDomain<TdsApprovalOutDomain>> result = new BackResult<PageDomain<TdsApprovalOutDomain>>();
+		PageDomain<TdsApprovalOutDomain> pageListDomain = null;
+		List<TdsApprovalOutDomain> listDomain = new ArrayList<TdsApprovalOutDomain>();
+		try {
+			BeanHelper.beanHelperTrim(domain); // 去掉空格
+			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
+			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
+			Integer count = tdsMoneyApprovalOutMapper.queryCount(domain);// 获取总数
+			List<TdsApprovalOutDomain> list = tdsMoneyApprovalOutMapper.pageMoneyApprovalOut(domain);
+			if (list.size() > 0 && list != null) {
+//				// 定义对象用于转换
+//				TdsApprovalOutDomain tdsDomain = null;
+//				for (TdsApprovalOutDomain obj : list) {
+//					tdsDomain = new TdsApprovalOutDomain();
+//					BeanUtils.copyProperties(obj, tdsDomain);
+//					listDomain.add(tdsDomain);
+//				}
+				// 构造计算分页参数
+				pageListDomain = new PageDomain<TdsApprovalOutDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
+						count);
+				pageListDomain.setTlist(list);
+				result.setResultObj(pageListDomain);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("查询功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
 	
 	@Override
 	public BackResult<PageDomain<TdsMoneyApprovalDomain>> pageMoneyApprovalGo(TdsMoneyApprovalDomain domain) {
@@ -415,6 +456,65 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
+
+	@Transactional
+	@Override
+	public BackResult<Integer> updatePageApprovalByUpStatus(String userId, String tdsCarryId, String status) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		if(StringUtils.isBlank(userId)){
+			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
+			result.setResultMsg("用户ID不能为空，传参错误!");
+			return result;
+		}
+		if(StringUtils.isBlank(tdsCarryId)){
+			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
+			result.setResultMsg("出账记录ID不能为空，传参错误!");
+			return result;
+		}
+		String carrStatus = null;
+		Map<String,String> param = new HashMap<>();
+		param.put("userId", userId);
+		param.put("tdsCarryId", tdsCarryId);
+		if("pass".equals(status)){  //审核通过
+			carrStatus = "2";
+			param.put("carrStatus", carrStatus);
+			//修改提现状态以及调整佣金金额
+			Integer carryCount = tdsMoneyApprovalOutMapper.upCarryStatus(param);
+			if(carryCount!=2){
+				return new BackResult<>(ResultCode.RESULT_FAILED, "操作失败,佣金余额不足");
+			}
+			//修改流水明细表的状态
+			Integer serualCount = tdsMoneyApprovalOutMapper.upSerualStatus(param);
+			if(serualCount!=1){
+				return new BackResult<>(ResultCode.RESULT_FAILED, "操作失败,流水明细表状态修改失败");
+			}
+			
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultMsg("操作成功");
+			result.setResultObj(1);
+		}else if("rebut".equals(status)){ //审核驳回
+			carrStatus = "3";
+			param.put("carrStatus", carrStatus);
+			//修改提现状态以及调整佣金金额
+			Integer carryCount = tdsMoneyApprovalOutMapper.upCarryStatus(param);
+			if(carryCount!=1){
+				return new BackResult<>(ResultCode.RESULT_FAILED, "操作失败,佣金余额不足");
+			}
+			//修改流水明细表的状态
+			Integer serualCount = tdsMoneyApprovalOutMapper.upSerualStatus(param);
+			if(serualCount!=1){
+				return new BackResult<>(ResultCode.RESULT_FAILED, "操作失败,流水明细表状态修改失败");
+			}
+			
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultMsg("操作成功");
+			result.setResultObj(1);
+		}else{
+			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
+			result.setResultMsg("状态传参错误!");
 		}
 		return result;
 	}
