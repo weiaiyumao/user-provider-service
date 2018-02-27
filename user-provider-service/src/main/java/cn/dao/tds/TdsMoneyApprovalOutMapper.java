@@ -42,7 +42,13 @@ public interface TdsMoneyApprovalOutMapper extends IBaseDao<TdsApprovalOutDomain
      Integer upCarryStatus(Map<String,String> param);
      
      /**
- 	 * 修改流水表的状态
+ 	 * 修改流水表的状态-通过
  	 */
     Integer upSerualStatus(Map<String,String> param);
+    
+    
+    /**
+ 	 * 修改流水表的状态-驳回
+ 	 */
+    Integer upCarryStatusRebut(Map<String,String> param);
 }

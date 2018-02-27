@@ -50,14 +50,16 @@
 
 	<update id="upCarryStatus" parameterType="Hashmap">
 		update tds_carry tc,tds_user_customer tu
-		set tc.carr_status = #{carrStatus}
-		<if test="carrStatus != null and carrStatus!='' and carrStatus =='2'">
-			,tu.overplus_commission = tu.overplus_commission - tc.carr_money
-		</if>
+		set tc.carr_status = #{carrStatus},tu.overplus_commission = tu.overplus_commission - tc.carr_money
 		where tc.user_id = #{userId} and tc.id = #{tdsCarryId} and tc.user_id = tu.user_id 
-		<if test="carrStatus != null and carrStatus!='' and carrStatus =='2'">
-			and tu.overplus_commission >=tc.carr_money
-		</if>
+		and tu.overplus_commission >=tc.carr_money
+		and tc.is_deleted = '0' and tu.is_deleted = '0'
+	</update>
+	
+	<update id="upCarryStatusRebut" parameterType="Hashmap">
+		update tds_carry tc,tds_user_customer tu
+		set tc.carr_status = #{carrStatus} ,tc.remarks = #{remarks}
+		where tc.user_id = #{userId} and tc.id = #{tdsCarryId} and tc.user_id = tu.user_id 
 		and tc.is_deleted = '0' and tu.is_deleted = '0'
 	</update>
 	

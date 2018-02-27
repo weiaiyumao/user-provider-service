@@ -462,7 +462,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 
 	@Transactional
 	@Override
-	public BackResult<Integer> updatePageApprovalByUpStatus(String userId, String tdsCarryId, String status) {
+	public BackResult<Integer> updatePageApprovalByUpStatus(String userId, String tdsCarryId, String status,String remarks) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		if(StringUtils.isBlank(userId)){
 			result.setResultCode(ResultCode.RESULT_PARAM_EXCEPTIONS);
@@ -498,8 +498,9 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 		}else if("rebut".equals(status)){ //审核驳回
 			carrStatus = "3";
 			param.put("carrStatus", carrStatus);
+			param.put("remarks", remarks);
 			//修改提现状态以及调整佣金金额
-			Integer carryCount = tdsMoneyApprovalOutMapper.upCarryStatus(param);
+			Integer carryCount = tdsMoneyApprovalOutMapper.upCarryStatusRebut(param);
 			if(carryCount!=1){
 				return new BackResult<>(ResultCode.RESULT_FAILED, "操作失败,佣金余额不足");
 			}

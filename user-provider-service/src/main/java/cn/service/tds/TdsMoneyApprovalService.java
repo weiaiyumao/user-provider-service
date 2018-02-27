@@ -18,6 +18,6 @@ public interface TdsMoneyApprovalService extends TdsMoneyApprovalBusService{
 	
 	public BackResult<PageDomain<TdsApprovalOutDomain>> pageMoneyApprovalOut(TdsApprovalOutQueryDomain domain);
 	
-	public BackResult<Integer> updatePageApprovalByUpStatus(String userId,String tdsCarryId,String status);
+	public BackResult<Integer> updatePageApprovalByUpStatus(String userId,String tdsCarryId,String status,String remarks);
 	
 }

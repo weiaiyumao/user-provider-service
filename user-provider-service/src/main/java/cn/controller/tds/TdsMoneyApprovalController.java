@@ -134,8 +134,8 @@ public class TdsMoneyApprovalController{
 	 * @return
 	 */
 	@RequestMapping(value = "/updatePageApprovalByUpStatus", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> updatePageApprovalByUpStatus(String userId,String tdsCarryId,String status) {
-		return tdsMoneyApprovalService.updatePageApprovalByUpStatus(userId,tdsCarryId,status);
+	public BackResult<Integer> updatePageApprovalByUpStatus(String userId,String tdsCarryId,String status,String remarks) {
+		return tdsMoneyApprovalService.updatePageApprovalByUpStatus(userId,tdsCarryId,status,remarks);
 	}
 //
 //	/**
