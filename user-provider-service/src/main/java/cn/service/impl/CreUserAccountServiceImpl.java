@@ -6,11 +6,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import main.java.cn.common.RedisKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,10 +47,35 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 	@Autowired
 	private TrdOrderMapper trdOrderMapper;
 
+	@Autowired
+	private RedisTemplate<String, UserAccountDomain> redisTemplate;
+
 	@Override
 	public CreUserAccount findCreUserAccountByUserId(Integer creUserId) {
+		// 从数据库中获取
 		List<CreUserAccount> list = creUserAccountMapper.findCreUserAccountByUserId(creUserId);
-		return CommonUtils.isNotEmpty(list) ? null : list.get(0);
+		if (CommonUtils.isNotEmpty(list)) {
+			return null;
+		}
+		return list.get(0);
+	}
+
+	@Override
+	public UserAccountDomain loadCreUserAccountByUserId(Integer creUserId) {
+		// 先从redis中获取
+		String skey = RedisKeys.getInstance().getAPIAccountKey(creUserId);
+		UserAccountDomain domain = redisTemplate.opsForValue().get(skey);
+		if (null == domain) {
+			// 从数据库中获取
+			List<CreUserAccount> list = creUserAccountMapper.findCreUserAccountByUserId(creUserId);
+			if (CommonUtils.isNotEmpty(list)) {
+				return null;
+			}
+			domain = new UserAccountDomain();
+			BeanUtils.copyProperties(list.get(0), domain);
+			redisTemplate.opsForValue().set(skey, domain, 30 * 60, TimeUnit.SECONDS);
+		}
+		return domain;
 	}
 
 	@Override

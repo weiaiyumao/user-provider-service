@@ -2,11 +2,13 @@ package cn.task;
 
 import java.io.IOException;
 
+import main.java.cn.domain.UserAccountDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -36,13 +38,13 @@ public class ApiCountSettlementTask {
 
 	@Autowired
 	private CreUserAccountService creUserAccountService;
-	
+
 	@Value("${cljobchange}")
 	String cljobchange;
 
 
 	/**
-	 * 空号API结算任务
+	 * API结算任务
 	 * 
 	 * @throws IOException
 	 */
@@ -50,7 +52,7 @@ public class ApiCountSettlementTask {
 	public void settlementKHApiCount() throws IOException {
 		
 		if (cljobchange.equals("produced")) {
-			logger.info("<<<<<<<<<<开始空号API结算定时任务>>>>>>>>>>");
+			logger.info("<<<<<<<<<<开始API结算定时任务>>>>>>>>>>");
 
 			try {
 				// 获取keys队列中需要结算的用户
@@ -63,26 +65,39 @@ public class ApiCountSettlementTask {
 					for (String userId : userIds) {
 						CreUserAccount account = creUserAccountService.findCreUserAccountByUserId(Integer.parseInt(userId));
 						// 获取redis中的剩余可以使用的条数
-						String count = redisClient.get(RedisKeys.getInstance().getKHAPIcountKey(userId));
-						logger.info(
-								"》》》》》用户[" + userId + "]本次结算空号API账户剩余：" + account.getApiAccount() + "条，本次结算：" + (account.getApiAccount() - Integer.parseInt(count)) + "条");
-						if (!CommonUtils.isNotString(count)) {
-							account.setApiAccount(Integer.parseInt(count));
-							account.setUpdateTime(DateUtils.getCurrentDateTime());
+						UserAccountDomain redisCreUserAccount = creUserAccountService.loadCreUserAccountByUserId(Integer.parseInt(userId));
+
+						if (null != account && null != redisCreUserAccount) {
+
+							Boolean fag = Boolean.FALSE;
+
+							if (!account.getApiAccount().equals(redisCreUserAccount.getApiAccount()) && account.getApiAccount() > redisCreUserAccount.getApiAccount()) {
+								account.setApiAccount(redisCreUserAccount.getApiAccount());
+								logger.info("》》》》》用户[" + userId + "]空号API账户剩余：" + account.getApiAccount() + "条，本次结算：" + (account.getApiAccount() - redisCreUserAccount.getApiAccount()) + "条");
+								fag = Boolean.TRUE;
+							}
+							if (!account.getRqAccount().equals(redisCreUserAccount.getRqAccount()) && account.getRqAccount() > redisCreUserAccount.getRqAccount()) {
+								account.setRqAccount( redisCreUserAccount.getRqAccount());
+								logger.info("》》》》》用户[" + userId + "]二次清洗API账户剩余：" + account.getRqAccount() + "条，本次结算：" + (account.getRqAccount() - redisCreUserAccount.getRqAccount()) + "条");
+								fag = Boolean.TRUE;
+							}
+
+							if (fag) {
+								account.setUpdateTime(DateUtils.getCurrentDateTime());
+								creUserAccountService.updateCreUserAccount(account);
+								logger.info("》》》》》用户[" + userId + "]本次结算完成");
+							}
+
 						}
-					
-						creUserAccountService.updateCreUserAccount(account);
-						logger.info("》》》》》用户[" + userId + "]本次结算完成");
-						
 					}
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.error("空号API结算定时任务>>>>>>>>>>出现系统异常：" + e.getMessage());
+				logger.error("API结算定时任务>>>>>>>>>>出现系统异常：" + e.getMessage());
 			}
 
-			logger.info("<<<<<<<<<<结束空号API结算定时任务>>>>>>>>>>");
+			logger.info("<<<<<<<<<<结束API结算定时任务>>>>>>>>>>");
 		}
 		
 	}
@@ -92,7 +107,8 @@ public class ApiCountSettlementTask {
 	 * 
 	 * @throws IOException
 	 */
-	@Scheduled(cron = "0 0/5 * * * ?")
+	@Deprecated
+//	@Scheduled(cron = "0 0/5 * * * ?")
 	public void settlementRQApiCount() throws IOException {
 		
 		if (cljobchange.equals("produced")) { 

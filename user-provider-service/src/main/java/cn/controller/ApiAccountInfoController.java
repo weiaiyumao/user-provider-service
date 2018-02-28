@@ -74,8 +74,8 @@ public class ApiAccountInfoController {
 	
 	@RequestMapping("/checkApiAccount")
 	public BackResult<Integer> checkApiAccount(String apiName, String password, String ip,
-											   int checkCount){
-		return apiAccountInfoBusService.checkApiAccount(apiName, password, ip, checkCount);
+											   int checkCount,String mobile,String type){
+		return apiAccountInfoBusService.checkApiAccount(apiName, password, ip, checkCount,mobile,type);
 	}
 
 	@RequestMapping("/checkRqApiAccount")

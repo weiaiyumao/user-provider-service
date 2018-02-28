@@ -3,12 +3,16 @@ package cn.service.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import main.java.cn.common.RedisKeys;
+import main.java.cn.domain.UserAccountDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +51,9 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 
 	@Autowired
 	private CreUserMapper creUserMapper;
+
+	@Autowired
+	private RedisTemplate<String, UserAccountDomain> redisTemplate;
 
 	@Value("${alipay_appid}")
 	private String alipayAppid;
@@ -120,15 +127,45 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			if(orderNo.substring(0,4).equals("CLRQ")) {
 				// 账号二次清洗充值回调
                 account.setRqAccount(account.getAccount() + order.getNumber());
-			} else if (orderNo.substring(0,4).equals("CLSH")) {
+			}
+			if (orderNo.substring(0,4).equals("CLSH")) {
 				// 空号检测充值回调
 				account.setAccount(account.getAccount() + order.getNumber());
-			} else if (orderNo.substring(0,4).equals("CLKH")) {
+			}
+			if (orderNo.substring(0,4).equals("CLKH")) {
                 // 空号API充值回调
                 account.setApiAccount(account.getApiAccount() + order.getNumber());
             }
 
 			creUserAccountMapper.updateCreUserAccount(account);
+
+			// 更新redis客户的账户余额信息
+			UserAccountDomain domain = new UserAccountDomain();
+			String skey = RedisKeys.getInstance().getAPIAccountKey(account.getCreUserId());
+			domain = redisTemplate.opsForValue().get(skey);
+			if (null == domain) {
+				BeanUtils.copyProperties(account, domain);
+				redisTemplate.opsForValue().set(skey, domain, 30 * 60, TimeUnit.SECONDS);
+			} else {
+
+				if(orderNo.substring(0,4).equals("CLRQ")) {
+					// 账号二次清洗充值回调
+					domain.setRqAccount(domain.getRqAccount() + order.getNumber());
+				}
+
+				if (orderNo.substring(0,4).equals("CLSH")) {
+					// 空号检测充值回调
+					domain.setApiAccount(domain.getApiAccount() + order.getNumber());
+				}
+
+				if (orderNo.substring(0,4).equals("CLKH")) {
+					// 空号API充值回调
+					account.setAccount(account.getAccount() + order.getNumber());
+				}
+
+				// 更新redis
+				redisTemplate.opsForValue().set(skey, domain, 30 * 60, TimeUnit.SECONDS);
+			}
 
 			// 发送短信 提示 客户充值 成功
 			CreUser user = creUserMapper.findById(order.getCreUserId());

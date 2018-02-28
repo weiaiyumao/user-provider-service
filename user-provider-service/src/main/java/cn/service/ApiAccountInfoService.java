@@ -14,4 +14,6 @@ public interface ApiAccountInfoService extends ApiAccountInfoBusService{
 	int update(ApiAccountInfo info);
 
 	BackResult<ApiAccountInfoDomain> findByNameAndPwd(String name,String password);
+
+	ApiAccountInfoDomain getApiAccountInfoByName(String name,String password);
 }
