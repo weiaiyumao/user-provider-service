@@ -61,8 +61,6 @@ public class CreUserServiceImpl implements CreUserService {
 
 		int row = 0;
 		
-//		RedisLock lock = new RedisLock(redisTemplate, "userSave_" + creUser.getUserPhone(), 0, 0);
-
 		try {
 			CreUser user = this.findCreUserByUserPhone(creUser.getUserPhone());
 
