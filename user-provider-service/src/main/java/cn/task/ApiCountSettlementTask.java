@@ -100,44 +100,44 @@ public class ApiCountSettlementTask {
 	 * 
 	 * @throws IOException
 	 */
-//	@Scheduled(cron = "0 0/5 * * * ?")
-//	public void settlementRQApiCount() throws IOException {
-//		
-//		if (cljobchange.equals("produced")) { 
-//			logger.info("<<<<<<<<<<-----开始账户二次清洗API结算定时任务----->>>>>>>>>>");
-//
-//			try {
-//				// 获取keys队列中需要结算的用户
-//				String RQAPIcountKeys = RedisKeys.getInstance().getRQAPIcountKeys();
-//				String keys = redisClient.get(RQAPIcountKeys);
-//				if (!CommonUtils.isNotString(keys)) {
-//					// 循环扣费
-//					String[] userIds = keys.split(",");
-//
-//					for (String userId : userIds) {
-//						CreUserAccount account = creUserAccountService.findCreUserAccountByUserId(Integer.parseInt(userId));
-//						// 获取redis中的剩余可以使用的条数
-//						String count = redisClient.get(RedisKeys.getInstance().getRQAPIcountKey(userId));
-//						logger.info(
-//								"》》》》》用户[" + userId + "]本次结算账户二次清洗API账户剩余：" + account.getRqAccount() + "条，本次结算：" + (account.getRqAccount() - Integer.parseInt(count)) + "条");
-//						if (!CommonUtils.isNotString(count)) {
-//							account.setRqAccount(Integer.parseInt(count));
-//							account.setUpdateTime(DateUtils.getCurrentDateTime());
-//						}
-//						
-//						creUserAccountService.updateCreUserAccount(account);
-//						logger.info("》》》》》用户[" + userId + "]本次结算完成");
-//						
-//					}
-//				}
-//
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				logger.error("二次清洗API结算定时任务>>>>>>>>>>出现系统异常：" + e.getMessage());
-//			}
-//
-//			logger.info("<<<<<<<<<<结束账户二次清洗API结算定时任务>>>>>>>>>>");
-//		}
-//		
-//	}
+	@Scheduled(cron = "0 0/5 * * * ?")
+	public void settlementRQApiCount() throws IOException {
+		
+		if (cljobchange.equals("produced")) { 
+			logger.info("<<<<<<<<<<-----开始账户二次清洗API结算定时任务----->>>>>>>>>>");
+
+			try {
+				// 获取keys队列中需要结算的用户
+				String RQAPIcountKeys = RedisKeys.getInstance().getRQAPIcountKeys();
+				String keys = redisClient.get(RQAPIcountKeys);
+				if (!CommonUtils.isNotString(keys)) {
+					// 循环扣费
+					String[] userIds = keys.split(",");
+
+					for (String userId : userIds) {
+						CreUserAccount account = creUserAccountService.findCreUserAccountByUserId(Integer.parseInt(userId));
+						// 获取redis中的剩余可以使用的条数
+						String count = redisClient.get(RedisKeys.getInstance().getRQAPIcountKey(userId));
+						logger.info(
+								"》》》》》用户[" + userId + "]本次结算账户二次清洗API账户剩余：" + account.getRqAccount() + "条，本次结算：" + (account.getRqAccount() - Integer.parseInt(count)) + "条");
+						if (!CommonUtils.isNotString(count)) {
+							account.setRqAccount(Integer.parseInt(count));
+							account.setUpdateTime(DateUtils.getCurrentDateTime());
+						}
+						
+						creUserAccountService.updateCreUserAccount(account);
+						logger.info("》》》》》用户[" + userId + "]本次结算完成");
+						
+					}
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("二次清洗API结算定时任务>>>>>>>>>>出现系统异常：" + e.getMessage());
+			}
+
+			logger.info("<<<<<<<<<<结束账户二次清洗API结算定时任务>>>>>>>>>>");
+		}
+		
+	}
 }
