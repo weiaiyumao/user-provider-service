@@ -121,5 +121,32 @@
 		)
 	 </insert>
 
-
+	<select id="getAccountInfo" resultType="main.java.cn.domain.AccountInfoDomain">
+		select aa.id,aa.cre_user_id creUserId,ifnull(aa.num_reminding,0) numReminding,
+		       aa.bd_ip bdIp,aa.push_mobiles pushMobiles,ifnull(cua.tc_account,0) tcAccount,
+		       ifnull(cua.fc_account,0) fcAccount,ifnull(cua.ms_account,0) msAccount,cua.version
+		from api_acount_info aa
+		INNER JOIN cre_user_account cua on cua.cre_user_id = aa.cre_user_id and cua.delete_status = '0'
+		where aa.`name` = #{0} and aa.`password` = #{1}
+		and aa.delete_status = '0'
+		limit 0,1
+	</select>
+	
+	<update id="updateTcAccount" parameterType="HashMap">
+		UPDATE cre_user_account
+		set tc_account = tc_account -  #{checkCount},version = version + 1,update_time = now()
+		where cre_user_id = #{creUserId} and delete_status = '0' and version = #{version}
+	</update>
+	
+	<update id="updateFcAccount" parameterType="HashMap">
+		UPDATE cre_user_account
+		set fc_account = fc_account - #{checkCount},version = version + 1,update_time = now()
+		where cre_user_id = #{creUserId} and delete_status = '0' and version = #{version}
+	</update>
+	
+	<update id="updateMsAccount" parameterType="HashMap">
+		UPDATE cre_user_account
+		set ms_account = ms_account - #{checkCount},version = version + 1,update_time = now()
+		where cre_user_id = #{creUserId} and delete_status = '0' and version = #{version}
+	</update>
 </mapper>
