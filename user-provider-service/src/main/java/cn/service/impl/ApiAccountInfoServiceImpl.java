@@ -1,7 +1,9 @@
 package cn.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.ApiAccountInfoMapper;
 import cn.dao.CreUserAccountMapper;
+import cn.entity.AccountInfo;
 import cn.entity.ApiAccountInfo;
 import cn.entity.CreUserAccount;
 import cn.redis.RedisClient;
@@ -21,6 +24,7 @@ import cn.utils.UUIDTool;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.RedisKeys;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.AccountInfoDomain;
 import main.java.cn.domain.ApiAccountInfoDomain;
 
 @Service
@@ -367,6 +371,221 @@ public class ApiAccountInfoServiceImpl implements ApiAccountInfoService {
 			result.setResultMsg("系统异常");
 		}
 
+		return result;
+	}
+	
+	@Override
+	public BackResult<Integer> checkMsAccount(String apiName, String password, String ip,
+			int checkCount) {
+
+		BackResult<Integer> result = new BackResult<Integer>();
+		try {
+
+			// 1、检测api账户信息
+			AccountInfoDomain accountInfo = apiAccountInfoMapper.getAccountInfo(apiName, password);
+			if (accountInfo == null) {
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				return result;
+			}
+
+			// 2、检测api账户ip绑定信息 如果商户设置了ip则进行验证 反之不验证改参数
+			if (!CommonUtils.isNotString(accountInfo.getBdIp())) {
+				
+				//
+				Boolean fag = false;
+				
+				String[] ips = accountInfo.getBdIp().split(",");
+				
+				for (String str : ips) {
+					
+					if (str.equals(ip)) {
+						fag = true;
+					}
+					
+				}
+				
+				if (!fag) {
+					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
+					result.setResultMsg("API商户绑定的IP地址验证校验失败！");
+					return result;
+				}
+				
+			}
+			
+			// 从redis中获取可以使用的条数 如果没有取数据库中的
+			String msAPIcountKey = RedisKeys.getInstance().getMsAPIcountKey(accountInfo.getCreUserId().toString());
+			String count = redisClient.get(msAPIcountKey);
+			
+			// 将key 加入keys队列
+			String msAPIcountKeys = RedisKeys.getInstance().getMsAPIcountKeys();
+			String keys = redisClient.get(msAPIcountKeys);
+			if (CommonUtils.isNotString(keys)) {
+				redisClient.set(msAPIcountKeys, accountInfo.getCreUserId().toString() + ",");
+			} else {				
+				// 查看队列中是否存在
+				String[] khkey = keys.split(","); 				
+				Boolean fag = false;
+				for (String string : khkey) {
+					if (string.equals(accountInfo.getCreUserId().toString())) {
+						// 存在
+						fag = true;
+					} 
+				}				
+				// 不存在
+				if (!fag) {
+					redisClient.set(msAPIcountKeys, keys + accountInfo.getCreUserId().toString() + ",");
+				}
+				
+			}			
+			
+			if (CommonUtils.isNotString(count)) {
+				// 3、检测剩余可消费条数信息
+				Integer msAccount = accountInfo.getMsAccount();
+				
+				if (msAccount ==null) {
+					result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+					result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+					logger.error("用户id为：" + accountInfo.getCreUserId() + "的账户出现数据完整性异常");
+					return result;
+				}
+				
+				if (msAccount < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("API商户信息剩余可消费条数为：" + msAccount + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
+				
+				// 设置剩余条数到redis
+				redisClient.set(msAPIcountKey, msAccount.toString());
+			} else {
+				if (Integer.valueOf(count) < checkCount) {
+					result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+					result.setResultMsg("API商户信息剩余可消费条数为：" + count + "本次执行消费：" + checkCount + "无法执行消费，请充值！");
+					return result;
+				}
+			}
+			
+			
+			
+			result.setResultObj(accountInfo.getCreUserId());
+			result.setResultMsg("账户检测正常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("检测API账户[" + apiName + "]信息出现系统异常" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+		
+		return result;
+	}
+	
+	@Transactional
+	@Override
+	public BackResult<AccountInfoDomain> checkTcAccount(String apiName, String password, String method,String ip) {
+
+		BackResult<AccountInfoDomain> result = new BackResult<AccountInfoDomain>();
+		try {
+
+			// 1、检测api账户信息及获取接口余额
+			AccountInfoDomain accountInfo = apiAccountInfoMapper.getAccountInfo(apiName, password);
+			if (accountInfo == null) {
+				result.setResultCode(ResultCode.RESULT_API_NOTACCOUNT);
+				result.setResultMsg("API商户信息不存在，或者已经删除请联系数据中心客户人员！");
+				return result;
+			}
+
+			// 2、检测api账户ip绑定信息 如果商户设置了ip则进行验证 反之不验证改参数
+			if (!CommonUtils.isNotString(accountInfo.getBdIp())) {				
+				//
+				Boolean fag = false;				
+				String[] ips = accountInfo.getBdIp().split(",");				
+				for (String str : ips) {					
+					if (str.equals(ip)) {
+						fag = true;
+					}					
+				}				
+				if (!fag) {
+					result.setResultCode(ResultCode.RESULT_API_NOTIPS);
+					result.setResultMsg("API商户绑定的IP地址验证校验失败！");
+					return result;
+				}				
+			}							
+			
+			result.setResultObj(accountInfo);
+			result.setResultMsg("账户检测正常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("检测API账户[" + apiName + "]信息出现系统异常" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("系统异常");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public BackResult<Integer> updateTcAccount(Map<String, Object> params) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		String method = params.get("method").toString();
+				
+		if("normal_checkUserNameByIDno".equals(method)){
+			if (Integer.valueOf(params.get("tcAccount").toString()) < 1) {
+				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+				result.setResultMsg("API商户信息剩余可消费条数为：" + params.get("tcAccount").toString() + "本次执行消费：" + 1 + "无法执行消费，请充值！");
+				return result;
+			}
+			//用户证件号码一致性接口剩余条数-checkCount条
+			int count = apiAccountInfoMapper.updateTcAccount(params);
+			if(count !=1){
+				result.setResultCode(ResultCode.RESULT_FAILED);
+				result.setResultMsg("接口调用失败, 用户账户异常");
+				return result;
+			}
+			
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultObj(count);
+			result.setResultMsg("操作成功");
+		}else if("normal_checkBankInfo".equals(method)){
+			if (Integer.valueOf(params.get("fcAccount").toString()) < 1) {
+				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+				result.setResultMsg("API商户信息剩余可消费条数为：" + params.get("fcAccount").toString() + "本次执行消费：" + 1 + "无法执行消费，请充值！");
+				return result;
+			}
+			//用户银行卡四要素认证接口剩余条数-checkCount条
+			int count = apiAccountInfoMapper.updateFcAccount(params);
+			if(count !=1){
+				result.setResultCode(ResultCode.RESULT_FAILED);
+				result.setResultMsg("接口调用失败, 用户账户异常");
+				return result;
+			}
+			
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultObj(count);
+			result.setResultMsg("操作成功");
+		}else if("normal_checkMobileState".equals(method)){
+			if (Integer.valueOf(params.get("msAccount").toString()) < 1) {
+				result.setResultCode(ResultCode.RESULT_API_NOTCOUNT);
+				result.setResultMsg("API商户信息剩余可消费条数为：" + params.get("msAccount").toString() + "本次执行消费：" + 1 + "无法执行消费，请充值！");
+				return result;
+			}
+			//运营商在线号码状态查询接口剩余条数-checkCount条
+			int count = apiAccountInfoMapper.updateMsAccount(params);
+			if(count !=1){
+				result.setResultCode(ResultCode.RESULT_FAILED);
+				result.setResultMsg("接口调用失败, 用户账户异常");
+				return result;
+			}
+			
+			result.setResultCode(ResultCode.RESULT_SUCCEED);
+			result.setResultObj(count);
+			result.setResultMsg("操作成功");
+		}else{
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("暂时无此method: " + method);
+			return result;
+		}
+		
 		return result;
 	}
 

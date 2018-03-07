@@ -87,6 +87,9 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 			accountDomian.setCreUserId(user.get(0).getId());
 			accountDomian.setApiAccount(account.getApiAccount());
 			accountDomian.setRqAccount(account.getRqAccount());
+			accountDomian.setTcAccount(account.getTcAccount());
+			accountDomian.setFcAccount(account.getFcAccount());
+			accountDomian.setMsAccount(account.getMsAccount());
 			result.setResultObj(accountDomian);
 		} catch (Exception e) {
 			logger.error("用户手机号：【" + mobile + "】执行获取账户信息发生系统异常：" + e.getMessage());

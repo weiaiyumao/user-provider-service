@@ -1,5 +1,7 @@
 package cn.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
+import main.java.cn.domain.AccountInfoDomain;
 import main.java.cn.domain.ApiAccountInfoDomain;
 import main.java.cn.service.ApiAccountInfoBusService;
 
@@ -76,6 +79,22 @@ public class ApiAccountInfoController {
 	public BackResult<Integer> checkApiAccount(String apiName, String password, String ip,
 											   int checkCount){
 		return apiAccountInfoBusService.checkApiAccount(apiName, password, ip, checkCount);
+	}
+	
+	@RequestMapping("/checkMsAccount")
+	public BackResult<Integer> checkMsAccount(String apiName, String password, String ip,
+											   int checkCount){
+		return apiAccountInfoBusService.checkMsAccount(apiName, password, ip, checkCount);
+	}
+	
+	@RequestMapping("/checkTcAccount")
+	public BackResult<AccountInfoDomain> checkTcAccount(String apiName, String password, String method, String ip){
+		return apiAccountInfoBusService.checkTcAccount(apiName, password,method, ip);
+	}
+	
+	@RequestMapping("/updateTcAccount")
+	public BackResult<Integer> updateTcAccount(@RequestBody Map<String,Object> params){
+		return apiAccountInfoBusService.updateTcAccount(params);
 	}
 
 	@RequestMapping("/checkRqApiAccount")

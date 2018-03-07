@@ -11,6 +11,9 @@
        <result column="account" property="account"></result> 
        <result column="api_account" property="apiAccount"></result>
 	   <result column="rq_account" property="rqAccount"></result>
+	    <result column="tc_account" property="tcAccount"></result>
+	   <result column="fc_account" property="fcAccount"></result>
+	   <result column="ms_account" property="msAccount"></result>
        <result column="delete_status" property="deleteStatus"></result>
        <result column="version" property="version"></result>  
        <result column="create_time" property="createTime"></result>
@@ -35,7 +38,16 @@
 			</if>
 			<if test="rqAccount != null">
 				RQ_ACCOUNT = #{rqAccount},
+			</if>			
+			<if test="tcAccount != null">
+				tc_account = #{tcAccount},
 			</if>
+			<if test="fcAccount != null">
+				fc_account = #{fcAccount},
+			</if>
+			<if test="msAccount != null">
+				ms_account = #{msAccount},
+			</if>			
 			<if test="deleteStatus != null">
 				DELETE_STATUS = #{deleteStatus},
 			</if>
@@ -53,6 +65,8 @@
 			ACCOUNT,
 			API_ACCOUNT,
 			RQ_ACCOUNT,
+			tc_account,
+			fc_account,
 			DELETE_STATUS,
 			VERSION,
 			CREATE_TIME,
@@ -62,6 +76,8 @@
 			#{account},
 			#{apiAccount},
 			#{rqAccount},
+			0,
+			0,
 			'0',
 			0,
 			#{createTime},

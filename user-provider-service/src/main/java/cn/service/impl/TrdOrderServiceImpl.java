@@ -126,6 +126,15 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 			} else if (orderNo.substring(0,4).equals("CLKH")) {
                 // 空号API充值回调
                 account.setApiAccount(account.getApiAccount() + order.getNumber());
+            } else if (orderNo.substring(0,4).equals("CLTC")) {
+				// 证件号码一致性校验回调
+				account.setTcAccount(account.getTcAccount() + order.getNumber());
+			} else if (orderNo.substring(0,4).equals("CLFC")) {
+                // 银行卡四要素认证回调
+                account.setFcAccount(account.getFcAccount() + order.getNumber());
+            } else if (orderNo.substring(0,4).equals("CLMS")) {
+                // 运营商在线号码状态查询回调
+                account.setMsAccount(account.getMsAccount() + order.getNumber());
             }
 
 			creUserAccountMapper.updateCreUserAccount(account);
@@ -268,6 +277,99 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				order.setMoney(new BigDecimal(80000)); // 充值金额80000---2000万条 8
 				orderCode = "CLKH_";
 				subjectName="创蓝空号API产品";
+			}
+			
+			// 证件号码一致性接口-飓金荣通
+			if (productsId == 12) {
+				order.setNumber(number);  
+				BigDecimal b1 = new BigDecimal(number);   
+				BigDecimal b2 = new BigDecimal(0.3);  
+				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+				orderCode = "CLTC_";
+				subjectName="创蓝证件号码一致性校验产品";
+			}
+			
+			if (productsId == 13) {
+				order.setNumber(100000 * 1);
+				order.setMoney(new BigDecimal(28500)); // 充值金额28500---10万条 9.5
+				orderCode = "CLTC_";
+				subjectName="创蓝证件号码一致性校验产品";
+			}
+			
+			if (productsId == 14) {
+				order.setNumber(500000 * 1);
+				order.setMoney(new BigDecimal(135000)); // 充值金额135000---50万条 9
+				orderCode = "CLTC_";
+				subjectName="创蓝证件号码一致性校验产品";
+			}
+			
+			if (productsId == 15) {
+				order.setNumber(1000000 * 1);
+				order.setMoney(new BigDecimal(240000)); // 充值金额240000---100万条 8
+				orderCode = "CLTC_";
+				subjectName="创蓝证件号码一致性校验产品";
+			}
+			
+			// 银行卡四要素认证-飓金荣通
+			if (productsId == 16) {
+				order.setNumber(number);  
+				BigDecimal b1 = new BigDecimal(number);   
+				BigDecimal b2 = new BigDecimal(0.3);  
+				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+				orderCode = "CLFC_";
+				subjectName="创蓝银行卡四要素认证产品";
+			}
+			
+			if (productsId == 17) {
+				order.setNumber(100000 * 1);
+				order.setMoney(new BigDecimal(28500)); // 充值金额28500---10万条 9.5
+				orderCode = "CLFC_";
+				subjectName="创蓝银行卡四要素认证产品";
+			}
+			
+			if (productsId == 18) {
+				order.setNumber(500000 * 1);
+				order.setMoney(new BigDecimal(135000)); // 充值金额135000---50万条 9
+				orderCode = "CLFC_";
+				subjectName="创蓝银行卡四要素认证产品";
+			}
+			
+			if (productsId == 19) {
+				order.setNumber(1000000 * 1);
+				order.setMoney(new BigDecimal(240000)); // 充值金额240000---100万条 8
+				orderCode = "CLFC_";
+				subjectName="创蓝银行卡四要素认证产品";
+			}
+			
+			// 运营商在线号码状态查询-阿米云
+			if (productsId == 20) {
+				order.setNumber(number);  
+				BigDecimal b1 = new BigDecimal(number);   
+				BigDecimal b2 = new BigDecimal(0.3);  
+				order.setMoney(b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP));
+				orderCode = "CLMS_";
+				subjectName="创蓝运营商在线号码状态查询产品";
+			}
+			
+			if (productsId == 21) {
+				order.setNumber(100000 * 1);
+				order.setMoney(new BigDecimal(28500)); // 充值金额28500---10万条 9.5
+				orderCode = "CLMS_";
+				subjectName="创蓝运营商在线号码状态查询产品";
+			}
+			
+			if (productsId == 22) {
+				order.setNumber(500000 * 1);
+				order.setMoney(new BigDecimal(135000)); // 充值金额135000---50万条 9
+				orderCode = "CLMS_";
+				subjectName="创蓝运营商在线号码状态查询产品";
+			}
+			
+			if (productsId == 23) {
+				order.setNumber(1000000 * 1);
+				order.setMoney(new BigDecimal(240000)); // 充值金额240000---100万条 8
+				orderCode = "CLMS_";
+				subjectName="创蓝运营商在线号码状态查询产品";
 			}
 			
 			order.setPayType(payType);
