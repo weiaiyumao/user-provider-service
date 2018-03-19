@@ -16,6 +16,7 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="type" property="type"></result>
+		
 	</resultMap>
 
 	<sql id="Base_Column_List">

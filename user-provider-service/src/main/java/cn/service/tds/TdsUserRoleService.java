@@ -7,8 +7,8 @@ import java.util.Map;
 
 import cn.entity.tds.TdsUserRole;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
+import main.java.cn.domain.tds.TdsUserRoleDomain;
 import main.java.cn.service.tds.TdsUserRoleBusService;
 
 /**
@@ -39,7 +39,7 @@ public interface TdsUserRoleService extends  TdsUserRoleBusService{
 	 * @param auto
 	 * @return
 	 */
-	BackResult<PageDomain<PageAuto>> queryRoleIsStatus(PageAuto auto);
+	BackResult<PageDomain<TdsUserRoleDomain>> queryRoleIsStatus(TdsUserRoleDomain domain);
 	
 	
 	/**

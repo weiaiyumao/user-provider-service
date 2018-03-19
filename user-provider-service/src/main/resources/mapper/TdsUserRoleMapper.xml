@@ -15,7 +15,16 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="status" property="status"></result>
+		
+		<!-- vo -->
+		<result column="name" property="name"></result>
+		<result column="roleName" property="roleName"></result>
+		<result column="departName" property="departName"></result>
+		
 	</resultMap>
+	
+	
+	
 
 	<sql id="Base_Column_List">
 		ID,
@@ -103,8 +112,8 @@
 
 
 	<update id="upStatusById" parameterType="Hashmap">
-		update tds_user set status=#{status}
-		WHERE ID=#{id} and IS_DELETED='0'
+		update tds_user set status=#{status},is_deleted=#{status}
+		WHERE ID=#{id}
 	</update>
 
 
@@ -120,7 +129,7 @@
 
 
 	<!-- 账号配置列表查询 -->
-	<select id="queryRoleIsStatus" resultType="main.java.cn.domain.page.PageAuto"
+	<select id="queryRoleIsStatus" resultType="cn.entity.tds.TdsUserRole"
 		parameterType="HashMap">
 		select u.id,u.name,r.role_name as roleName,d.name as
 		departName,u.create_time,
@@ -132,8 +141,8 @@
 		and ur.role_id=r.id
 		and ud.depart_id=d.id
 		and ud.user_id=u.id
-		and ur.is_deleted='0'
-		<if test="name != null"> and u.name like concat(concat('%',#{name}),'%')</if>
+		and u.is_deleted='0'
+		<if test="name != null and name!=''"> and u.name like concat(concat('%',#{name}),'%')</if>
 		order by u.create_time desc
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
@@ -149,8 +158,8 @@
 		and ur.role_id=r.id
 		and ud.depart_id=d.id
 		and ud.user_id=u.id
-		and ur.is_deleted='0'
-		<if test="name != null"> and u.name=#{name}</if>
+		and u.is_deleted='0'
+		<if test="name != null and name!=''"> and u.name=#{name}</if>
 	</select>
 
 	<delete id="deleteByUserId" parameterType="HashMap">

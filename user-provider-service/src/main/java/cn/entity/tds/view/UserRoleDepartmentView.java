@@ -3,6 +3,8 @@ package cn.entity.tds.view;
 import java.io.Serializable;
 import java.util.Date;
 
+import main.java.cn.domain.page.BasePageParam;
+
 
 
 /**
@@ -10,7 +12,7 @@ import java.util.Date;
  * @author ChuangLan
  *
  */
-public class UserRoleDepartmentView  implements Serializable{
+public class UserRoleDepartmentView extends BasePageParam implements Serializable{
 
 	
 	/**
@@ -30,7 +32,29 @@ public class UserRoleDepartmentView  implements Serializable{
     private String endtime;  //结束时间
     private String statime;  //开始时间
     
-       
+    private Integer departId;  //部门id
+	private String departName; // 部门
+	private String roleName; // 角色名称
+    
+ 
+	public Integer getDepartId() {
+		return departId;
+	}
+	public void setDepartId(Integer departId) {
+		this.departId = departId;
+	}
+	public String getDepartName() {
+		return departName;
+	}
+	public void setDepartName(String departName) {
+		this.departName = departName;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
     
     
 	public Integer getId() {

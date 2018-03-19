@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
@@ -102,7 +101,7 @@ public class TdsUserRoleController {
 	 * @return
 	 */
 	@RequestMapping(value="/queryRoleIsStatus",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<PageAuto>> queryRoleIsStatus(@RequestBody PageAuto auto){
+	public BackResult<PageDomain<TdsUserRoleDomain>> queryRoleIsStatus(@RequestBody TdsUserRoleDomain auto){
 		return tdsUserRoleService.queryRoleIsStatus(auto);
 	}
 	

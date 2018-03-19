@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsUserRole;
-import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -44,13 +43,13 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	 * @param auto
 	 * @return
 	 */
-    List<PageAuto> queryRoleIsStatus(PageAuto auto);
+    List<TdsUserRole> queryRoleIsStatus(TdsUserRole auto);
     
     
     /**
      * 获取总数
      */
-	Integer queryCount(PageAuto auto);
+	Integer queryCount(TdsUserRole auto);
 	
 	
 	/**

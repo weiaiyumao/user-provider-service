@@ -20,7 +20,6 @@ import cn.entity.tds.TdsUserRole;
 import cn.service.tds.TdsUserRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 
@@ -158,27 +157,48 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 	
 	
 	@Override
-	public BackResult<PageDomain<PageAuto>> queryRoleIsStatus(PageAuto auto) {
-		BackResult<PageDomain<PageAuto>> result=new BackResult<PageDomain<PageAuto>>();
+	public BackResult<PageDomain<TdsUserRoleDomain>> queryRoleIsStatus(TdsUserRoleDomain domain) {
+		BackResult<PageDomain<TdsUserRoleDomain>> result=new BackResult<PageDomain<TdsUserRoleDomain>>();
 		try {
-			PageDomain<PageAuto> listDomain = null;
-	//		List<PageAuto> list = new ArrayList<PageAuto>();
-			Integer cur=auto.getCurrentPage()<=0?1:auto.getCurrentPage();
-			auto.setPageNumber((cur-1)*auto.getNumPerPage());
-			Integer count=tdsUserRoleMapper.queryCount(auto);
+			
+			TdsUserRole tblUserRole=new TdsUserRole();
+			
+			BeanUtils.copyProperties(domain,tblUserRole);
+			
+			PageDomain<TdsUserRoleDomain> listDomain =null;
+			
+			List<TdsUserRoleDomain> list=new ArrayList<>();
+			
+			Integer cur=tblUserRole.getCurrentPage()<=0?1:tblUserRole.getCurrentPage();
+			
+			tblUserRole.setPageNumber((cur-1)*tblUserRole.getNumPerPage());
+			
+			Integer count=tdsUserRoleMapper.queryCount(tblUserRole);
+			
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前没有用户信息");
 			}
-			List<PageAuto> pageList = tdsUserRoleMapper.queryRoleIsStatus(auto);
-			if (pageList.size() <= 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前没有用户信息");
-			}
-//			for (PageAuto item : pageList) {
-//				item = new PageAuto();
-//				list.add(item);
+			
+			List<TdsUserRole> pageList = tdsUserRoleMapper.queryRoleIsStatus(tblUserRole);
+			
+//			if (pageList.size() <= 0) {
+//				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前没有用户信息");
 //			}
-			listDomain = new PageDomain<PageAuto>(auto.getCurrentPage(), auto.getNumPerPage(),count);
-			listDomain.setTlist(pageList);
+			
+			if(pageList.size()>0 && pageList!=null){
+				TdsUserRoleDomain tdsDomain=null;
+	           for(TdsUserRole obj:pageList){
+	        	 tdsDomain=new TdsUserRoleDomain();
+	        	 BeanUtils.copyProperties(obj,tdsDomain);
+	        	 list.add(tdsDomain);
+				}
+	          
+			}
+
+			listDomain = new PageDomain<TdsUserRoleDomain>(tblUserRole.getCurrentPage(), tblUserRole.getNumPerPage(),count);
+			
+			listDomain.setTlist(list);
+			
 			result.setResultObj(listDomain);
 			
 		} catch (Exception e) {
@@ -189,6 +209,7 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 		}
 		return result;
 	}
+	
 
 	@Override
 	public BackResult<List<Map<String,String>>> queryUserByRoleName(String contact) {

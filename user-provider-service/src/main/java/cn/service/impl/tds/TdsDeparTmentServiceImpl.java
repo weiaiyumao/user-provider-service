@@ -36,7 +36,6 @@ import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.common.StatusType;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
@@ -102,36 +101,47 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 	}
 
 	@Override
-	public BackResult<PageDomain<UserRoleDepartmentViewDomain>> pageUserRoleDepartmentView(PageAuto auto) {
+	public BackResult<PageDomain<UserRoleDepartmentViewDomain>> pageUserRoleDepartmentView(UserRoleDepartmentViewDomain domain) {
+		
 		BackResult<PageDomain<UserRoleDepartmentViewDomain>> result = new BackResult<PageDomain<UserRoleDepartmentViewDomain>>();
 		PageDomain<UserRoleDepartmentViewDomain> listDomain = null;
+		
 		List<UserRoleDepartmentViewDomain> list = new ArrayList<UserRoleDepartmentViewDomain>();
+		
+		UserRoleDepartmentView view=new UserRoleDepartmentView();
 		try {
 
+			BeanUtils.copyProperties(domain, view);
+			
 		    // yyyy-mm-dd 天数加1
-			if (null != auto.getStatTime() && !auto.getStatTime().equals("")) {
-				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
-				auto.setStatTime(auto.getStatTime()); // 开始时间
-				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
+			if (null != view.getStatTime() && !view.getStatTime().equals("")) {
+				Date endTime = DateUtils.addDay(view.getStatTime(), 1);
+				view.setStatTime(view.getStatTime()); // 开始时间
+				view.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
-			Integer count = tdsDepartmentMapper.queryCount(auto);
+			Integer count = tdsDepartmentMapper.queryCount(view);
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
 			}
-			Integer cur = auto.getCurrentPage() <= 0 ? 1 : auto.getCurrentPage();
-			auto.setPageNumber((cur - 1) * auto.getNumPerPage());
-			List<UserRoleDepartmentView> pageList = tdsDepartmentMapper.pageUserRoleDepartmentView(auto);
+			Integer cur = view.getCurrentPage() <= 0 ? 1 : view.getCurrentPage();
+			view.setPageNumber((cur - 1) * view.getNumPerPage());
+			
+			List<UserRoleDepartmentView> pageList = tdsDepartmentMapper.pageUserRoleDepartmentView(view);
 			if (pageList.size() <= 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
 			}
 			UserRoleDepartmentViewDomain obj = null;
+			
 			for (UserRoleDepartmentView item : pageList) {
+				
 				obj = new UserRoleDepartmentViewDomain();
+				
 				BeanUtils.copyProperties(item, obj);
+				
 				list.add(obj);
 			}
 
-			listDomain = new PageDomain<UserRoleDepartmentViewDomain>(auto.getCurrentPage(), auto.getNumPerPage(),
+			listDomain = new PageDomain<UserRoleDepartmentViewDomain>(view.getCurrentPage(), view.getNumPerPage(),
 					count);
 			listDomain.setTlist(list);
 			result.setResultObj(listDomain);
@@ -181,11 +191,12 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		TdsUser tds = new TdsUser();
 		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
 		if (null != isUserPhone && phone.equals(isUserPhone.getPhone())) {
-			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的手机号码已经存在");
+			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "账号已存在");
 		}
-		if (null != isUserPhone && name.equals(isUserPhone.getName())) {
-			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的用户名已经存在");
-		}
+		
+//		if (null != isUserPhone && name.equals(isUserPhone.getName())) {
+//			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的用户名已经存在");
+//		}
 
 		try {
 			tds.setCreateTime(new Date());
