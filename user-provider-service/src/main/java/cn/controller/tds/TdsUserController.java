@@ -76,6 +76,7 @@ public class TdsUserController {
 		BackResult<Integer> result = tdsUserService.deleteById(id);
 		return result;
 	}
+	
 
 //	/**
 //	 * 查询
