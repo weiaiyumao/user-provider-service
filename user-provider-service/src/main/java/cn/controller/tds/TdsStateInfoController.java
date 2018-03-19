@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.service.tds.TdsStateInfoSerrvice;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsEnumDomain;
 import main.java.cn.domain.tds.TdsProductMoneyDomain;
@@ -55,8 +54,8 @@ public class TdsStateInfoController {
 	 * @return 分页<>
 	 */
 	@RequestMapping(value = "/pageTdsStateInfo", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsStateInfoDomain>> pageTdsStateInfo(@RequestBody PageAuto auto) {
-		BackResult<PageDomain<TdsStateInfoDomain>> result = tdsStateInfoService.pageTdsStateInfo(auto);
+	public BackResult<PageDomain<TdsStateInfoDomain>> pageTdsStateInfo(@RequestBody TdsStateInfoDomain domain) {
+		BackResult<PageDomain<TdsStateInfoDomain>> result = tdsStateInfoService.pageTdsStateInfo(domain);
 		return result;
 	}
 	

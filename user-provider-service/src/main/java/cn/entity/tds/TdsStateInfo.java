@@ -2,13 +2,15 @@ package cn.entity.tds;
 
 import java.io.Serializable;
 
+import main.java.cn.domain.page.BasePageParam;
+
 /**
  * :状态库实体
  * 
  * 
  * @author Gen
  */
-public class TdsStateInfo implements Serializable{
+public class TdsStateInfo extends BasePageParam   implements Serializable{
 	/**
 	 * 
 	 */

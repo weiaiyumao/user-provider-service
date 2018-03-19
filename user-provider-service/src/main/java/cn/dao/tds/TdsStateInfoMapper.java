@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.entity.tds.TdsStateInfo;
-import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -23,7 +22,7 @@ public interface TdsStateInfoMapper extends IBaseDao<TdsStateInfo, Integer>{
 	 * @param tds
 	 * @return
 	 */
-	List<TdsStateInfo> pageTdsStateInfo(PageAuto auto);
+	List<TdsStateInfo> pageTdsStateInfo(TdsStateInfo info);
   
 	
 	/**
@@ -31,7 +30,7 @@ public interface TdsStateInfoMapper extends IBaseDao<TdsStateInfo, Integer>{
 	 * @param tds
 	 * @return
 	 */
-	Integer queryCount(PageAuto auto);
+	Integer queryCount(TdsStateInfo info);
 
 
 }

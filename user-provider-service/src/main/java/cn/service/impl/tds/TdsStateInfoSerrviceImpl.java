@@ -22,7 +22,6 @@ import cn.utils.BeanHelper;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
-import main.java.cn.domain.page.PageAuto;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsEnumDomain;
 import main.java.cn.domain.tds.TdsProductMoneyDomain;
@@ -79,34 +78,50 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 	
 	
 	@Override
-	public BackResult<PageDomain<TdsStateInfoDomain>> pageTdsStateInfo(PageAuto auto) {
+	public BackResult<PageDomain<TdsStateInfoDomain>> pageTdsStateInfo(TdsStateInfoDomain domain) {
+		
 		BackResult<PageDomain<TdsStateInfoDomain>> result = new BackResult<PageDomain<TdsStateInfoDomain>>();
+		
 		PageDomain<TdsStateInfoDomain> listDomain = null;
+		
+		TdsStateInfo state=new TdsStateInfo();
+		
 		List<TdsStateInfoDomain> list = new ArrayList<TdsStateInfoDomain>();
 		try {
+			
+			BeanUtils.copyProperties(domain, state);
 			// yyyy-mm-dd 天数加1
-			BeanHelper.beanHelperTrim(auto);  //去掉空格
-			if (null != auto.getStatTime() && !"".equals(auto.getStatTime())) {
-				Date endTime = DateUtils.addDay(auto.getStatTime(), 1);
-				auto.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
+			BeanHelper.beanHelperTrim(state);  //去掉空格
+			
+			if (null != state.getStatTime() && !"".equals(state.getStatTime())) {
+				Date endTime = DateUtils.addDay(state.getStatTime(), 1);
+				state.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
-			Integer count = tdsStateInfoMapper.queryCount(auto);
+			
+			Integer count = tdsStateInfoMapper.queryCount(state);
 			if (count == 0) {
 				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有信息");
 			}
-			Integer cur=auto.getCurrentPage()<=0?1:auto.getCurrentPage();
-			auto.setPageNumber((cur-1)*auto.getNumPerPage());
-			List<TdsStateInfo> pageList = tdsStateInfoMapper.pageTdsStateInfo(auto);
-			if (pageList.size() <= 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
-			}
+			
+			Integer cur=domain.getCurrentPage()<=0?1:domain.getCurrentPage();
+			
+			domain.setPageNumber((cur-1)*domain.getNumPerPage());
+			
+			List<TdsStateInfo> pageList = tdsStateInfoMapper.pageTdsStateInfo(state);
+			
+//			if (pageList.size() <= 0) {
+//				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
+//			}
+			
 			TdsStateInfoDomain obj = null;
+			
 			for (TdsStateInfo item : pageList) {
 				obj = new TdsStateInfoDomain();
 				BeanUtils.copyProperties(item, obj);
 				list.add(obj);
 			}
-			listDomain = new PageDomain<TdsStateInfoDomain>(auto.getCurrentPage(), auto.getNumPerPage(),count);
+			
+			listDomain = new PageDomain<TdsStateInfoDomain>(state.getCurrentPage(), state.getNumPerPage(),count);
 			listDomain.setTlist(list);
 			result.setResultObj(listDomain);
 		} catch (Exception e) {
