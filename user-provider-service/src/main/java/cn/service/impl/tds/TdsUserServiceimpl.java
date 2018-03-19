@@ -1,6 +1,5 @@
 package cn.service.impl.tds;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +24,6 @@ import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.common.StatusType;
 import main.java.cn.domain.CreUserDomain;
-import main.java.cn.domain.page.PageAuto;
-import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCompanyDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.hhtp.util.MD5Util;
@@ -165,38 +162,38 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	}
 
 
-	@Override
-	public BackResult<PageDomain<TdsUserDomain>> pageSelectAll(TdsUserDomain domain, Integer pageSize,
-			Integer curPage) {
-		BackResult<PageDomain<TdsUserDomain>> result = new BackResult<PageDomain<TdsUserDomain>>();
-		PageDomain<TdsUserDomain> listDomain = new PageDomain<TdsUserDomain>();
-		List<TdsUserDomain> list = new ArrayList<TdsUserDomain>();
-		TdsUser tuser = new TdsUser();
-		Integer count = 0;
-		try {
-			BeanUtils.copyProperties(domain, tuser);
-			count = tdsUserMapper.quertCount(tuser);
-			if (count == 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该用户没有订单信息");
-			}
-			PageAuto auto = new PageAuto(curPage, pageSize);
-			List<TdsUser> pageList = tdsUserMapper.pageSelectAll(auto);
-			for (TdsUser tds : pageList) {
-				TdsUserDomain obj = new TdsUserDomain();
-				BeanUtils.copyProperties(tds, obj);
-				list.add(obj);
-			}
-			listDomain = new PageDomain<TdsUserDomain>(curPage, pageSize, count);
-			listDomain.setTlist(list);
-			result.setResultObj(listDomain);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("分页查询功能出现系统异常：" + e.getMessage());
-			return new BackResult<PageDomain<TdsUserDomain>>(ResultCode.RESULT_FAILED, "数据落地异常");
-		}
-		return result;
-	}
+//	@Override
+//	public BackResult<PageDomain<TdsUserDomain>> pageSelectAll(TdsUserDomain domain, Integer pageSize,
+//			Integer curPage) {
+//		BackResult<PageDomain<TdsUserDomain>> result = new BackResult<PageDomain<TdsUserDomain>>();
+//		PageDomain<TdsUserDomain> listDomain = new PageDomain<TdsUserDomain>();
+//		List<TdsUserDomain> list = new ArrayList<TdsUserDomain>();
+//		TdsUser tuser = new TdsUser();
+//		Integer count = 0;
+//		try {
+//			BeanUtils.copyProperties(domain, tuser);
+//			count = tdsUserMapper.quertCount(tuser);
+//			if (count == 0) {
+//				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "该用户没有订单信息");
+//			}
+//			PageAuto auto = new PageAuto(curPage, pageSize);
+//			List<TdsUser> pageList = tdsUserMapper.pageSelectAll(auto);
+//			for (TdsUser tds : pageList) {
+//				TdsUserDomain obj = new TdsUserDomain();
+//				BeanUtils.copyProperties(tds, obj);
+//				list.add(obj);
+//			}
+//			listDomain = new PageDomain<TdsUserDomain>(curPage, pageSize, count);
+//			listDomain.setTlist(list);
+//			result.setResultObj(listDomain);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error("分页查询功能出现系统异常：" + e.getMessage());
+//			return new BackResult<PageDomain<TdsUserDomain>>(ResultCode.RESULT_FAILED, "数据落地异常");
+//		}
+//		return result;
+//	}
 
 	@Override
 	public BackResult<List<TdsUserDomain>> selectAll(TdsUserDomain entity) {

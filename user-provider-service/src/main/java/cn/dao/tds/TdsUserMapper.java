@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.entity.tds.TdsUser;
-import main.java.cn.domain.page.PageAuto;
 
 
 /**
@@ -20,15 +19,16 @@ import main.java.cn.domain.page.PageAuto;
 @Mapper
 public interface TdsUserMapper extends IBaseDao<TdsUser, Integer>{
 	
-	
-	/**
-	 * 
-	 * @param tdsUser
-	 * @param currentPage  当前页
-	 * @param numPerPage   每页显示多行
-	 * @return
-	 */
-    List<TdsUser> pageSelectAll(PageAuto dto);
+//	
+//	/**
+//	 * 
+//	 * @param tdsUser
+//	 * @param currentPage  当前页
+//	 * @param numPerPage   每页显示多行
+//	 * @return
+//	 */
+//    List<TdsUser> pageSelectAll(PageAuto dto);
+//    
     
     /**
      * 根据参数查询总条数

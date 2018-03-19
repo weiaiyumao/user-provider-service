@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.service.tds.TdsCompanyService;
 import cn.service.tds.TdsUserService;
 import main.java.cn.common.BackResult;
-import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCompanyDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 
@@ -78,19 +77,19 @@ public class TdsUserController {
 		return result;
 	}
 
-	/**
-	 * 查询
-	 * 
-	 * @param tdsFunction
-	 * @return List<>
-	 */
-	@RequestMapping(value = "/pageSelectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<TdsUserDomain>> selectAll(@RequestBody TdsUserDomain tdsUserDomain, Integer pageSize,
-			Integer curPage) {
-		BackResult<PageDomain<TdsUserDomain>> result = tdsUserService.pageSelectAll(tdsUserDomain,pageSize,curPage);
-		return result;
-	}
-	
+//	/**
+//	 * 查询
+//	 * 
+//	 * @param tdsFunction
+//	 * @return List<>
+//	 */
+//	@RequestMapping(value = "/pageSelectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public BackResult<PageDomain<TdsUserDomain>> selectAll(@RequestBody TdsUserDomain tdsUserDomain, Integer pageSize,
+//			Integer curPage) {
+//		BackResult<PageDomain<TdsUserDomain>> result = tdsUserService.pageSelectAll(tdsUserDomain,pageSize,curPage);
+//		return result;
+//	}
+//	
 	
 	/**
 	 * 根据手机号码查询对象
