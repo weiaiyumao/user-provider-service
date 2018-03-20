@@ -33,4 +33,29 @@ public class Constant {
 	 */
 	public final static String TRD_ORDER_STATUS_FAILED = "1";
 	
+	/**
+	 * 空号检测产品id
+	 */
+	public final static String NULL_PROID = "129";
+	
+	/**
+	 * 二次清洗产品id
+	 */
+	public final static String SEC_PROID = "133";
+	
+	/**
+	 * 身份信息认证产品id
+	 */
+	public final static String ID_PROID = "134";
+	
+	/**
+	 * 银行卡四要素产品id
+	 */
+	public final static String BANK_PROID = "135";
+	
+	/**
+	 * 号码实时在线检测产品id
+	 */
+	public final static String INLINE_PROID = "136";
+	
 }

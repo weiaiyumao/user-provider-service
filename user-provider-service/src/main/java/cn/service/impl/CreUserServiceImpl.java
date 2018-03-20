@@ -413,7 +413,7 @@ public class CreUserServiceImpl implements CreUserService {
 				CreUserAccount creUserAccount = new CreUserAccount();
 				creUserAccount.setAccount(5000); // 充值默认送5000
 				creUserAccount.setCreUserId(creUser.getId());
-				creUserAccount.setApiAccount(0); // 默认api账户0条
+				creUserAccount.setApiAccount(30); // 默认api账户0条
 				creUserAccount.setRqAccount(10); // 默认账户二次清洗10条
 				creUserAccount.setTcAccount(5);
 				creUserAccount.setFcAccount(5);

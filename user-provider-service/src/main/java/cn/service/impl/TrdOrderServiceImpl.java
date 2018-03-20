@@ -151,6 +151,7 @@ public class TrdOrderServiceImpl implements TrdOrderService {
 				jsonAccount.put("account_name", user.getUserPhone());
 				jsonAccount.put("money", order.getMoney());
 				jsonAccount.put("amount", order.getNumber());
+				jsonAccount.put("productsId", order.getProductsId());
 				jsonAccount.put("bank", "5");
 				jsonAccount.put("pay_mode", "1");
 				jsonAccount.put("pay_date", String.valueOf(order.getPayTime().getTime()).substring(0,10));

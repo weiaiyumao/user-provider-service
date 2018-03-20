@@ -213,7 +213,32 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 			if (trdOrderDomain.getProductsId() == 4) {
 				order.setMoney(trdOrderDomain.getMoney());
-				order.setNumber(trdOrderDomain.getMoney().divide(new BigDecimal(0.002), 0).intValue());
+				order.setNumber(order.getNumber());
+				creUserAccount.setAccount(creUserAccount.getAccount() + order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 8) {
+				order.setMoney(trdOrderDomain.getMoney());
+				order.setNumber(order.getNumber());
+				creUserAccount.setRqAccount(creUserAccount.getRqAccount() + order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 12) {
+				order.setMoney(trdOrderDomain.getMoney());
+				order.setNumber(order.getNumber());
+				creUserAccount.setTcAccount(creUserAccount.getTcAccount() + order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 16) {
+				order.setMoney(trdOrderDomain.getMoney());
+				order.setNumber(order.getNumber());
+				creUserAccount.setFcAccount(creUserAccount.getFcAccount() + order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 20) {
+				order.setMoney(trdOrderDomain.getMoney());
+				order.setNumber(order.getNumber());
+				creUserAccount.setMsAccount(creUserAccount.getMsAccount() + order.getNumber());
 			}
 
 			order.setCreUserId(trdOrderDomain.getCreUserId());
@@ -229,7 +254,6 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 					+ "】，充值条数；【" + order.getNumber() + "】");
 
 			// 账户充值
-			creUserAccount.setAccount(creUserAccount.getAccount() + order.getNumber());
 			this.updateCreUserAccount(creUserAccount);
 
 			ErpTradeDomain domain = new ErpTradeDomain();
@@ -289,9 +313,27 @@ public class CreUserAccountServiceImpl implements CreUserAccountService {
 
 				return result;
 			}
-
 			// 账户退款
-			creUserAccount.setAccount(creUserAccount.getAccount() - order.getNumber());
+			if (trdOrderDomain.getProductsId() == 4) {
+				creUserAccount.setAccount(creUserAccount.getAccount() - order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 8) {
+				creUserAccount.setRqAccount(creUserAccount.getRqAccount() - order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 12) {
+				creUserAccount.setTcAccount(creUserAccount.getTcAccount() - order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 16) {
+				creUserAccount.setFcAccount(creUserAccount.getFcAccount() - order.getNumber());
+			}
+			
+			if (trdOrderDomain.getProductsId() == 20) {
+				creUserAccount.setMsAccount(creUserAccount.getMsAccount() - order.getNumber());
+			}
+
 			this.updateCreUserAccount(creUserAccount);
 
 			trdOrderMapper.saveTrdOrder(order);
