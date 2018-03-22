@@ -171,9 +171,11 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 //			tdsSerualInfoMapper.save(tdsSerual);	
 			
 			result=tdsSerualService.addSerual("1","3", appBack.getUserId(), appBack.getBackMoney(), ordrr);
+			
 			 if(result.getResultCode().equals(ResultCode.RESULT_FAILED)){
+				 
 	            	return new BackResult<>(result.getResultCode(), result.getResultMsg());
-	          }
+	         }
 	            
 			
 			result.setResultObj(1);
@@ -206,8 +208,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 
 					tdsMoneyApprovalBackMapper.upBackStatus(appBack.getId(), StatusType.APPROVAL_STATUS_1);
 					
+					
 					//通过扣除佣金数量
 					System.out.println("=====通过则扣除佣金和数量====");  //TODO
+					
 					Double commiss=Double.valueOf(domain.getSerualMoney())-Double.valueOf(domain.getBackNumberCommission());
 					
 					// 更新退款佣金余额
@@ -215,6 +219,7 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 				   if(isSub<1){
 					   return new BackResult<>(ResultCode.RESULT_FAILED, "佣金扣除失败！");
 				   }
+				   
 					//TODO 退款审核通过扣除剩余数量
 				   
 					

@@ -12,7 +12,7 @@
 		        tc.update_time updateTime,tc.creater,tc.updater,tc.remarks
 		from tds_carry tc
 		INNER JOIN tds_user tu on tu.id = tc.user_id and tu.is_deleted = '0'
-		where tc.is_deleted = '0'
+		where tc.is_deleted = '0' and tu.parent_user_id=#{parentUserId}
 		<if test="carrStatus != null and carrStatus!=''">AND tc.carr_status = #{carrStatus}</if>
 		<if test="flowStatus != null and flowStatus!=''">AND tc.carr_status = #{flowStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND tc.create_time &gt;= #{startOrderTime}</if>
@@ -34,7 +34,7 @@
 		SELECT count(1) 
 		from tds_carry tc
 		INNER JOIN tds_user tu on tu.id = tc.user_id and tu.is_deleted = '0'
-		where tc.is_deleted = '0'
+		where tc.is_deleted = '0' and tu.parent_user_id=#{parentUserId}
 		<if test="carrStatus != null and carrStatus!=''">AND tc.carr_status = #{carrStatus}</if>
 		<if test="flowStatus != null and flowStatus!=''">AND tc.carr_status = #{flowStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND tc.create_time &gt;= #{startOrderTime}</if>

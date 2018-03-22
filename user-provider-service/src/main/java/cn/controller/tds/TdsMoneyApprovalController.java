@@ -124,7 +124,7 @@ public class TdsMoneyApprovalController{
 	@RequestMapping(value = "/pageApprovalByUpStatusOut", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<PageDomain<TdsApprovalOutDomain>> pageApprovalByUpStatusOut(
 			@RequestBody TdsApprovalOutQueryDomain domain) {
-		return tdsMoneyApprovalService.pageMoneyApprovalOut(domain);
+		return tdsMoneyApprovalService.pageApprovalByUpStatusOut(domain);
 	}
 	
 	/**

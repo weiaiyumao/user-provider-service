@@ -202,7 +202,7 @@
 		)and app.bank_id=b.id
 		and enum.id=app.pname_id
 		and app.is_deleted='0'		
-		<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
+	<!-- 	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if> -->
 		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
 		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
@@ -237,8 +237,8 @@
 		AND
 		is_deleted='0'
 		)and app.bank_id=b.id
-		and app.is_deleted='0'
-		<if test="approvalType != null">AND app.approval_type = #{approvalType}</if>
+		 and app.is_deleted='0'
+	<!-- 	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if> -->
 		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
 		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>

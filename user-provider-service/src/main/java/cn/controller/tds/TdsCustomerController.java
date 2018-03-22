@@ -38,6 +38,7 @@ public class TdsCustomerController {
 	}
 	
 	
+	
 	@RequestMapping(value = "/attorn", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<Integer> attorn(@RequestBody TdsAttornLogDomain domain){
 		return tdsCustomerService.attorn(domain);
@@ -79,5 +80,15 @@ public class TdsCustomerController {
 	public BackResult<Integer> deleteById(Integer id){
 		return tdsCustomerService.deleteById(id);
 	}
-	//====end
+	
+	
+	/**
+	 * 客户审核操作
+	 * @param auto
+	 * @return
+	 */
+	@RequestMapping(value = "/isAgree", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> isAgree(Integer isAgree,Integer userId,String reas){
+		return tdsCustomerService.isAgree(isAgree,userId,reas);
+	}
 }

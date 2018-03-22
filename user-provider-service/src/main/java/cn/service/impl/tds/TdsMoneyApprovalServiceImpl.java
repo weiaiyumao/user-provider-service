@@ -236,6 +236,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					userCust.setSumMoney(tdsMoApp.getSumMoney());
 					userCust.setLastMoneyTime(new Date());
 					userCust.setOverplusCommission(tdsMoApp.getCommissonMoney());
+					
 					if (isUser == 1) {
 						// 到账成功，客户列表更新累积消费充值金额，和佣金（提取和未处理不做计算）加上剩余佣金额
 						userCust.setUpdateTime(new Date());
@@ -256,6 +257,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					
 					
 					isOrderNumber=tdsMoApp.getOrderNumber();
+					
 					break;
 				case StatusType.APPROVAL_STATUS_4:
 
@@ -266,6 +268,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 					
 					//更新开票
 					tdsMoneyApprovalGoMapper.upBilling(tdsMoApp.getId(),StatusType.APPROVAL_BILLING_ON);
+					
 					result.setResultObj(1);
 					
 					return result;
@@ -305,10 +308,10 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 	}
 
 	@Override
-	public BackResult<PageDomain<TdsApprovalOutDomain>> pageMoneyApprovalOut(TdsApprovalOutQueryDomain domain) {
+	public BackResult<PageDomain<TdsApprovalOutDomain>> pageApprovalByUpStatusOut(TdsApprovalOutQueryDomain domain) {
 		BackResult<PageDomain<TdsApprovalOutDomain>> result = new BackResult<PageDomain<TdsApprovalOutDomain>>();
 		PageDomain<TdsApprovalOutDomain> pageListDomain = null;
-		List<TdsApprovalOutDomain> listDomain = new ArrayList<TdsApprovalOutDomain>();
+	//	List<TdsApprovalOutDomain> listDomain = new ArrayList<TdsApprovalOutDomain>();
 		try {
 			BeanHelper.beanHelperTrim(domain); // 去掉空格
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();

@@ -100,18 +100,14 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 			
 			Integer count = tdsStateInfoMapper.queryCount(state);
 			if (count == 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有信息");
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有匹配数据");
 			}
 			
-			Integer cur=domain.getCurrentPage()<=0?1:domain.getCurrentPage();
+			Integer cur=state.getCurrentPage()<=0?1:state.getCurrentPage();
 			
-			domain.setPageNumber((cur-1)*domain.getNumPerPage());
+			state.setPageNumber((cur-1)*state.getNumPerPage());
 			
 			List<TdsStateInfo> pageList = tdsStateInfoMapper.pageTdsStateInfo(state);
-			
-//			if (pageList.size() <= 0) {
-//				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
-//			}
 			
 			TdsStateInfoDomain obj = null;
 			
@@ -133,6 +129,7 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> addState(Integer userId, TdsStateInfoDomain domain) {
 		   BackResult<Integer> result=new BackResult<Integer>();
 		   TdsStateInfo  tds=new TdsStateInfo();
@@ -169,6 +166,7 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> addProductTable(TdsProductMoneyDomain domain) {
 		   BackResult<Integer> result=new BackResult<Integer>();
 		   TdsProductMoney  tds=new TdsProductMoney();

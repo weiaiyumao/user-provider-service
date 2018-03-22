@@ -110,14 +110,13 @@
 
 
 
-
 	<select id="pageTdsCustomer" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
-		select u.id as userId,u.name as userName,d.id as departId, d.name as
+	    select u.id as userId,u.user_name as userName,d.id as departId, d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
 		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money
 		as sumMoney,cu.sum_commission as sumCommission,com.com_url as
-		comUrl,com.com_name as comName
+		comUrl,com.com_name as comName,d.name as departName,d.id as departId
 		from tds_user u LEFT JOIN
 		tds_user_customer cu
 		on cu.user_id=u.id LEFT
@@ -127,8 +126,7 @@
 		d on d.id=ud.depart_id LEFT
 		JOIN tds_company com
 		on com.id=u.com_id
-		where
-		u.parent_user_id=#{parentUserId}
+		where u.parent_user_id=#{parentUserId}
 		<if test="departId != null and departId!=''">AND d.id = #{departId}</if>
 		<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
 		<if test="statTime != null and statTime!=''">
@@ -136,7 +134,7 @@
 			AND u.create_time &lt;=
 			#{endTime}
 		</if>
-		AND u.is_deleted ='0' order by u.create_time desc
+		AND u.is_deleted =#{isDeleted} order by u.create_time desc
 		LIMIT
 		#{pageNumber},#{numPerPage}
 	</select>
@@ -160,7 +158,7 @@
 			AND u.create_time &lt;=
 			#{endTime}
 		</if>
-		AND u.is_deleted ='0' order by u.create_time desc
+		AND u.is_deleted =#{isDeleted} order by u.create_time desc
 	</select>
 
 	<select id="loadByIdView" parameterType="HashMap"

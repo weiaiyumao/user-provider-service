@@ -123,12 +123,17 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 
 	@Override
 	public BackResult<List<TdsModularDomain>> selectAll(TdsModularDomain domain) {
+		
 		BackResult<List<TdsModularDomain>> result=new BackResult<List<TdsModularDomain>>();
+		
 		TdsModular tds=new TdsModular();
+		
 		List<TdsModularDomain>  listDomain=new ArrayList<TdsModularDomain>();
 		try {
 			BeanUtils.copyProperties(domain,tds);
+			
 			List<TdsModular> list=tdsModularMapper.selectAll(tds);
+			
 			if(list.size()>0 && list!=null){
 				TdsModularDomain tdsDomain=null;
 	          for(TdsModular obj:list){
@@ -136,7 +141,6 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
 				}
-	          
 	          result.setResultObj(listDomain);
 			}
 		} catch (Exception e) {

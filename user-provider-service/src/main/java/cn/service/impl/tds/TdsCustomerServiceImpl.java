@@ -14,15 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.dao.tds.TdsApprovalLogMapper;
 import cn.dao.tds.TdsAttornLogMapper;
 import cn.dao.tds.TdsCompanyMapper;
 import cn.dao.tds.TdsUserCustomerMapper;
 import cn.dao.tds.TdsUserDepartmentMapper;
 import cn.dao.tds.TdsUserDiscountMapper;
 import cn.dao.tds.TdsUserMapper;
+import cn.entity.tds.TdsApprovalLog;
 import cn.entity.tds.TdsAttornLog;
 import cn.entity.tds.TdsCompany;
 import cn.entity.tds.TdsUser;
+import cn.entity.tds.TdsUserCustomer;
 import cn.entity.tds.TdsUserDepartment;
 import cn.entity.tds.TdsUserDiscount;
 import cn.entity.tds.view.TdsCustomerView;
@@ -46,7 +49,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 	@Autowired
 	private TdsUserMapper tdsUserMapper;
-
+	
 	@Autowired
 	private TdsCompanyMapper tdsCompanyMapper;
 
@@ -61,6 +64,9 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 	@Autowired
 	private TdsUserDiscountMapper tdsUserDiscountMapper;
+	
+	@Autowired
+	private TdsApprovalLogMapper tdsApprovalLogMapper;
 	
 	
 	@Autowired
@@ -141,6 +147,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			BeanUtils.copyProperties(domain, tdsCusView);
 			
 			Integer count = tdsUserCustomerMapper.queryCount(tdsCusView);// 获取总数
+			
 			List<TdsCustomerView> list = tdsUserCustomerMapper.pageTdsCustomer(tdsCusView);
 			
 			if (list.size() > 0 && list != null) {
@@ -166,6 +173,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		}
 		return result;
 	}
+	
 
 	@Transactional
 	@Override
@@ -241,8 +249,9 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				
 				return creUid;
 			}
-			//=========
 			
+			
+			//=========			
 			TdsUser tdsUser = new TdsUser();
 			
 			tdsUser.setCreUserId(creUid.getResultObj());
@@ -270,21 +279,20 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setStatus("0");
 			
 			tdsUserMapper.save(tdsUser); // 用户信息保存
-			
-			
-			
-
+					
 			// 保存部门用户关系
 			TdsUserDepartment tdsUserDepa = new TdsUserDepartment();
 			tdsUserDepa.setUserId(tdsUser.getId()); // 注册成功返回用户id
-			tdsUserDepa.setDepartId(domain.getDepartId()); // 部门
+			tdsUserDepa.setDepartId(domain.getDepartId()); //部门
 			tdsUserDepa.setCreater(loginUserId);
 			tdsUserDepa.setCreateTime(new Date());
 			tdsUserDepa.setUpdateTime(new Date());
 			tdsUserDepartmentMapper.save(tdsUserDepa);
 
 			result.setResultObj(1);
+			
 			this.commit(status);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.rollback(status);
@@ -394,6 +402,64 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("用户ID:" + id + "delete功能信息出现系统异常：" + e.getMessage());
 			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
 		}
+		return result;
+	}
+	
+	
+	
+	@Override
+	public BackResult<Integer> isAgree(Integer isAgree, Integer userId, String reas) {
+		BackResult<Integer> result = new BackResult<Integer>();
+		
+		TransactionStatus status = this.begin();
+		
+		try {
+			
+			if (isAgree == 0 || "0".equals(isAgree)) {
+				
+				// 客户列表开账户
+				// 客户注册审核，第注册成功 is_deleted 默认为 2 
+				// 同意is_deleted 为0
+				TdsUser tUser = new TdsUser();
+				tUser.setIsDeleted("0");
+				tUser.setId(userId);
+				tdsUserMapper.update(tUser);
+				
+				
+				//客户审核通过，累计消费插入数据
+				TdsUserCustomer userCust=new TdsUserCustomer();
+				userCust.setUserId(userId);
+			    tdsUserCustomerMapper.save(userCust);				
+				
+			} else {
+				// 注册驳回
+				TdsApprovalLog tdsAppro = new TdsApprovalLog();
+				tdsAppro.setUserId(userId);// 驳回的用户
+				tdsAppro.setAppRemarks(reas);// 原因
+				tdsAppro.setAppStatus("注册驳回");
+				tdsAppro.setCreateTime(new Date());
+				if (null == reas || "".equals(reas))
+					tdsAppro.setAppRemarks("无驳回原因");
+
+				
+				tdsApprovalLogMapper.save(tdsAppro); // log 保存
+
+				// 更新is_deleted 为2  注册驳回 是否直接删除，is_deleted
+				// 已驳回is_deleted 为3
+				TdsUser tUser = new TdsUser();
+				tUser.setIsDeleted("3");
+				tUser.setId(userId);
+				tdsUserMapper.update(tUser);
+			}
+			result.setResultObj(1);
+			commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rollback(status);
+			logger.error("客户审核操作功能错误：" + e.getMessage());
+			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
+		}
+
 		return result;
 	}
 

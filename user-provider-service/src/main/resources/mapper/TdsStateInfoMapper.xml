@@ -128,7 +128,7 @@
 		<include refid="Base_Column_List" />
 		FROM tds_state_info
 		<where>
-		  <if test="userId != null and userId!=''">and userid = #{userId}</if>
+		  <if test="userid != null and userid!=''">and userid = #{userId}</if>
 			<if test="sname != null and sname!=''">and sname = #{sname}</if>
 			<if test="stateOpe != null and stateOpe!=''">and state_ope = #{stateOpe}</if>
 			<if test="statePro != null and statePro!=''">and state_pro = #{statePro}</if>
@@ -145,7 +145,7 @@
 	     SELECT count(1)
 	     FROM tds_state_info
 		<where>
-			<if test="userId != null and userId!=''">and userid = #{userId}</if>
+			<if test="userid != null and userid!=''">and userid = #{userId}</if>
 			<if test="sname != null and sname!=''">and sname = #{sname}</if>
 			<if test="stateOpe != null and stateOpe!=''">and state_ope = #{stateOpe}</if>
 			<if test="statePro != null and statePro!=''">and state_pro = #{statePro}</if>

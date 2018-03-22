@@ -104,13 +104,14 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			userRole.setRoleId(StatusType.ROLE_YWY); //业务员角色
 			tdsUserRoleMapper.save(userRole);
 
-			this.commit(status);
-			result.setResultObj(1);
+			this.commit(status);	
+			result.setResultObj(tdsUser.getId());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.rollback(status);
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
-			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
+			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "新增用户失败");
 		}
 		return result;
 	}
@@ -118,6 +119,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	
 	
     @Override
+    @Transactional
 	public BackResult<Integer> addCreUser(TdsUserDomain domain) {
 		   BackResult<Integer> result=new BackResult<Integer>();
 		    CreUserDomain creUser=new CreUserDomain();
@@ -287,6 +289,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> editUserInfo(TdsUserDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		domain.setUpdateTime(new Date());
@@ -303,8 +306,8 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		return result;
 	}
 
-	@Transactional
 	@Override
+	@Transactional
 	public BackResult<Integer> editComInfo(TdsCompanyDomain domain, Integer userId, String userName, String phone,
 			String contact) {
 		BackResult<Integer> result = new BackResult<Integer>();
@@ -345,6 +348,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> updateHeadImg(Integer id, String hedehref) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		try {

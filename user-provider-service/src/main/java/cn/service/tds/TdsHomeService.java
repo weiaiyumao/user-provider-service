@@ -42,4 +42,6 @@ public interface TdsHomeService extends TdsHomeBusService{
 	 */
 	BackResult<Integer> getAccByNumber(Integer userId,Integer pnameId);
 	
+
+	
 }

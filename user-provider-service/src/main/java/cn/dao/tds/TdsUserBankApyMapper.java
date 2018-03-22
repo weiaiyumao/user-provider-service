@@ -20,4 +20,10 @@ public interface TdsUserBankApyMapper extends IBaseDao<TdsUserBankApy, Integer>{
 	 * @return
 	 */
 	TdsUserBankApy loadByUserId(Integer userId);
+	
+	/**
+	 * 根据用户id修改
+	 * @param userId
+	 */
+	void updateByUserId(TdsUserBankApy entity);
 }

@@ -17,7 +17,7 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2880707780947168367L;
-	
+
 	private Integer userId; // 客户id
 
 	private String userName; // 客户名称
@@ -35,7 +35,7 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 	private String comUrl;
 
 	private String source; // 来源
-	
+
 	private String comName;
 
 	// 最近充值时间 : last_money_time
@@ -46,12 +46,22 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 
 	// 累积返佣金 : sum_commission
 	private String sumCommission;
-	
-	
+
+	// 删除状态：0正常，1已删除 2客服列表注册 3 客户审核驳回
+	private String isDeleted;
+
+	public String getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 	public String getComName() {
 		return comName;
 	}
-	
+
 	public void setComName(String comName) {
 		this.comName = comName;
 	}
@@ -136,11 +146,11 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 		this.create_time = create_time;
 	}
 
-    public String getComUrl() {
+	public String getComUrl() {
 		return comUrl;
 	}
-    
-    public void setComUrl(String comUrl) {
+
+	public void setComUrl(String comUrl) {
 		this.comUrl = comUrl;
 	}
 

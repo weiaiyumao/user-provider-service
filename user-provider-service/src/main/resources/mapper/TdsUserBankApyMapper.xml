@@ -20,6 +20,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="updater" property="updater"></result>
 		<result column="remarks" property="remarks"></result>
+		<result column="bank_branch_name" property="bankBranchName"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -36,7 +37,8 @@
 		update_time,
 		creater,
 		updater,
-		remarks
+		remarks,
+		bank_branch_name
 	</sql>
 
 	<select id="loadById" parameterType="java.lang.Integer"
@@ -49,8 +51,7 @@
 		AND IS_DELETED='0'
 	</select>
 	
-	<select id="loadByUserId" parameterType="java.lang.Integer"
-		resultMap="BaseResultMap">
+	<select id="loadByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tds_user_bank_apy
@@ -58,6 +59,9 @@
 		user_id=#{userId} 
 		AND IS_DELETED='0'
 	</select>
+	
+	
+
 
 	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserBankApy">
 		SELECT
@@ -77,6 +81,7 @@
 			<if test="creater != null">and creater = #{creater}</if>
 			<if test="updater != null">and updater = #{updater}</if>
 			<if test="remarks != null">and remarks = #{remarks}</if>
+			<if test="bankBranchName != null">and bank_branch_name = #{bankBranchName}</if>
 			and is_deleted = '0'
 		</where>
 	</select>
@@ -91,12 +96,13 @@
 			<if test="alipayr != null"> alipayr , </if>
 			<if test="alipayName != null"> alipay_name , </if>
 			<if test="userPhone != null"> user_phone , </if>
-			<if test="isDeleted != null"> is_deleted , </if>
-			<if test="createTime != null"> create_time , </if>
 			<if test="updateTime != null"> update_time , </if>
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
+			<if test="createTime != null"> create_time , </if>
+			<if test="bankBranchName != null"> bank_branch_name , </if>
+			is_deleted
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userId != null"> #{userId} , </if>
@@ -106,12 +112,13 @@
 			<if test="alipayr != null"> #{alipayr} , </if>
 			<if test="alipayName != null"> #{alipayName} , </if>
 			<if test="userPhone != null"> #{userPhone} , </if>
-			<if test="isDeleted != null"> #{isDeleted} , </if>
-			<if test="createTime != null"> #{createTime} , </if>
 			<if test="updateTime != null"> #{updateTime} , </if>
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
+			<if test="createTime != null"> #{createTime},</if>
+			<if test="bankBranchName != null"> #{bankBranchName},</if>
+			'0',
 		</trim>
 
 	</insert>
@@ -140,7 +147,31 @@
 			<if test="creater != null"> creater = #{creater}, </if>
 			<if test="updater != null"> updater = #{updater}, </if>
 			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="bankBranchName != null"> bank_branch_name=#{bankBranchName},</if>
 		</trim>
 		WHERE id=#{id}
+	</update>
+	
+	
+	
+	
+	<update id="updateByUserId" parameterType="cn.entity.tds.TdsUserBankApy">
+		UPDATE tds_user_bank_apy
+		<trim prefix="set" suffixOverrides=",">
+			<if test="bankOpenr != null"> bank_openr = #{bankOpenr}, </if>
+			<if test="bankNo != null"> bank_no = #{bankNo}, </if>
+			<if test="bankName != null"> bank_name = #{bankName}, </if>
+			<if test="alipayr != null"> alipayr = #{alipayr}, </if>
+			<if test="alipayName != null"> alipay_name = #{alipayName}, </if>
+			<if test="userPhone != null"> user_phone = #{userPhone}, </if>
+			<if test="isDeleted != null"> is_deleted = #{isDeleted}, </if>
+			<if test="createTime != null"> create_time = #{createTime}, </if>
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			<if test="creater != null"> creater = #{creater}, </if>
+			<if test="updater != null"> updater = #{updater}, </if>
+			<if test="remarks != null"> remarks = #{remarks}, </if>
+			<if test="bankBranchName != null"> bank_branch_name=#{bankBranchName},</if>
+		</trim>
+		WHERE user_id=#{userId}
 	</update>
 </mapper>

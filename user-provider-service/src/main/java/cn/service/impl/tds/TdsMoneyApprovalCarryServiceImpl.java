@@ -171,9 +171,7 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
             if(result.getResultCode().equals(ResultCode.RESULT_FAILED)){
             	return new BackResult<>(result.getResultCode(), result.getResultMsg());
             }
-            
-            
-            
+
 			result.setResultObj(1);
 			
             this.commit(status);

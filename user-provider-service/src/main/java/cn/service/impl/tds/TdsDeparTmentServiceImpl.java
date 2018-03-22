@@ -121,15 +121,13 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			}
 			Integer count = tdsDepartmentMapper.queryCount(view);
 			if (count == 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有匹配数据");
 			}
 			Integer cur = view.getCurrentPage() <= 0 ? 1 : view.getCurrentPage();
 			view.setPageNumber((cur - 1) * view.getNumPerPage());
 			
 			List<UserRoleDepartmentView> pageList = tdsDepartmentMapper.pageUserRoleDepartmentView(view);
-			if (pageList.size() <= 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有账号权限信息");
-			}
+			
 			UserRoleDepartmentViewDomain obj = null;
 			
 			for (UserRoleDepartmentView item : pageList) {
