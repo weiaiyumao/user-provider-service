@@ -1,5 +1,8 @@
 package cn.controller.tds;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,6 +87,13 @@ public class TdsAccounBankController {
 	@RequestMapping(value = "/loadById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<TdsAccountBankDomain> loadById(Integer id){
 		BackResult<TdsAccountBankDomain> result=tdsAccountBankService.loadById(id);
+        return result;
+	}
+	
+	
+	@RequestMapping(value = "/selectAllBankName",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<Map<String, Object>>> selectAllBankName(){
+		BackResult<List<Map<String, Object>>> result=tdsAccountBankService.selectAllBankName();
         return result;
 	}
 	

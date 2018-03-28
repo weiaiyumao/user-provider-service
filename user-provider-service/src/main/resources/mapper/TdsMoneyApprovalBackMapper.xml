@@ -25,6 +25,7 @@
 		<result column="updater" property="updater"></result>
 		<result column="back_pname" property="backPname"></result>
 		<result column="pname_id" property="pnameId"></result>
+		<result column="cre_user_id" property="creUserId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -167,26 +168,26 @@
 	
 	
 	<select id="pageApprovalBack" parameterType="HashMap" resultMap="BaseResultMap">
-		SELECT * FROM tds_money_approval_back
+		SELECT b.*,u.cre_user_id  FROM tds_money_approval_back b, tds_user u
 		where user_id in (
 		select user_id from tds_user
 		where parent_user_id=#{parentUserId}
 		and is_deleted='0'
-		) and is_deleted='0'
-		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
-	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>
-			<if test="endOrderTime != null and endOrderTime!=''">AND create_time &lt;= #{endOrderTime}</if>
-			<if test="selected == 1 and likeName!=null">AND user_name like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 2 and likeName!=null">AND back_pname like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 3 and likeName!=null">AND id like concat(concat('%',#{likeName}),'%')</if>
-			<if test="selected == 4 and likeName!=null">AND order_number like concat(concat('%',#{likeName}),'%')</if>
+		) and b.is_deleted='0' and b.user_id=u.id
+		    <if test="approvalStatus != null and approvalStatus!=''">AND b.approval_status = #{approvalStatus}</if>
+	        <if test="startOrderTime != null and startOrderTime!=''">AND b.create_time &gt;= #{startOrderTime}</if>
+			<if test="endOrderTime != null and endOrderTime!=''">AND b.create_time &lt;= #{endOrderTime}</if>
+			<if test="selected == 1 and likeName!=null">AND b.user_name like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 2 and likeName!=null">AND b.back_pname like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 3 and likeName!=null">AND b.id like concat(concat('%',#{likeName}),'%')</if>
+			<if test="selected == 4 and likeName!=null">AND b.order_number like concat(concat('%',#{likeName}),'%')</if>
 			<if test="selected == 0 and likeName!=null">
-				AND (user_name like concat(concat('%',#{likeName}),'%')
-				or back_pname like concat(concat('%',#{likeName}),'%')
-				or id like concat(concat('%',#{likeName}),'%')
-				or order_number like concat(concat('%',#{likeName}),'%'))
+				AND (b.user_name like concat(concat('%',#{likeName}),'%')
+				or b.back_pname like concat(concat('%',#{likeName}),'%')
+				or b.id like concat(concat('%',#{likeName}),'%')
+				or b.order_number like concat(concat('%',#{likeName}),'%'))
 			</if> 
-		   order by create_time desc 
+		   order by b.create_time desc 
 		   LIMIT #{pageNumber},#{numPerPage}
 	</select>
 

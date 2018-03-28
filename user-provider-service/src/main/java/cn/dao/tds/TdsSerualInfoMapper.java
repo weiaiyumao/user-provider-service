@@ -35,5 +35,6 @@ public interface TdsSerualInfoMapper extends IBaseDao<TdsSerualInfo, Integer>{
 	 */
 	Integer upSerialByStatus(TdsSerualInfo entity);
 	
+	
     
 }

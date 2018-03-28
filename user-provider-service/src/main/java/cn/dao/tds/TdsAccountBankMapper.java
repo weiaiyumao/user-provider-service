@@ -1,6 +1,7 @@
 package cn.dao.tds;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -34,6 +35,10 @@ public interface TdsAccountBankMapper extends IBaseDao<TdsAccountBank, Integer>{
 	 * 根据条件查询所有
 	 */
    Integer queryCount(TdsAccountBank tds);
+   
+   
+   //获取id,银行名称
+   List<Map<String,Object>> selectAllBankName();
    
    
 }

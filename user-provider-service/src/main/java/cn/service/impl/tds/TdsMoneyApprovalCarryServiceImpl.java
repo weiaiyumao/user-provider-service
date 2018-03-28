@@ -27,7 +27,11 @@ import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsCarryDomain;
+import main.java.cn.enums.TdsEnum.SERUALTYPE;
+import main.java.cn.enums.TdsEnum.STATUS;
 
+
+@SuppressWarnings("all")
 @Service
 public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implements TdsMoneyApprovalCarryService {
 
@@ -92,6 +96,15 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
 	public BackResult<Map<String, Object>> getCarryByUserId(Integer userId) {
 		BackResult<Map<String, Object>> result = null;
 		Map<String, Object> map = new HashMap<String, Object>();
+		TdsCarry carry=new TdsCarry();
+		carry.setUserId(userId);
+		carry.setCarrStatus(STATUS.HANDLE.getCode());
+		
+		List<TdsCarry> tdsCarry=tdsCarryMapper.selectAll(carry);
+		if(!tdsCarry.isEmpty()){
+			return BackResult.error("你有一条提现还未处理,审核完才可提现");
+		}
+		
 		try {
 			result = new BackResult<Map<String, Object>>();
 			TdsUserCustomer tdsUserCust = tdsUserCustomerMapper.loadByUserId(userId);
@@ -117,26 +130,25 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
 	 * type 1:对公打款 2：支付宝打款
 	 */
 	@Override
-	public BackResult<Integer> getSubCarry(Integer userId, String carrMoney, String type) {
+	public BackResult<Integer> getSubCarry(Integer userId, String carrMoney, String type,String overCommiss) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		
 		TransactionStatus status=this.begin();
+		
 		try {
 			// 提现订单号码
 			String ordrr = OrderNo.getOrderNo16();
-			// 提现流水
-			String serial = OrderNo.getSerial16();
 
 			TdsCarry obj = new TdsCarry();
 			obj.setCreateTime(new Date());
 			obj.setUpdateTime(new Date());
 			obj.setCreater(userId);// 提现人
-			obj.setUpdater(userId);// 提现人
-			obj.setCarrStatus("1");// 处理中，待审核
-			obj.setCarrySerial(serial);
+			obj.setCarrStatus(STATUS.HANDLE.getCode());// 处理中，待审核
+			obj.setCarrySerial(OrderNo.getSerial16());
 			obj.setCarryOrder(ordrr);
 			obj.setUserId(userId);
 			obj.setCarrMoney(carrMoney);
+			obj.setOverCommisson("2321.00"); //之前剩余佣金金额
 
 			TdsUserBankApy tdsUserBankPay = tdsUserBankApyMapper.loadByUserId(userId);
 			switch (type) {
@@ -149,7 +161,7 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
 					obj.setCarryType(tdsUserBankPay.getBankName());
 					tdsCarryMapper.save(obj);
 				} else {
-					return new BackResult<>(ResultCode.RESULT_FAILED, "请绑定银行卡");
+					 return BackResult.error("请绑定银行卡");
 				}
 				break;
 			// 支付打款
@@ -159,17 +171,20 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
 					obj.setCarryTypeName(tdsUserBankPay.getAlipayName());
 					tdsCarryMapper.save(obj);
 				} else {
-					return new BackResult<>(ResultCode.RESULT_FAILED, "请绑定支付宝");
+					return BackResult.error("请绑定支付宝");
 				}
 				break;
+				
 			default:
-				return new BackResult<>(ResultCode.RESULT_FAILED, "参数输入异常");
+				return BackResult.error("参数输入异常");
 			}
 
 			//保存流水明细
-			result=tdsSerualService.addSerual("1", "2", userId, carrMoney, ordrr);
-            if(result.getResultCode().equals(ResultCode.RESULT_FAILED)){
-            	return new BackResult<>(result.getResultCode(), result.getResultMsg());
+			result=tdsSerualService.addSerual(STATUS.HANDLE.getCode(),SERUALTYPE.UP.getCode(), userId, carrMoney, ordrr);
+			
+			//失败
+            if(!result.getResultCode().equals(ResultCode.RESULT_SUCCEED)){
+            	throw new Exception(result.getResultMsg()); 
             }
 
 			result.setResultObj(1);
@@ -177,11 +192,9 @@ public class TdsMoneyApprovalCarryServiceImpl extends BaseTransactService implem
             this.commit(status);
             
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status);
 			logger.error("提现列表功能出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("提现列表功能失败");
+			return BackResult.error("提现列表功能失败");
 		} 
 		return result;
 	}

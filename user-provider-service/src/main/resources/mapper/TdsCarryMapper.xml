@@ -19,6 +19,7 @@
 		<result column="creater" property="creater"></result>
 		<result column="updater" property="updater"></result>
 		<result column="remarks" property="remarks"></result>
+		<result column="over_commisson" property="overCommisson"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -86,6 +87,7 @@
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
 			<if test="remarks != null"> remarks , </if>
+			<if test="overCommisson != null"> over_commisson , </if>
 			is_deleted ,
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -101,6 +103,7 @@
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
 			<if test="remarks != null"> #{remarks} , </if>
+			<if test="overCommisson != null"> #{overCommisson},</if>
 			 '0', 
 		</trim>
 
@@ -168,5 +171,8 @@
 			and is_deleted ='0'
 		</where>
 	</select>
+	
+	
+	
 
 </mapper>

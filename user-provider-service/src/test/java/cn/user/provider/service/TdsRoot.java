@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,9 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import cn.UserProviderServiceApp;
+import cn.dao.CreUserAccountMapper;
 import cn.dao.tds.TdsModularMapper;
 import cn.dao.tds.TdsStateInfoMapper;
 import cn.dao.tds.TdsUserCustomerMapper;
+import cn.entity.CreUserAccount;
 import cn.entity.tds.TdsAccountBank;
 import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsAccountBankService;
@@ -39,6 +42,7 @@ import main.java.cn.domain.tds.TdsStateInfoDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.domain.tds.TdsUserRoleDomain;
 import main.java.cn.domain.tds.UserRoleDepartmentViewDomain;
+import main.java.cn.enums.TdsEnum.ACCOUNT;
 
 @RunWith(SpringJUnit4ClassRunner.class)  
 @SpringBootTest(classes=UserProviderServiceApp.class)// 指定spring-boot的启动类   
@@ -78,6 +82,10 @@ public class TdsRoot {
 	  
 	  @Autowired
 	  private TdsModularMapper tdsModularMapper;
+	  
+	  @Autowired
+	  private CreUserAccountMapper creUserAccountMapper;
+	
 	  
 	 
 	  public List<TdsModular> testModule(List<TdsModular> list,Integer pid){ 
@@ -119,8 +127,12 @@ public class TdsRoot {
 	  
 	  
 	  @Test
-	  public void list2(){
-		  tdsUserRoleService.queryUserByRoleName("");
+	  public void test2(){
+		  CreUserAccount cua=new CreUserAccount();
+		  cua.setCreUserId(1575);
+		  cua.setRqAccount(1000);
+		  creUserAccountMapper.subByUserId(cua);
+		 
 	  }
 	  
 	  @Test
@@ -137,13 +149,15 @@ public class TdsRoot {
 	   
 	   
 	  @Test
-	  public void login(){
+	  public void testbank(){
+		  BackResult<List<Map<String, Object>>>  map=tdsAccountBankService.selectAllBankName();
+		  System.out.println(map);
 	  }
 	  
 	  
 	  @Test
 	  public void page(){
-		  tdsFunctionService.moduleLoadingByUsreId(1);
+		System.out.println(ACCOUNT.ADD);
 	  }
 	  
 	  

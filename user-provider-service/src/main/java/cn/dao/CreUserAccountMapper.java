@@ -15,4 +15,8 @@ public interface CreUserAccountMapper {
 	
 	int updateCreUserAccount(CreUserAccount creUserAccount);
 	
+	int addByUserId(CreUserAccount creUserAccount);
+	
+	int subByUserId(CreUserAccount creUserAccount);
+	
 }

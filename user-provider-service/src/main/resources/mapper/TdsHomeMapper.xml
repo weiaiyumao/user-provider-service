@@ -8,7 +8,7 @@
 
 
 	<select id="countByUserId"  parameterType="HashMap" resultType="Map">
-		select sum_money,overplus_commission,
+		select sum_money sumMoney,overplus_commission overplusCommission,
 		(
 		select count(1) as counts from
 		tds_user

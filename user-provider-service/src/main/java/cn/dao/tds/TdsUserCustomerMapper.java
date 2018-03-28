@@ -60,7 +60,7 @@ public interface TdsUserCustomerMapper extends IBaseDao<TdsUserCustomer, Integer
 	 * @param overplusCommission
 	 * @return
 	 */
-	Integer subMoneyAndCommission(@Param("userId")Integer userId,@Param("overplusCommission")String overplusCommission);
+	Integer subMoneyAndCommission(@Param("userId")Integer userId,@Param("overplusCommission")Double overplusCommission);
 	
 	/**
 	 * 查询该用户是否存在

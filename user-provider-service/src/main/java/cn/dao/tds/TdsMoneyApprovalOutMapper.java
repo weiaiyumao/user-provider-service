@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import main.java.cn.domain.tds.TdsApprovalOutDomain;
 import main.java.cn.domain.tds.TdsApprovalOutQueryDomain;

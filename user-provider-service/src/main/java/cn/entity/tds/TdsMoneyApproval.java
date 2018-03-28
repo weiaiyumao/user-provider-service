@@ -89,6 +89,21 @@ public class TdsMoneyApproval extends BasePageParam implements Serializable {
 	private Integer pnameId; 
 	
 	
+	//ERP  id
+	private Integer creUserId;
+	
+	
+	public Integer getCreUserId() {
+		return creUserId;
+	}
+	
+	
+	public void setCreUserId(Integer creUserId) {
+		this.creUserId = creUserId;
+	}
+	
+	
+	
 	public String getCommissonMoney() {
 		return commissonMoney;
 	}

@@ -41,6 +41,17 @@ public class TdsEnum implements Serializable{
 	//备注 : remarks 	
 	private String remarks; 
 	
+	
+	private String fieldValue;
+	
+	
+	public String getFieldValue() {
+		return fieldValue;
+	}
+	
+	public void setFieldValue(String fieldValue) {
+		this.fieldValue = fieldValue;
+	}
 
 	/**
 	 * 状态id : id

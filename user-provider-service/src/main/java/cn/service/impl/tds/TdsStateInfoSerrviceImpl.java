@@ -41,6 +41,8 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 	@Autowired
 	private TdsEnumMapper tdsEnumMapper;
 	
+	
+	
 	@Transactional
 	@Override
 	public BackResult<Integer> update(TdsStateInfoDomain domain) {
@@ -258,7 +260,8 @@ public class TdsStateInfoSerrviceImpl implements TdsStateInfoSerrvice {
 		}
 		return result;
 	}
-	
+
+
 	
 	
 

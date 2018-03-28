@@ -40,6 +40,7 @@ import main.java.cn.domain.tds.TdsAttornLogDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
 import main.java.cn.domain.tds.TdsUserDiscountDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
+import main.java.cn.enums.TdsEnum.CUSTOMERSTYPE;
 import main.java.cn.hhtp.util.MD5Util;
 
 @Service
@@ -72,22 +73,48 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	@Autowired
 	private TdsUserService tdsUserService;
 
+	
+	
+	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
 	public BackResult<Integer> updateCustomer(TdsCustomerViewDomain domain, Integer loginUserId, String passWord) {
 		TransactionStatus status = this.begin();
 		BackResult<Integer> result = new BackResult<Integer>();
+		
 		TdsUser tds = new TdsUser();
+		
 		try {
 
-			TdsUser isPhone = tdsUserMapper.loadByPhone(domain.getPhone());
-			if (null != isPhone && domain.getPhone().equals(isPhone.getPhone())) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "手机号码已注册过");
-			}
-
-			// 根据用户id获取公司id;
+			
 			TdsUser tur = tdsUserMapper.loadById(domain.getUserId());
-			// 网址修改
+			
+		    if(tur.getPhone().equals(domain.getPhone())){
+		    	
+		    	tds.setPhone(null);  //不做修改
+		    	
+		     }else{
+		    	 
+		    	 TdsUser isPhone = tdsUserMapper.loadByPhone(domain.getPhone());
+		    	 
+		    	 if(null==isPhone){
+		    		 
+		    		 tds.setPhone(domain.getPhone());
+		    		 
+		    	 }else{
+		    		 return BackResult.error("手机号码重复注册");
+		    	 }
+		    	 
+		     }
+		    
+			tds.setContact(domain.getContact());
+			tds.setUserName(domain.getUserName());
+			tds.setId(domain.getUserId());
+			tds.setUpdater(loginUserId);
+			tds.setUpdateTime(new Date());
+			tdsUserMapper.update(tds);
+			
+			//根据用户id获取公司id;
 			TdsCompany com = new TdsCompany();
 			com.setComUrl(domain.getComUrl());
 			com.setId(tur.getComId());
@@ -104,15 +131,6 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUd.setUpdateTime(new Date());
 			tdsUserDepartmentMapper.updateByUserId(tdsUd);
 			
-			// 用户信息修改
-			tds.setPassword(MD5Util.getInstance().getMD5Code(passWord));
-			tds.setPhone(domain.getPhone());
-			tds.setContact(domain.getContact());
-			tds.setUserName(domain.getUserName());
-			tds.setId(domain.getUserId());
-			tds.setUpdater(loginUserId);
-			tds.setUpdateTime(new Date());
-			tdsUserMapper.update(tds);
 
 			result.setResultObj(1);
 			this.commit(status);
@@ -408,18 +426,16 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	
 	
 	@Override
-	public BackResult<Integer> isAgree(Integer isAgree, Integer userId, String reas) {
+	public BackResult<Integer> isAgree(String isAgree, Integer userId, String reas) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		
 		TransactionStatus status = this.begin();
 		
 		try {
 			
-			if (isAgree == 0 || "0".equals(isAgree)) {
+			if (isAgree.equals(CUSTOMERSTYPE.NORMAL.getCode())) {
 				
-				// 客户列表开账户
-				// 客户注册审核，第注册成功 is_deleted 默认为 2 
-				// 同意is_deleted 为0
+				// 客户注册审核，第注册成功 is_deleted 默认为 2 ,同意is_deleted 为0
 				TdsUser tUser = new TdsUser();
 				tUser.setIsDeleted("0");
 				tUser.setId(userId);
@@ -429,10 +445,10 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				//客户审核通过，累计消费插入数据
 				TdsUserCustomer userCust=new TdsUserCustomer();
 				userCust.setUserId(userId);
-			    tdsUserCustomerMapper.save(userCust);				
-				
+			    tdsUserCustomerMapper.save(userCust);	
 			} else {
-				// 注册驳回
+				
+				// 驳回 ,更新is_deleted 为2  注册驳回 是否直接删除，is_deleted
 				TdsApprovalLog tdsAppro = new TdsApprovalLog();
 				tdsAppro.setUserId(userId);// 驳回的用户
 				tdsAppro.setAppRemarks(reas);// 原因
@@ -440,17 +456,17 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				tdsAppro.setCreateTime(new Date());
 				if (null == reas || "".equals(reas))
 					tdsAppro.setAppRemarks("无驳回原因");
-
 				
 				tdsApprovalLogMapper.save(tdsAppro); // log 保存
-
-				// 更新is_deleted 为2  注册驳回 是否直接删除，is_deleted
+				
 				// 已驳回is_deleted 为3
 				TdsUser tUser = new TdsUser();
 				tUser.setIsDeleted("3");
 				tUser.setId(userId);
 				tdsUserMapper.update(tUser);
 			}
+		
+			
 			result.setResultObj(1);
 			commit(status);
 		} catch (Exception e) {

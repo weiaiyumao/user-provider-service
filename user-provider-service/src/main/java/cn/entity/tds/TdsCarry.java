@@ -58,6 +58,19 @@ public class TdsCarry extends BasePageParam implements Serializable{
 	//备注 : remarks 	
 	private String remarks; 
 	
+	
+	//剩余可提佣金
+	private String overCommisson;
+	
+	
+	public String getOverCommisson() {
+		return overCommisson;
+	}
+	
+	public void setOverCommisson(String overCommisson) {
+		this.overCommisson = overCommisson;
+	}
+	
 
 	/**
 	 * 提现id : id

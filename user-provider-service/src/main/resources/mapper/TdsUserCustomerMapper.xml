@@ -163,11 +163,11 @@
 
 	<select id="loadByIdView" parameterType="HashMap"
 		resultType="cn.entity.tds.view.TdsCustomerView">
-		select u.id as userId,u.name as userName,d.id as departId,
+		select u.id as userId,u.user_name as userName,d.id as departId,
 		d.name as
 		departName,u.contact,u.phone,u.create_time,u.parent_user_id,
 		u.source,u.is_deleted,cu.last_money_time as lastMoneyTime,cu.sum_money
-		as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl
+		as sumMoney,cu.sum_commission as sumCommission,com.com_url as comUrl,com.com_name as comName
 		from tds_user u LEFT JOIN tds_user_customer cu
 		on cu.user_id=u.id LEFT
 		JOIN tds_user_department ud ON

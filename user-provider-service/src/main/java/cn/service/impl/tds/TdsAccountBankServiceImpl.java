@@ -3,6 +3,7 @@ package cn.service.impl.tds;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +132,20 @@ public class TdsAccountBankServiceImpl implements TdsAccountBankService {
 			result.setResultMsg("获取对象失败");
 		}
 		return result;
+	}
+
+	@SuppressWarnings("all")
+	@Override
+	public BackResult<List<Map<String, Object>>> selectAllBankName() {
+		BackResult<List<Map<String, Object>>>  retMap=new BackResult<>();
+		try {
+			List<Map<String, Object>> map=tdsAccountBankMapper.selectAllBankName();
+			retMap.setResultObj(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return BackResult.error("获取银行信息失败");
+		}
+		return retMap;
 	}
 	
 	

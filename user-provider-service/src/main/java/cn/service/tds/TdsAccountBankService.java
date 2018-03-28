@@ -1,5 +1,8 @@
 package cn.service.tds;
 
+import java.util.List;
+import java.util.Map;
+
 import main.java.cn.common.BackResult;
 import main.java.cn.service.tds.TdsAccountBankBusService;
 
@@ -18,5 +21,10 @@ public interface TdsAccountBankService extends TdsAccountBankBusService {
 	 * @return
 	 */
 	BackResult<Integer> isDisableById(Integer id);
+	
+	
+	
+	//获取id,银行名称
+	BackResult<List<Map<String,Object>>> selectAllBankName();
 
 }

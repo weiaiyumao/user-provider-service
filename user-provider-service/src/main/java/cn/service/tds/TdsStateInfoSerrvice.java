@@ -29,4 +29,5 @@ public interface TdsStateInfoSerrvice extends TdsStateInfoBusSerrvice{
 	 */
 	BackResult<Integer> deleteByProId(Integer id);
 
+    
 }

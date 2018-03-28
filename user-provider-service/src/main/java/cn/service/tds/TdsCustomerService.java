@@ -19,7 +19,7 @@ public interface TdsCustomerService  extends TdsCustomerBusService{
 	 * @param reas    驳回原因
 	 * @return
 	 */
-	BackResult<Integer> isAgree(Integer isAgree,Integer userId,String reas);
+	BackResult<Integer> isAgree(String isAgree,Integer userId,String reas);
 	
     
 	

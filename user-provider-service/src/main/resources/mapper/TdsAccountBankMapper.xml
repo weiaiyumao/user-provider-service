@@ -171,4 +171,11 @@
 	</select>
 
 
+
+    <select id="selectAllBankName" resultType="HashMap">
+		SELECT id,bank_name as bankName
+		FROM tds_account_bank
+		where is_deleted ='0'
+	</select>
+
 </mapper>

@@ -38,8 +38,8 @@ public class TdsCarryController{
 	
 	
 	@RequestMapping(value = "/getSubCarry", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> getSubCarry(@RequestBody TdsCarryDomain domain, String type){
-		return tdsMoneyApprovalCarryService.getSubCarry(domain.getUserId(),domain.getCarrMoney(),type);
+	public BackResult<Integer> getSubCarry(@RequestBody TdsCarryDomain domain, String type,String overCommiss){
+		return tdsMoneyApprovalCarryService.getSubCarry(domain.getUserId(),domain.getCarrMoney(),type,overCommiss);
 	}
 
 }

@@ -9,6 +9,7 @@
 		<result column="id" property="id"></result>
 		<result column="sl_name" property="slName"></result>
 		<result column="type_code" property="typeCode"></result>
+		<result column="field_value" property="fieldValue"></result>
 		<result column="create_time" property="createTime"></result>
 		<result column="update_time" property="updateTime"></result>
 		<result column="creater" property="creater"></result>
@@ -21,6 +22,7 @@
 		id,
 		sl_name,
 		type_code,
+		field_value,
 		create_time,
 		update_time,
 		creater,
@@ -28,6 +30,24 @@
 		is_deleted,
 		remarks
 	</sql>
+	
+	<!-- <select  id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsEnum">
+	    SELECT 
+		<include refid="Base_Column_List"/>
+        FROM tds_enum
+        <where>
+	    <if test="id != null">and id = #{id}</if>
+		<if test="slName != null">and sl_name = #{slName}</if>
+		<if test="typeCode != null">and type_code = #{typeCode}</if>
+		<if test="fieldValue != null">and field_value = #{fieldValue}</if>
+		<if test="createTime != null">and create_time = #{createTime}</if>
+		<if test="updateTime != null">and update_time = #{updateTime}</if>
+		<if test="creater != null">and creater = #{creater}</if>
+		<if test="updater != null">and updater = #{updater}</if>
+		<if test="isDeleted != null">and is_deleted = #{isDeleted}</if>
+		<if test="remarks != null">and remarks = #{remarks}</if>
+		</where>
+	</select> -->
 
 	<select id="queryByTypeCode" parameterType="HashMap"
 		resultMap="BaseResultMap">

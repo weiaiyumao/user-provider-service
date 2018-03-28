@@ -30,6 +30,7 @@
 		<result column="lessName" property="lessName"></result>
 		<result column="pname_id" property="pnameId"></result>
 		<result column="commisson_money" property="commissonMoney"></result>
+		<result column="cre_user_id" property="creUserId"></result>
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -192,17 +193,16 @@
 	<select id="pageMoneyApprovalGo" parameterType="HashMap"
 		resultMap="BaseResultMap">
 		SELECT *,b.less_name as lessName,app.create_time as
-		createTime,enum.sl_name as pname FROM tds_money_approval
-		app,tds_account_bank b,tds_enum enum
+		createTime,enum.sl_name as pname,u.cre_user_id FROM tds_money_approval
+		app,tds_account_bank b,tds_enum enum,tds_user u
 		where user_id in (
 		select id from tds_user
 		where
 		parent_user_id=#{parentUserId}
 		AND is_deleted='0'
-		)and app.bank_id=b.id
+		)and app.bank_id=b.id and u.id=user_id
 		and enum.id=app.pname_id
 		and app.is_deleted='0'		
-	<!-- 	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if> -->
 		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
 		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>
@@ -293,5 +293,7 @@
 		UPDATE tds_money_approval set billing=#{billing}
 		where id=#{id} and is_deleted='0'
 	</update>
-
+	
+	
+	
 </mapper>

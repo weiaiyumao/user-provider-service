@@ -73,6 +73,19 @@ public class TdsMoneyApprovalBack extends BasePageParam implements Serializable 
 
 	// : remarks1
 	private Integer pnameId;
+	
+	
+	private Integer creUserId;
+	
+	
+	public Integer getCreUserId() {
+		return creUserId;
+	}
+	
+	public void setCreUserId(Integer creUserId) {
+		this.creUserId = creUserId;
+	}
+
 
 	/**
 	 * 退款审核id : id

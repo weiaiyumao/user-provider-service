@@ -6,13 +6,13 @@
 <mapper namespace="cn.dao.tds.TdsMoneyApprovalOutMapper">
 
 	<select id="pageMoneyApprovalOut" parameterType="HashMap" resultType="main.java.cn.domain.tds.TdsApprovalOutDomain">
-		select  tc.id,tu.user_name userName,tc.carry_serial carrySerial,
+		select  tc.id,tu.user_name userName,tc.carry_serial carrySerial,tc.over_commisson overCommisson,
 		        tc.carry_order carryOrder,tc.carry_type carryType,tc.carry_type_name carryTypeName,
 		        tc.carr_money carrMoney,tc.carr_status carrStatus,tc.create_time createTime,
 		        tc.update_time updateTime,tc.creater,tc.updater,tc.remarks
 		from tds_carry tc
 		INNER JOIN tds_user tu on tu.id = tc.user_id and tu.is_deleted = '0'
-		where tc.is_deleted = '0' and tu.parent_user_id=#{parentUserId}
+		where tc.is_deleted = '0'
 		<if test="carrStatus != null and carrStatus!=''">AND tc.carr_status = #{carrStatus}</if>
 		<if test="flowStatus != null and flowStatus!=''">AND tc.carr_status = #{flowStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND tc.create_time &gt;= #{startOrderTime}</if>
@@ -34,7 +34,7 @@
 		SELECT count(1) 
 		from tds_carry tc
 		INNER JOIN tds_user tu on tu.id = tc.user_id and tu.is_deleted = '0'
-		where tc.is_deleted = '0' and tu.parent_user_id=#{parentUserId}
+		where tc.is_deleted = '0' 
 		<if test="carrStatus != null and carrStatus!=''">AND tc.carr_status = #{carrStatus}</if>
 		<if test="flowStatus != null and flowStatus!=''">AND tc.carr_status = #{flowStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND tc.create_time &gt;= #{startOrderTime}</if>
@@ -63,11 +63,4 @@
 		and tc.is_deleted = '0' and tu.is_deleted = '0'
 	</update>
 	
-	<update id="upSerualStatus" parameterType="Hashmap">
-		update tds_carry tc,tds_serual_info ts
-		set ts.serial_status = #{carrStatus}
-		where tc.user_id = #{userId} and tc.id = #{tdsCarryId} and tc.user_id = ts.user_id 
-		and ts.order_number = tc.carry_order
-		and tc.is_deleted = '0' and ts.is_deleted = '0'
-	</update>
 </mapper>

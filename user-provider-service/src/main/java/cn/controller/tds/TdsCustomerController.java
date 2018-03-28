@@ -88,7 +88,7 @@ public class TdsCustomerController {
 	 * @return
 	 */
 	@RequestMapping(value = "/isAgree", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<Integer> isAgree(Integer isAgree,Integer userId,String reas){
+	public BackResult<Integer> isAgree(String isAgree,Integer userId,String reas){
 		return tdsCustomerService.isAgree(isAgree,userId,reas);
 	}
 }

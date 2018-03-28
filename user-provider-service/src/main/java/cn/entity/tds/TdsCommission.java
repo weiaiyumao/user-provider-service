@@ -167,7 +167,7 @@ public class TdsCommission extends BasePageParam implements Serializable{
 	}
 	
 	/**
-	 * 佣金状态 1处理中 2已到账 3被驳回 : comm_status
+	 * 佣金状态 1处理中 2已到账 3被驳回 4.已提现 5.已退款
 	 * 
 	 * @return 
 	 */

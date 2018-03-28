@@ -22,6 +22,7 @@ import cn.service.TrdOrderService;
 import cn.service.tds.TdsHomeService;
 import cn.service.tds.TdsUserBankApyService;
 import main.java.cn.common.BackResult;
+import main.java.cn.common.ProductTypeID;
 import main.java.cn.common.ResultCode;
 
 @Service
@@ -108,14 +109,21 @@ public class TdsHomeServiceImpl implements  TdsHomeService {
 		try {
 			TdsUser tdsUser=tdsUserMapper.loadById(userId);
 			CreUserAccount account=creUserAccountService.findCreUserAccountByUserId(tdsUser.getCreUserId());
-			//实号检测
-			if(pnameId==1){
-				countNumber=null==account.getAccount()?0:account.getAccount();//实号检测目前账户剩余条数
-			 }else if(pnameId==2){
-				countNumber=null==account.getRqAccount()?0:account.getRqAccount();//账户二次清洗剩余条数
-		  	 }else if(pnameId==3){
-				countNumber=null==account.getApiAccount()?0:account.getApiAccount();  //api账户剩余条数
+			
+			 //实号检测
+			if(pnameId==ProductTypeID.ACCOUNT){
+				
+				countNumber=(null==account.getAccount())?0:account.getAccount();//实号检测目前账户剩余条数
+				
+			 }else if(pnameId==ProductTypeID.RQACCOUNT){
+				 
+				countNumber=(null==account.getRqAccount())?0:account.getRqAccount();//账户二次清洗剩余条数
+				
+		  	 }else if(pnameId==ProductTypeID.APIACCOUNT){
+		  		 
+				countNumber=(null==account.getApiAccount())?0:account.getApiAccount();  //api账户剩余条数
 			 }
+			
 			result.setResultObj(countNumber);
 			
 		} catch (Exception e) {
