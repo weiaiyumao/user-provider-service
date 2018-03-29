@@ -81,4 +81,7 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	 */
 	List<TdsFunction> loadingBydRoleId(@Param("roleId") Integer roleId);
 	
+	
+	List<TdsFunction> selectAll(TdsFunction fun);
+	
 }

@@ -7,17 +7,39 @@
 
 
 
-	<select id="countByUserId"  parameterType="HashMap" resultType="Map">
-		select sum_money sumMoney,overplus_commission overplusCommission,
+	<select id="countByUserId" parameterType="HashMap" resultType="Map">
+		SELECT
+		overplus_commission overplusCommission,
 		(
-		select count(1) as counts from
+		SELECT
+		SUM(sum_money)
+		FROM
+		tds_user_customer
+		WHERE
+		user_id IN (
+		SELECT
+		id
+		FROM
 		tds_user
-		where parent_user_id=#{userId} 
+		WHERE
+		parent_user_id =#{userId}
 		and is_deleted='0'
-		)counts
-		from tds_user_customer
-		where user_id=#{userId} 
-		and is_deleted='0'
+		)
+		) sumMoney,
+		(
+		SELECT
+		count(1) AS counts
+		FROM
+		tds_user
+		WHERE
+		parent_user_id =#{userId}
+		AND is_deleted = '0'
+		) counts
+		FROM
+		tds_user_customer
+		WHERE
+		user_id =#{userId}
+		AND is_deleted = '0'
 	</select>
 
 

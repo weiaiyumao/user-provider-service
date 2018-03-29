@@ -67,7 +67,8 @@ public class TdsFunctionModularServiceImpl implements  TdsModularService {
 			tds.setName(domain.getName());
 			tds.setCreateTime(new Date());
 			tds.setUpdateTime(new Date());
-			tds.setRemarks(domain.getRemarks());
+			tds.setRemarks("MODUL");
+			//tds.setRemarks(domain.getRemarks());
 			tdsModularMapper.save(tds);
 			result.setResultObj(1);
 		} catch (Exception e) {

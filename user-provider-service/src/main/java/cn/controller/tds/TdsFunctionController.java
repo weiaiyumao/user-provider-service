@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.entity.tds.TdsFunction;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
@@ -29,8 +30,8 @@ public class TdsFunctionController {
 	
 	
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<List<TdsFunctionDomain>> selectAll(Integer parentId){
-		BackResult<List<TdsFunctionDomain>> result = tdsFunctionService.selectAll(parentId);
+	public BackResult<List<TdsFunctionDomain>> selectAll(@RequestBody TdsFunctionDomain entity){
+		BackResult<List<TdsFunctionDomain>> result = tdsFunctionService.selectAll(entity);
 		return result;
 	}
 	
@@ -87,21 +88,8 @@ public class TdsFunctionController {
 		return result;
 	}
 
-//	/**
-//	 * 查询
-//	 * 
-//	 * @param tdsFunction
-//	 * @return List<>
-//	 */
-//	@RequestMapping(value = "/pageTdsFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(@RequestBody TdsFunMoViewDomain domain) {
-//		BackResult<PageDomain<TdsFunMoViewDomain>> result = tdsFunctionService.pageTdsFunction(domain);
-//		return result;
-//	}
-
 	/**
 	 * 层级查询
-	 * 
 	 * @param tdsFunction
 	 * @return List<>
 	 */
@@ -125,4 +113,41 @@ public class TdsFunctionController {
 	public BackResult<List<TdsFunctionDomain>> loadingByUsreIdRole(Integer userId){
 		return tdsFunctionService.loadingByUsreIdRole(userId);
 	}
+	
+
+	
+	@RequestMapping(value = "/loadById", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<TdsFunctionDomain> loadById(Integer id){
+		return tdsFunctionService.loadById(id);
+	}
+	
+	
+	@RequestMapping(value="/saveModular",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> saveModular(@RequestBody TdsFunctionDomain tdsFunctionDomain){
+		return tdsFunctionService.saveModular(tdsFunctionDomain);
+	}
+	
+	
+	@RequestMapping(value = "/updateModular", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> updateModular(String name,Integer selectedId,Integer newId,String arrModulars) throws Exception {
+		TdsFunction  tds=new TdsFunction();
+		tds.setId(selectedId);
+		tds.setName(name);
+		tds.setParentId(newId);
+		tds.setRemarks("MODUL");
+		//如果不选，则默认为父级模块
+		if(null !=newId && newId==1){  //index
+			tds.setParentId(0);  //标记为父类
+		}
+		return tdsFunctionService.update(tds);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

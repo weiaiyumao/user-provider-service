@@ -50,6 +50,16 @@ public class TdsCustomerView extends BasePageParam implements Serializable {
 	// 删除状态：0正常，1已删除 2客服列表注册 3 客户审核驳回
 	private String isDeleted;
 
+	private String status;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String getIsDeleted() {
 		return isDeleted;
 	}

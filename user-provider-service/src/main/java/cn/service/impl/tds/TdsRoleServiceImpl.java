@@ -1,6 +1,5 @@
 package cn.service.impl.tds;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,21 +24,21 @@ import main.java.cn.domain.tds.TdsFunctionDomain;
 import main.java.cn.domain.tds.TdsRoleDomain;
 
 @Service
-public class TdsRoleServiceImpl implements  TdsRoleService {
-	
+public class TdsRoleServiceImpl implements TdsRoleService {
+
 	private final static Logger logger = LoggerFactory.getLogger(TdsRoleServiceImpl.class);
 
 	@Autowired
-	private TdsRoleMapper  tdsRoleMapper;
-	
+	private TdsRoleMapper tdsRoleMapper;
+
 	@Autowired
-	private TdsFunctionMapper TdsFunctionMapper;
-	
+	private TdsFunctionMapper tdsFunctionMapper;
+
 	@Override
 	public BackResult<TdsRole> loadById(Integer id) {
-		BackResult<TdsRole> result=new BackResult<TdsRole>();
+		BackResult<TdsRole> result = new BackResult<TdsRole>();
 		try {
-			TdsRole entity=tdsRoleMapper.loadById(id);
+			TdsRole entity = tdsRoleMapper.loadById(id);
 			result.setResultObj(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,12 +52,12 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 	@Transactional
 	@Override
 	public BackResult<TdsRoleDomain> saveTdsRole(TdsRoleDomain domain) {
-		   BackResult<TdsRoleDomain> result=new BackResult<TdsRoleDomain>();
-		   TdsRole  tds=new TdsRole();
-		   domain.setCreateTime(new Date());
-		   domain.setUpdateTime(new Date());
+		BackResult<TdsRoleDomain> result = new BackResult<TdsRoleDomain>();
+		TdsRole tds = new TdsRole();
+		domain.setCreateTime(new Date());
+		domain.setUpdateTime(new Date());
 		try {
-			BeanUtils.copyProperties(domain,tds);
+			BeanUtils.copyProperties(domain, tds);
 			tdsRoleMapper.save(tds);
 			result.setResultObj(domain);
 		} catch (Exception e) {
@@ -73,11 +72,11 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 	@Transactional
 	@Override
 	public BackResult<Integer> deleteById(Integer id) {
-		 BackResult<Integer> result=new BackResult<Integer>();
+		BackResult<Integer> result = new BackResult<Integer>();
 		try {
-			Integer i=tdsRoleMapper.deleteById(id);
-			if(i<=0){
-				new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS,"没有信息");
+			Integer i = tdsRoleMapper.deleteById(id);
+			if (i <= 0) {
+				new BackResult<Integer>(ResultCode.RESULT_DATA_EXCEPTIONS, "没有信息");
 			}
 			result.setResultObj(i);
 		} catch (Exception e) {
@@ -92,11 +91,11 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 	@Transactional
 	@Override
 	public BackResult<TdsRoleDomain> updateTdsRole(TdsRoleDomain domain) {
-		BackResult<TdsRoleDomain> result=new BackResult<TdsRoleDomain>();
+		BackResult<TdsRoleDomain> result = new BackResult<TdsRoleDomain>();
 		domain.setUpdateTime(new Date());
-		TdsRole  tds=new TdsRole();
+		TdsRole tds = new TdsRole();
 		try {
-			BeanUtils.copyProperties(domain,tds);
+			BeanUtils.copyProperties(domain, tds);
 			tdsRoleMapper.update(tds);
 			result.setResultObj(domain);
 		} catch (Exception e) {
@@ -110,22 +109,22 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 
 	@Override
 	public BackResult<List<TdsRoleDomain>> selectAll(TdsRoleDomain domain) {
-		BackResult<List<TdsRoleDomain>> result=new BackResult<List<TdsRoleDomain>>();
-		TdsRole tds=new TdsRole();
-		List<TdsRoleDomain>  listDomain=new ArrayList<TdsRoleDomain>();
+		BackResult<List<TdsRoleDomain>> result = new BackResult<List<TdsRoleDomain>>();
+		TdsRole tds = new TdsRole();
+		List<TdsRoleDomain> listDomain = new ArrayList<TdsRoleDomain>();
 		try {
-			BeanUtils.copyProperties(domain,tds);
-			List<TdsRole> list=tdsRoleMapper.selectAll(tds);
-			if(list.size()>0 && list!=null){
-				TdsRoleDomain tdsDomain=null;
-	          for(TdsRole obj:list){
-	        	 tdsDomain=new TdsRoleDomain();
-	        	 BeanUtils.copyProperties(obj,tdsDomain);
-	        	 listDomain.add(tdsDomain);
+			BeanUtils.copyProperties(domain, tds);
+			List<TdsRole> list = tdsRoleMapper.selectAll(tds);
+			if (list.size() > 0 && list != null) {
+				TdsRoleDomain tdsDomain = null;
+				for (TdsRole obj : list) {
+					tdsDomain = new TdsRoleDomain();
+					BeanUtils.copyProperties(obj, tdsDomain);
+					listDomain.add(tdsDomain);
 				}
-	          result.setResultObj(listDomain);
+				result.setResultObj(listDomain);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());
@@ -134,14 +133,14 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 		}
 		return result;
 	}
-    
+
 	@Override
 	public BackResult<List<TdsFunctionDomain>> loadingBydRoleId(Integer roleId) {
 		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
-
 		try {
+
 			// 获取所有的父 ，子 菜单
-			List<TdsFunction> list=TdsFunctionMapper.loadingBydRoleId(roleId);
+			List<TdsFunction> list = tdsFunctionMapper.loadingBydRoleId(roleId);
 			List<TdsFunctionDomain> domain = new ArrayList<TdsFunctionDomain>();
 			TdsFunctionDomain obj = null;
 			for (TdsFunction item : list) {
@@ -150,7 +149,6 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 				domain.add(obj);
 			}
 
-			
 			// 根据一级菜单id查询所有的菜单
 			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
 
@@ -168,17 +166,12 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 
 			result.setResultObj(listDomain);
 
-		 } catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			logger.error("模块功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据集合查询失败");
 		}
 		return result;
 	}
-     
-	
-	
+
 	/**
 	 * 递归循环
 	 * 
@@ -189,14 +182,14 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 	public List<TdsFunctionDomain> recursion(List<TdsFunctionDomain> list, Integer pid) {
 		List<TdsFunctionDomain> result = new ArrayList<TdsFunctionDomain>();
 		// 获取父亲的
-		for (TdsFunctionDomain menuVo : list) {
-			Integer moId = menuVo.getId(); // 获取菜单id
-			Integer parentid = menuVo.getParentId();// 获取菜单的父id
+		for (TdsFunctionDomain itme : list) {
+			Integer moId = itme.getId(); // 获取菜单id
+			Integer parentid = itme.getParentId();// 获取菜单的父id
 			if (parentid != 0) {
 				if (parentid.equals(pid)) {
 					List<TdsFunctionDomain> iterateMenu = recursion(list, moId);
-					menuVo.setTdsFunctions(iterateMenu);
-					result.add(menuVo);
+					itme.setTdsFunctions(iterateMenu);
+					result.add(itme);
 				}
 			}
 		}
@@ -212,10 +205,11 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 
 			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
 			basePageParam.setPageNumber((cur - 1) * basePageParam.getNumPerPage());
-			
+
 			Integer count = tdsRoleMapper.queryCount(roleName);// 获取总数
-			List<TdsRole> list = tdsRoleMapper.pageByRole(roleName, basePageParam.getPageNumber(), basePageParam.getNumPerPage());
-			
+			List<TdsRole> list = tdsRoleMapper.pageByRole(roleName, basePageParam.getPageNumber(),
+					basePageParam.getNumPerPage());
+
 			if (list.size() > 0 && list != null) {
 				// 定义对象用于转换
 				TdsRoleDomain tdsDomain = null;
@@ -225,8 +219,8 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 					listDomain.add(tdsDomain);
 				}
 				// 构造计算分页参数
-				pageListDomain = new PageDomain<TdsRoleDomain>(basePageParam.getCurrentPage(), basePageParam.getNumPerPage(),
-						count);
+				pageListDomain = new PageDomain<TdsRoleDomain>(basePageParam.getCurrentPage(),
+						basePageParam.getNumPerPage(), count);
 				pageListDomain.setTlist(listDomain);
 				result.setResultObj(pageListDomain);
 			}
@@ -239,10 +233,5 @@ public class TdsRoleServiceImpl implements  TdsRoleService {
 		}
 		return result;
 	}
-
-	
-	
-   
-	
 
 }

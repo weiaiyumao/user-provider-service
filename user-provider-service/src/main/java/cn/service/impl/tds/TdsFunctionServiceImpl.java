@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsFunctionMapper;
 import cn.dao.tds.TdsModularMapper;
@@ -316,16 +317,16 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	
 	
 	@Override
-	public BackResult<List<TdsFunctionDomain>> selectAll(Integer parentId) {
+	public BackResult<List<TdsFunctionDomain>> selectAll(TdsFunctionDomain entity) {
 		BackResult<List<TdsFunctionDomain>> result=new BackResult<List<TdsFunctionDomain>>();
 		TdsFunction tds=new TdsFunction();
 		List<TdsFunctionDomain>  listDomain=new ArrayList<TdsFunctionDomain>();
 		try {
-			tds.setParentId(parentId);
+			BeanUtils.copyProperties(entity,tds);
 			List<TdsFunction> list=tdsFunctionMapper.selectAll(tds);
 			if(list.size()>0 && list!=null){
-				TdsFunctionDomain tdsDomain=null;
-	          for(TdsFunction obj:list){
+			TdsFunctionDomain tdsDomain=null;
+	           for(TdsFunction obj:list){
 	        	 tdsDomain=new TdsFunctionDomain();
 	        	 BeanUtils.copyProperties(obj,tdsDomain);
 	        	 listDomain.add(tdsDomain);
@@ -334,12 +335,78 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("查询功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据集合查询失败");
 		}
 		return result;
 	}
+
+
+	@Override
+	public BackResult<TdsFunctionDomain> loadById(Integer id) {
+		BackResult<TdsFunctionDomain> result = new BackResult<TdsFunctionDomain>();
+		try {
+			TdsFunctionDomain domain = new TdsFunctionDomain();
+			TdsFunction entity = tdsFunctionMapper.loadById(id);
+			BeanUtils.copyProperties(entity, domain);
+			result.setResultObj(domain);
+		} catch (Exception e) {
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据查询失败");
+		}
+		return result;
+	}
+
+
+	
+	@Override
+	public BackResult<Integer> saveModular(TdsFunctionDomain domain) {
+		  BackResult<Integer> result=new BackResult<Integer>();
+		   TdsFunction  tds=new TdsFunction();
+		try {
+			TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
+			tds.setParentId(domain.getId());
+			//如果选择的是第一级模块名则为父级模块
+			if(null!=tdsModula && tdsModula.getName().indexOf("第一级")!=-1){
+				tds.setParentId(0);  //标记为父类
+			}					
+			//如果不选，则默认为父级模块
+			if(null==domain.getId() || "".equals(domain.getId())){
+				tds.setParentId(0);  //标记为父类
+			}
+			
+			tds.setName(domain.getName());
+			tds.setCreateTime(new Date());
+			tds.setUpdateTime(new Date());
+			tds.setRemarks("MODUL");
+			//tds.setRemarks(domain.getRemarks());
+			tdsFunctionMapper.save(tds);
+			result.setResultObj(1);
+		} catch (Exception e) {
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("保存模块数据保存失败");
+		}
+		return result;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public BackResult<Integer> update(TdsFunction entity) {
+		try {
+			 tdsFunctionMapper.update(entity);
+		} catch (Exception e) {
+			return BackResult.error("模块修改失败");
+		}
+		return BackResult.ok();
+		
+	}
+
+	
+	
+	
 
 }

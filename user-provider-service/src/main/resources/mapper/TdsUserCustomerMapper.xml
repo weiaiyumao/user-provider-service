@@ -38,7 +38,6 @@
 		id=#{id} AND IS_DELETED='0'
 	</select>
 	
-	
 
 	<select id="selectAll" resultMap="BaseResultMap" parameterType="cn.entity.tds.TdsUserCustomer">
 		SELECT
@@ -134,7 +133,9 @@
 			AND u.create_time &lt;=
 			#{endTime}
 		</if>
-		AND u.is_deleted =#{isDeleted} order by u.create_time desc
+		AND u.is_deleted ='0' 
+		AND u.status=#{status}
+		ORDER BY u.create_time desc 
 		LIMIT
 		#{pageNumber},#{numPerPage}
 	</select>
@@ -158,7 +159,9 @@
 			AND u.create_time &lt;=
 			#{endTime}
 		</if>
-		AND u.is_deleted =#{isDeleted} order by u.create_time desc
+		AND u.is_deleted =#{isDeleted} 
+		AND u.status=#{status}
+		ORDER BY u.create_time desc
 	</select>
 
 	<select id="loadByIdView" parameterType="HashMap"

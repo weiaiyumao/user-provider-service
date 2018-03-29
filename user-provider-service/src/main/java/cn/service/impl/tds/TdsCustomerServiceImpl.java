@@ -41,6 +41,7 @@ import main.java.cn.domain.tds.TdsCustomerViewDomain;
 import main.java.cn.domain.tds.TdsUserDiscountDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
 import main.java.cn.enums.TdsEnum.CUSTOMERSTYPE;
+import main.java.cn.enums.TdsEnum.USERSTATUS;
 import main.java.cn.hhtp.util.MD5Util;
 
 @Service
@@ -237,6 +238,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			TdsCompany tdsCom = new TdsCompany();
 			tdsCom.setComUrl(domain.getComUrl());
 			tdsCom.setComName(domain.getComName());
+			
 			if (null == isTdsCom) {
 				// 保存
 				tdsCom.setCreateTime(new Date());
@@ -264,8 +266,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			BackResult<Integer> creUid=tdsUserService.addCreUser(userDomain);
 			
 			if(null==creUid.getResultObj()){
-				
-				return creUid;
+				 throw new Exception(creUid.getResultMsg());
 			}
 			
 			
@@ -284,7 +285,9 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			
 			tdsUser.setSource(StatusType.ADD_ADMIN); // 注册来源
 			
-			tdsUser.setIsDeleted("2");// 客户注册审核，第注册成功 is_deleted 默认为 2
+			
+			// 0：正常  1：申请中  2：驳回
+			tdsUser.setStatus(USERSTATUS.PLEASE.getCode());
 			
 			tdsUser.setParentUserId(loginUserId); // 归属父id
 			
@@ -294,14 +297,13 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			
 			tdsUser.setCreateTime(new Date());
 			
-			tdsUser.setStatus("0");
 			
-			tdsUserMapper.save(tdsUser); // 用户信息保存
+			tdsUserMapper.save(tdsUser); //用户信息保存
 					
 			// 保存部门用户关系
 			TdsUserDepartment tdsUserDepa = new TdsUserDepartment();
-			tdsUserDepa.setUserId(tdsUser.getId()); // 注册成功返回用户id
-			tdsUserDepa.setDepartId(domain.getDepartId()); //部门
+			tdsUserDepa.setUserId(tdsUser.getId()); //注册成功返回用户id
+			tdsUserDepa.setDepartId(domain.getDepartId());//部门
 			tdsUserDepa.setCreater(loginUserId);
 			tdsUserDepa.setCreateTime(new Date());
 			tdsUserDepa.setUpdateTime(new Date());
@@ -340,6 +342,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> updatePrice(TdsUserDiscountDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		domain.setCreateTime(new Date());
@@ -385,6 +388,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> addTdsUserDiscount(TdsUserDiscountDomain domain) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUserDiscount tds = new TdsUserDiscount();
@@ -410,6 +414,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	}
 
 	@Override
+	@Transactional
 	public BackResult<Integer> deleteById(Integer id) {
 		BackResult<Integer> result = new BackResult<Integer>();
 		try {
@@ -434,21 +439,21 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		try {
 			
 			if (isAgree.equals(CUSTOMERSTYPE.NORMAL.getCode())) {
-				
-				// 客户注册审核，第注册成功 is_deleted 默认为 2 ,同意is_deleted 为0
 				TdsUser tUser = new TdsUser();
-				tUser.setIsDeleted("0");
 				tUser.setId(userId);
-				tdsUserMapper.update(tUser);
-				
+			    tUser.setStatus(USERSTATUS.PASST.getCode());  //0：正常  1：申请中  2：驳回
+				tdsUserMapper.update(tUser);		
 				
 				//客户审核通过，累计消费插入数据
-				TdsUserCustomer userCust=new TdsUserCustomer();
-				userCust.setUserId(userId);
-			    tdsUserCustomerMapper.save(userCust);	
-			} else {
+				TdsUserCustomer isUserCustomer = tdsUserCustomerMapper.loadByUserId(userId);
+				if(isUserCustomer==null){
+					TdsUserCustomer userCust=new TdsUserCustomer();
+					userCust.setUserId(userId);
+				    tdsUserCustomerMapper.save(userCust);	
+				}
 				
-				// 驳回 ,更新is_deleted 为2  注册驳回 是否直接删除，is_deleted
+			} else {
+				//驳回
 				TdsApprovalLog tdsAppro = new TdsApprovalLog();
 				tdsAppro.setUserId(userId);// 驳回的用户
 				tdsAppro.setAppRemarks(reas);// 原因
@@ -458,14 +463,11 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 					tdsAppro.setAppRemarks("无驳回原因");
 				
 				tdsApprovalLogMapper.save(tdsAppro); // log 保存
-				
-				// 已驳回is_deleted 为3
 				TdsUser tUser = new TdsUser();
-				tUser.setIsDeleted("3");
+			    tUser.setStatus(USERSTATUS.REJ.getCode());  //0：正常  1：申请中  2：驳回
 				tUser.setId(userId);
 				tdsUserMapper.update(tUser);
 			}
-		
 			
 			result.setResultObj(1);
 			commit(status);

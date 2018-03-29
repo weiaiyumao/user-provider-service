@@ -157,10 +157,10 @@
 		resultMap="BaseResultMap">
 		SELECT * from tds_function
         where id in(
-	   select fun_id from
+	    select fun_id from
 		tds_function_role
 		where role_id  in
-      (
+       (
 		select role_id from tds_user_role
 		where is_deleted='0' and user_id=#{userId}
 		and is_deleted='0'
