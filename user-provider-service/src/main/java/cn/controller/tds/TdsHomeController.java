@@ -19,6 +19,8 @@ import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.tds.TdsUserBankApyDomain;
 
+
+@SuppressWarnings("unchecked")
 @RestController
 @RequestMapping("/home")
 public class TdsHomeController {
@@ -57,47 +59,36 @@ public class TdsHomeController {
 	
 	/**
 	 * 修改
-	 * 
 	 * @param tdsFunction
 	 * @return
 	 */
-	@SuppressWarnings("all")
 	@RequestMapping(value = "/updateByUserId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<Integer> updateByUserId(@RequestBody TdsUserBankApyDomain tdsUserBankApyDomain){
-		  BackResult<Integer> result = null;
 		try {
-			 result = new BackResult<>();
 			 BeanHelper.beanHelperTrim(tdsUserBankApyDomain);
 			 tdsUserBankApyService.updateByUserId(tdsUserBankApyDomain);
-			 result.setResultObj(1);
 		} catch (Exception e) {
 			logger.error("修改用户关联绑定异常",e.getMessage());
-			return result.error("修改用户关联绑定异常");
+			return BackResult.error("修改用户关联绑定异常");
 		}
-		return result;
+		return BackResult.ok(true);
 	}
+	
 	
 	/**
 	 * 新增
 	 * @param domain
 	 * @return
 	 */
-	@SuppressWarnings("all")
 	@RequestMapping(value = "/addBankApy", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<Integer> add(@RequestBody TdsUserBankApyDomain domain){
-		 BackResult<Integer> result =null;
 		try {
-		    result=new BackResult<>();
-			BeanHelper.beanHelperTrim(domain);
-			Integer  i= tdsUserBankApyService.add(domain);
-			result.setResultObj(i);
-			
+			tdsUserBankApyService.add(domain);
 		} catch (Exception e) {
-			e.getMessage();
 			logger.error("新增用户关联绑定异常",e.getMessage());
-			return  result.error("新增用户关联绑定异常");
+			return  BackResult.error("新增用户关联绑定异常");
 		}
-		    return result;
+		return BackResult.ok(true);
 	}
 	
 	
@@ -106,7 +97,6 @@ public class TdsHomeController {
 	 * 根据用户id查询
 	 * @return
 	 */
-	@SuppressWarnings("all")
 	@RequestMapping(value = "/loadBankApyByUserId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<TdsUserBankApyDomain> loadByUserId(Integer userId){
 		BackResult<TdsUserBankApyDomain> result=new BackResult<>();
@@ -117,7 +107,7 @@ public class TdsHomeController {
 			result.setResultObj(domain);
 		} catch (Exception e) {
 			logger.error("查询用户关联绑定异常",e.getMessage());
-			return result.error("新增用户关联绑定异常");
+			return BackResult.error("新增用户关联绑定异常");
 		}
 		return result;
 	}
