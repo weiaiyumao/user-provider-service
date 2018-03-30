@@ -1,6 +1,8 @@
 package cn.controller.tds;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 
 import cn.service.tds.TdsDepartmentService;
 import cn.utils.BeanHelper;
@@ -61,6 +65,14 @@ public class TdsDeparTmentController {
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<List<TdsDepartmentDomain>> selectAll(TdsDepartmentDomain domain) {
 		return tdsDepartmentService.selectAll(domain);
+	}
+	
+	@SuppressWarnings({"unchecked"})
+	@RequestMapping(value = "/getDepartmentByUserId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<List<Map<String,String>>> getDepartmentByUserId(Integer userId) {
+		    List<Map<String,String>> entity=new ArrayList<>();
+			String jsonStr=tdsDepartmentService.selectDepartmentRoleByUserId(userId);
+		    return BackResult.ok(new Gson().fromJson(jsonStr,entity.getClass()));
 	}
 
 	@RequestMapping(value = "/addUserConfig", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)

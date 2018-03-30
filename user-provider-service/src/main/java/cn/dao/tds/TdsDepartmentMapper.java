@@ -36,4 +36,12 @@ public interface TdsDepartmentMapper extends IBaseDao<TdsDepartment, Integer>{
 	 */
 	List<TdsFunction> funByuserId(Integer userId);
 	
+	
+	/**
+	 * 根据用户id获取对应部门
+	 * @param userId
+	 * @return
+	 */
+	String selectDepartmentRoleByUserId(Integer userId);
+	
 }

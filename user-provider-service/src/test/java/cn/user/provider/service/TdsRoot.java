@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import cn.UserProviderServiceApp;
 import cn.dao.CreUserAccountMapper;
@@ -158,6 +161,18 @@ public class TdsRoot {
 	  @Test
 	  public void page(){
 		System.out.println(ACCOUNT.ADD);
+	  }
+	  
+	  
+	  @SuppressWarnings("unchecked")
+	  @Test
+	  public void getStrMap(){
+		    List<Map<String,String>> entity=new ArrayList<>();
+			String jsonStr=tdsDepartmentService.selectDepartmentRoleByUserId(1);
+		    Gson gson=new Gson();
+		    entity = gson.fromJson(jsonStr,entity.getClass());
+		    System.out.println(entity);
+		    System.out.println(BackResult.ok(entity));
 	  }
 	  
 	  

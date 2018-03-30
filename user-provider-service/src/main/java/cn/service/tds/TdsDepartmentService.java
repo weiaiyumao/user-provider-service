@@ -12,6 +12,12 @@ import main.java.cn.service.tds.TdsDepartmentBusService;
 public interface TdsDepartmentService extends TdsDepartmentBusService{
 	
 	
+	/**
+	 * 根据用户id获取对应部门
+	 * @param userId
+	 * @return
+	 */
+	String  selectDepartmentRoleByUserId(Integer userId);
 	
 
 }

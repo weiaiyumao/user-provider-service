@@ -65,7 +65,6 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 			tdsUserRoleMapper.save(tds);
 			result.setResultObj(domain);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			result.setResultCode(ResultCode.RESULT_FAILED);
 			result.setResultMsg("数据保存失败");

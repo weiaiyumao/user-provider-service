@@ -16,7 +16,7 @@
 		<result column="updater" property="updater"></result>
 		<result column="is_deleted" property="isDeleted"></result>
 		<result column="type" property="type"></result>
-		
+
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -69,7 +69,7 @@
 			<if test="updateTime != null"> update_time , </if>
 			<if test="creater != null"> creater , </if>
 			<if test="updater != null"> updater , </if>
-			 <if test="type != null"> type , </if>
+			<if test="type != null"> type , </if>
 			is_deleted
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -80,7 +80,7 @@
 			<if test="updateTime != null"> #{updateTime} , </if>
 			<if test="creater != null"> #{creater} , </if>
 			<if test="updater != null"> #{updater} , </if>
-		    <if test="type != null"> #{type} , </if>
+			<if test="type != null"> #{type} , </if>
 			'0'
 		</trim>
 
@@ -130,12 +130,12 @@
 		c
 		on c.id=u.com_id
 		<where>
-	     	<if test="roleName != null and roleName!=''">AND r.role_name = #{roleName}</if>
+			<if test="roleName != null and roleName!=''">AND r.role_name = #{roleName}</if>
 			<if test="departName != null and departName!=''">AND d.name = #{departName}</if>
 			<if test="contact != null and contact!=''">AND u.contact = #{contact}</if>
 			<if test="statTime != null and statTime!=''">AND u.create_time &gt;= #{statTime}</if>
 			<if test="endTime != null and endTime!='' ">AND u.create_time &lt;= #{endTime}</if>
-			AND ur.is_deleted ='0'  order by u.create_time desc
+			AND ur.is_deleted ='0' order by u.create_time desc
 		</where>
 		LIMIT #{pageNumber},#{numPerPage}
 	</select>
@@ -145,12 +145,15 @@
 		select count(1)
 		from tds_user u inner
 		join tds_user_role ur
-		on u.id=ur.user_id inner join tds_role r
 		on
-		r.id=ur.role_id inner join tds_user_department ud
+		u.id=ur.user_id inner join tds_role r
+		on
+		r.id=ur.role_id inner join
+		tds_user_department ud
 		on ud.user_id=u.id
 		inner join tds_department d
-		on d.id=ud.depart_id INNER JOIN tds_company
+		on
+		d.id=ud.depart_id INNER JOIN tds_company
 		c
 		on c.id=u.com_id
 		<where>
@@ -182,5 +185,23 @@
 	</select>
 
 
-    
+	<select id="selectDepartmentRoleByUserId" resultType="java.lang.String"
+		parameterType="Hashmap">
+		SELECT
+		remarks
+		FROM
+		tds_department
+		WHERE
+		id = (
+		SELECT
+		depart_id
+		FROM
+		tds_user_department
+		WHERE
+		user_id = #{user_Id}
+		)
+		AND is_deleted = '0'
+	</select>
+
+
 </mapper>

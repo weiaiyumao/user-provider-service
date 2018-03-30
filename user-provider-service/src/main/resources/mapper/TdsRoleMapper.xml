@@ -119,4 +119,13 @@
 			and role_name like concat(concat('%',#{roleName}),'%')
 		</if>
 	</select>
+	
+	
+	<select id="getRoleNameByUsreId" parameterType="HashMap" resultType="java.lang.String">
+	    select r.role_name as roleName from tds_role r
+	    where id=(
+		SELECT role_id FROM tds_user_role
+		where user_id =#{userId}
+		)		
+	</select>
 </mapper>

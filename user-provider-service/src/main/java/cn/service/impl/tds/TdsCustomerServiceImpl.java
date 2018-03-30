@@ -44,6 +44,8 @@ import main.java.cn.enums.TdsEnum.CUSTOMERSTYPE;
 import main.java.cn.enums.TdsEnum.USERSTATUS;
 import main.java.cn.hhtp.util.MD5Util;
 
+
+@SuppressWarnings("unchecked")
 @Service
 public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCustomerService {
 
@@ -76,18 +78,13 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 
 	
 	
-	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
 	public BackResult<Integer> updateCustomer(TdsCustomerViewDomain domain, Integer loginUserId, String passWord) {
 		TransactionStatus status = this.begin();
-		BackResult<Integer> result = new BackResult<Integer>();
-		
 		TdsUser tds = new TdsUser();
-		
 		try {
 
-			
 			TdsUser tur = tdsUserMapper.loadById(domain.getUserId());
 			
 		    if(tur.getPhone().equals(domain.getPhone())){
@@ -132,17 +129,13 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUd.setUpdateTime(new Date());
 			tdsUserDepartmentMapper.updateByUserId(tdsUd);
 			
-
-			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
 			this.rollback(status);
-			e.printStackTrace();
 			logger.error("编辑修改功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据修改失败");
+			return BackResult.error();
 		}
-		return result;
+		return BackResult.ok(true);
 	}
 
 	
@@ -177,6 +170,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 					BeanUtils.copyProperties(obj, tdsDomain);
 					listDomain.add(tdsDomain);
 				}
+				
 				// 构造计算分页参数
 				pageListDomain = new PageDomain<TdsCustomerViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
 						count);
@@ -197,7 +191,6 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	@Transactional
 	@Override
 	public BackResult<Integer> attorn(TdsAttornLogDomain domain) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		TdsAttornLog tdsAtt = new TdsAttornLog();
 		TransactionStatus status = this.begin();
 		domain.setCreateTime(new Date());
@@ -210,22 +203,18 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUser.setId(tdsAtt.getUserId());
 			tdsUser.setParentUserId(tdsAtt.getAttornUserId());// 数据转移
 			tdsUserMapper.update(tdsUser);
-			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status);
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据保存失败");
+			return BackResult.error();
 		}
-		return result;
+		return BackResult.ok(true);
 	}
 
 	@Transactional
 	@Override
 	public BackResult<Integer> addTdsCustomer(TdsCustomerViewDomain domain, Integer loginUserId, String passWord) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		TransactionStatus status = this.begin();
 		try {
 			TdsUser isPhone = tdsUserMapper.loadByPhone(domain.getPhone());
@@ -268,9 +257,8 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			if(null==creUid.getResultObj()){
 				 throw new Exception(creUid.getResultMsg());
 			}
-			
-			
-			//=========			
+					
+				
 			TdsUser tdsUser = new TdsUser();
 			
 			tdsUser.setCreUserId(creUid.getResultObj());
@@ -308,20 +296,14 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			tdsUserDepa.setCreateTime(new Date());
 			tdsUserDepa.setUpdateTime(new Date());
 			tdsUserDepartmentMapper.save(tdsUserDepa);
-
-			result.setResultObj(1);
-			
 			this.commit(status);
-			
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status);
 			logger.error("新增功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("新增功能失败");
+			BackResult.error("新增客户信息失败");
 		}
 
-		return result;
+		return BackResult.ok(true);
 	}
 
 	@Override
@@ -344,21 +326,17 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	@Override
 	@Transactional
 	public BackResult<Integer> updatePrice(TdsUserDiscountDomain domain) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
 		TdsUserDiscount tds = new TdsUserDiscount();
 		try {
 			BeanUtils.copyProperties(domain, tds);
 			tdsUserDiscountMapper.update(tds);
-			result.setResultObj(1);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据修改失败");
+			return BackResult.error();
 		}
-		return result;
+		return BackResult.ok(true);
 	}
 
 	@Override
@@ -390,7 +368,6 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 	@Override
 	@Transactional
 	public BackResult<Integer> addTdsUserDiscount(TdsUserDiscountDomain domain) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		TdsUserDiscount tds = new TdsUserDiscount();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
@@ -401,41 +378,32 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 					&& !"".equals(tds.getStartDiscount())) {
 				tdsUserDiscountMapper.save(tds);
 			} else {
-				return new BackResult<>(ResultCode.RESULT_PARAM_EXCEPTIONS, "请输入完整起充量和折扣");
+				 return BackResult.error("请输入完整起充量和折扣");
 			}
-			result.setResultObj(1);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据保存失败");
+			return BackResult.error();
 		}
-		return result;
+		return BackResult.ok(true);
 	}
 
 	@Override
 	@Transactional
 	public BackResult<Integer> deleteById(Integer id) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		try {
 			tdsUserDiscountMapper.deleteById(id);
-			result.setResultObj(1);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("用户ID:" + id + "delete功能信息出现系统异常：" + e.getMessage());
-			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
+			return BackResult.error();
 		}
-		return result;
+		 return BackResult.ok(true);
 	}
 	
 	
 	
 	@Override
 	public BackResult<Integer> isAgree(String isAgree, Integer userId, String reas) {
-		BackResult<Integer> result = new BackResult<Integer>();
-		
 		TransactionStatus status = this.begin();
-		
 		try {
 			
 			if (isAgree.equals(CUSTOMERSTYPE.NORMAL.getCode())) {
@@ -462,23 +430,19 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 				if (null == reas || "".equals(reas))
 					tdsAppro.setAppRemarks("无驳回原因");
 				
-				tdsApprovalLogMapper.save(tdsAppro); // log 保存
+				tdsApprovalLogMapper.save(tdsAppro); //log保存
 				TdsUser tUser = new TdsUser();
 			    tUser.setStatus(USERSTATUS.REJ.getCode());  //0：正常  1：申请中  2：驳回
 				tUser.setId(userId);
 				tdsUserMapper.update(tUser);
-			}
-			
-			result.setResultObj(1);
-			commit(status);
+			  }
+			    commit(status);
 		} catch (Exception e) {
-			e.printStackTrace();
 			rollback(status);
 			logger.error("客户审核操作功能错误：" + e.getMessage());
-			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "数据落地异常");
+			return BackResult.error();
 		}
-
-		return result;
+		   return BackResult.ok(true);
 	}
 
 }

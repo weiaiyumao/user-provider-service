@@ -297,4 +297,10 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		return result;
 	}
 
+	
+	@Override
+	public String selectDepartmentRoleByUserId(Integer userId) {
+		return tdsDepartmentMapper.selectDepartmentRoleByUserId(userId);
+	}
+
 }
