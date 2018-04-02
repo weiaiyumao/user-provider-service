@@ -21,12 +21,10 @@ import com.google.gson.JsonArray;
 
 import cn.UserProviderServiceApp;
 import cn.dao.CreUserAccountMapper;
-import cn.dao.tds.TdsModularMapper;
 import cn.dao.tds.TdsStateInfoMapper;
 import cn.dao.tds.TdsUserCustomerMapper;
 import cn.entity.CreUserAccount;
 import cn.entity.tds.TdsAccountBank;
-import cn.entity.tds.TdsModular;
 import cn.service.tds.TdsAccountBankService;
 import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsFunctionService;
@@ -84,49 +82,10 @@ public class TdsRoot {
 	  private TdsUserCustomerMapper tdsUserCustomerMapper;
 	  
 	  @Autowired
-	  private TdsModularMapper tdsModularMapper;
-	  
-	  @Autowired
 	  private CreUserAccountMapper creUserAccountMapper;
 	
 	  
-	 
-	  public List<TdsModular> testModule(List<TdsModular> list,Integer pid){ 
-		 List<TdsModular> result = new ArrayList<TdsModular>();  
-		  //获取父亲的
-		 for(TdsModular menuVo:list){
-			   Integer moId=menuVo.getId();  //获取菜单id
-			   Integer parentid = menuVo.getParentId();//获取菜单的父id  
-			   if(parentid!=0){  
-	                if(parentid.equals(pid)){  
-	                    List<TdsModular> iterateMenu =testModule(list,moId);  
-	                    menuVo.setTdsModular(iterateMenu);  
-	                    result.add(menuVo);  
-	                }  
-	            }  
-		  }
-		 return result;
-	  }
 	  
-	  @Test
-	  public void list(){
-		  List<TdsModular> list=tdsModularMapper.queryModular(null);
-		  //根据一级菜单id查询所有的菜单  
-		  List<TdsModular> userMenuVos = new ArrayList<TdsModular>();
-          for (TdsModular menuVo :list) {  
-        	    //一级菜单
-        	    if(menuVo.getName().equals("第一级")){
-        	    	continue;
-        	    }
-        	    if(menuVo.getParentId()==0){
-                    List<TdsModular> iterateMenus = testModule(list, menuVo.getId());  
-                    menuVo.setTdsModular(iterateMenus);  
-                    userMenuVos.add(menuVo);  
-        	    }
-        	    
-              } 
-               System.out.println(userMenuVos);
-          } 
 	  
 	  
 	  @Test
@@ -214,13 +173,6 @@ public class TdsRoot {
 	  }
 	  
 	  
-	  @Test
-	  public void update(){
-		  TdsModular entity=new TdsModular();
-		  entity.setId(2);
-		  entity.setName("f");
-		//  tdsModularService.updateTdsModular(entity);
-	  }
 	  
 	   @Test
 	   public void selectAll(){

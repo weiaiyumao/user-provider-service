@@ -16,10 +16,11 @@ import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsAttornLogDomain;
 import main.java.cn.domain.tds.TdsCustomerViewDomain;
 import main.java.cn.domain.tds.TdsUserDiscountDomain;
+import main.java.cn.enums.TdsEnum.ROLETYPE;
 
 @RestController
 @RequestMapping("/customer")
-public class TdsCustomerController {
+public class TdsCustomerController{
 	
 	@Autowired
 	private TdsCustomerService tdsCustomerService;
@@ -34,6 +35,10 @@ public class TdsCustomerController {
 	@RequestMapping(value = "/pageTdsCustomer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<PageDomain<TdsCustomerViewDomain>> pageTdsCustomer(@RequestBody TdsCustomerViewDomain domain) throws Exception{
 		BeanHelper.beanHelperTrim(domain);  //去掉空格
+		 //检验是否admin
+		if(null!=domain.getRoleId() && domain.getRoleId()==ROLETYPE.ADMIN.getCode()){
+			 domain.setParentUserId(null);
+		}
 		return tdsCustomerService.pageTdsCustomer(domain);
 	}
 	

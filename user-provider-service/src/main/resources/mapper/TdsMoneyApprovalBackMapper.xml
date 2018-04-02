@@ -171,8 +171,8 @@
 		SELECT b.*,u.cre_user_id  FROM tds_money_approval_back b, tds_user u
 		where user_id in (
 		select user_id from tds_user
-		where parent_user_id=#{parentUserId}
-		and is_deleted='0'
+		where  is_deleted='0'
+	<!-- 	and parent_user_id=#{parentUserId} -->
 		) and b.is_deleted='0' and b.user_id=u.id
 		    <if test="approvalStatus != null and approvalStatus!=''">AND b.approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND b.create_time &gt;= #{startOrderTime}</if>
@@ -198,8 +198,8 @@
 		SELECT count(1) FROM tds_money_approval_back
 		where user_id in (
 		select user_id from tds_user
-		where parent_user_id=#{parentUserId}
-		and is_deleted='0'
+		where is_deleted='0'
+	<!-- 	and parent_user_id=#{parentUserId} -->
 		) and is_deleted='0' 
 		    <if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 	        <if test="startOrderTime != null and startOrderTime!=''">AND create_time &gt;= #{startOrderTime}</if>

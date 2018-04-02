@@ -69,5 +69,45 @@
 		)
 	 </insert>
 
-
+    
+   <update id="addByUserId" parameterType="HashMap">
+		UPDATE cre_user_account
+		<if test="type == 'add'">
+		    <include refid="add_account" />
+		</if>
+		
+		<if test="type == 'sub'">
+		    <include refid="sub_account" />
+		</if>
+		
+		WHERE cre_user_id=#{creUserId}  and  delete_status='0'
+	</update>
+	
+	
+ 	<sql id="sub_account">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="account != null"> account =account - #{account}, </if>
+			<if test="apiAccount != null"> api_account =api_account - #{apiAccount}, </if>
+			<if test="rqAccount != null"> rq_account =rq_account - #{rqAccount}, </if>
+			<!-- <if test="tcAccount != null"> tc_account =tc_account - #{tcAccount}, </if>
+			<if test="fcAccount != null"> fc_account =fc_account - #{fcAccount}, </if>
+			<if test="msAccount != null"> ms_account =ms_account - #{msAccount}, </if> -->
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			version =version+1,
+		</trim>
+	</sql>
+	
+	<sql id="add_account">
+	      <trim prefix="set" suffixOverrides=",">
+			<if test="account != null"> account =account + #{account}, </if>
+			<if test="apiAccount != null"> api_account =api_account + #{apiAccount}, </if>
+			<if test="rqAccount != null"> rq_account =rq_account + #{rqAccount}, </if>
+<!-- 		    <if test="tcAccount != null"> tc_account =tc_account + #{tcAccount}, </if>
+			<if test="fcAccount != null"> fc_account =fc_account + #{fcAccount}, </if>
+			<if test="msAccount != null"> ms_account =ms_account + #{msAccount}, </if> --> 
+			<if test="updateTime != null"> update_time = #{updateTime}, </if>
+			version =version+1,
+		</trim>
+	</sql> 
+	
 </mapper>

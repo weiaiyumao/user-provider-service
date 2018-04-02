@@ -167,6 +167,12 @@
 		where user_id=#{userId}
 	</delete>
 
-
+    <select id="getRoleNameByUsreId" parameterType="HashMap" resultType="HashMap">
+	    select r.id,r.role_name as roleName from tds_role r
+	    where id=(
+		SELECT role_id FROM tds_user_role
+		where user_id =#{userId}
+		)		
+	</select>
 
 </mapper>

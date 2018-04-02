@@ -30,7 +30,22 @@ public interface TdsFunctionService extends TdsFunctionBusService {
 	BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, BasePageParam basePageParam);
 	
 	
-   BackResult<TdsFunctionDomain> loadById(Integer id);
+	/**
+	 * 查询模块
+	 * @param name
+	 * @param basePageParam
+	 * @return
+	 */
+	BackResult<PageDomain<Map<String, Object>>> pageByModular(String name,BasePageParam basePageParam);
+	
+	
+	
+	/**
+	 * 根据id获取功能信息
+	 * @param id
+	 * @return
+	 */
+    BackResult<TdsFunctionDomain> loadById(Integer id);
    
    
    /**

@@ -48,5 +48,10 @@ public interface TdsUserRoleService extends  TdsUserRoleBusService{
 	 * @return
 	 */
 	BackResult<List<Map<String,String>>> queryUserByRoleName(String contact);
+	
+	
+	
+
+	Map<String,Object> getRoleNameByUsreId(Integer userId);
   
 }

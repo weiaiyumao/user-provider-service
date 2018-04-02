@@ -71,7 +71,7 @@ public class TdsHomeController {
 			logger.error("修改用户关联绑定异常",e.getMessage());
 			return BackResult.error("修改用户关联绑定异常");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 	
 	
@@ -88,7 +88,7 @@ public class TdsHomeController {
 			logger.error("新增用户关联绑定异常",e.getMessage());
 			return  BackResult.error("新增用户关联绑定异常");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 	
 	

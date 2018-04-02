@@ -224,6 +224,11 @@ public class TdsUserRoleServiceImpl implements  TdsUserRoleService {
 		}
 		return result;
 	}
+
+	@Override
+	public Map<String, Object> getRoleNameByUsreId(Integer userId) {
+		return tdsUserRoleMapper.getRoleNameByUsreId(userId);
+	}
      
 	
 

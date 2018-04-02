@@ -51,8 +51,7 @@ public class TdsCreUserAccountServiceImpl implements TdsCreUserAccountService {
 
 	@Override
 	public void addOrSubCreUserAccount(Integer creUserId, Integer pnameId, Integer number,String algorType) throws Exception {
-		CreUserAccount cua = new CreUserAccount();
-			
+		     CreUserAccount cua = new CreUserAccount();
 			 cua.setCreUserId(creUserId);
 			 cua.setUpdateTime(new Date());
          
@@ -67,7 +66,6 @@ public class TdsCreUserAccountServiceImpl implements TdsCreUserAccountService {
 			if (pnameId == ProductTypeID.RQACCOUNT) {
 				cua.setRqAccount(number);
 			}
-            
 			
 			if (algorType.equals(ACCOUNT.SUB.getType())) {
 				tdsCreUserAccountService.subByUserId(cua);

@@ -2,6 +2,7 @@ package cn.dao.tds;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -35,9 +36,6 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	 */
 	Integer saveRoleByUser(@Param("arr") List<TdsUserRole> checkboxRole);
 	
-	
-	
-	
 	/**
 	 * 账号配置列表
 	 * @param auto
@@ -58,6 +56,15 @@ public interface TdsUserRoleMapper extends IBaseDao<TdsUserRole, Integer>{
 	 * @return
 	 */
 	Integer deleteByUserId(@Param("userId")Integer userId);
+	
+	
+	
+	/**
+	 * 根据用户id查询对应的角色
+	 * @param userId
+	 * @return
+	 */
+	Map<String, Object> getRoleNameByUsreId(@Param("userId") Integer userId);
 	
 	
 }

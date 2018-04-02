@@ -28,7 +28,24 @@ public class TdsFunctionController {
 
 	
 	
+    /**
+     * 分页模块查询
+     * @param name
+     * @param currentPage
+     * @param numPerPage
+     * @return
+    * @throws Exception 
+     */
+	 @RequestMapping(value = "/pageByModular", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	 BackResult<PageDomain<Map<String,Object>>> pageByModular(String name,@RequestBody BasePageParam basePageParam) throws Exception{
+		 BeanHelper.beanHelperTrim(name);
+		 if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
+		 if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
+		 return tdsFunctionService.pageByModular(name,basePageParam);
+	 }
 	
+	
+	 
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<List<TdsFunctionDomain>> selectAll(@RequestBody TdsFunctionDomain entity){
 		BackResult<List<TdsFunctionDomain>> result = tdsFunctionService.selectAll(entity);

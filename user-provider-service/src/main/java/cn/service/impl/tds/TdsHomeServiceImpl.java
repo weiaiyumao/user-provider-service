@@ -60,8 +60,6 @@ public class TdsHomeServiceImpl implements  TdsHomeService {
 			
 			
 		    userbank=tdsUserBankApyService.loadByUserId(userId);
-		    
-		    
 		    //默认
 			if(null==map){
 				map=new HashMap<>();

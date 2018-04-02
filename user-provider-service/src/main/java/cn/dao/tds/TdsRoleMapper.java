@@ -25,5 +25,4 @@ public interface TdsRoleMapper extends IBaseDao<TdsRole, Integer>{
 	
 	Integer queryCount(@Param("roleName")String roleName);
 	
-	String getRoleNameByUsreId(@Param("userId") Integer userId);
 }

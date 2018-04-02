@@ -13,20 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsFunctionMapper;
-import cn.dao.tds.TdsModularMapper;
 import cn.entity.tds.TdsFunction;
-import cn.entity.tds.TdsModular;
 import cn.entity.tds.view.TdsFunMoView;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.BeanHelper;
-import cn.utils.CommonUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.BasePageParam;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
-import main.java.cn.domain.tds.TdsModularDomain;
 
 @Service
 public class TdsFunctionServiceImpl implements TdsFunctionService {
@@ -36,8 +32,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	@Autowired
 	private TdsFunctionMapper tdsFunctionMapper;
 
-	@Autowired
-	private TdsModularMapper tdsModularMapper;
 
 	@Override
 	public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id) {
@@ -161,7 +155,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 //		return result;
 //	}
 
-	@Override
+	/*@Override
 	public BackResult<List<TdsModularDomain>> moduleLoadingByUsreId(Integer userId) {
 		BackResult<List<TdsModularDomain>> result = new BackResult<List<TdsModularDomain>>();
 		try {
@@ -185,7 +179,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		}
 
 		return result;
-	}
+	}*/
 
 	@Override
 	public BackResult<List<TdsFunctionDomain>> queryFunction() {
@@ -292,7 +286,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			}
 
 			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
-             BeanHelper.beanHelperTrim(listDomain);
+            BeanHelper.beanHelperTrim(listDomain);
 			for (TdsFunctionDomain menuVo : domain) {
               
 				if (menuVo.getParentId() == 0 && menuVo.getName().indexOf("第一级")==-1) {
@@ -365,10 +359,11 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		  BackResult<Integer> result=new BackResult<Integer>();
 		   TdsFunction  tds=new TdsFunction();
 		try {
-			TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
+			//TdsModular tdsModula=tdsModularMapper.loadById(domain.getId());
+			TdsFunction tdsFun=tdsFunctionMapper.loadById(domain.getId());
 			tds.setParentId(domain.getId());
 			//如果选择的是第一级模块名则为父级模块
-			if(null!=tdsModula && tdsModula.getName().indexOf("第一级")!=-1){
+			if(null!=tdsFun && tdsFun.getName().indexOf("第一级")!=-1){
 				tds.setParentId(0);  //标记为父类
 			}					
 			//如果不选，则默认为父级模块
@@ -405,7 +400,25 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		
 	}
 
-	
+	@Override
+	public BackResult<PageDomain<Map<String, Object>>> pageByModular(String name,BasePageParam basePageParam) {
+		BackResult<PageDomain<Map<String, Object>>> result =new  BackResult<PageDomain<Map<String, Object>>>();
+		PageDomain<Map<String, Object>> pageListDomain = null;
+		try {
+			Integer count=tdsFunctionMapper.queryCountViewMo(name);
+			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
+			List<Map<String,Object>> listMap = tdsFunctionMapper.pageByModular(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
+			pageListDomain = new PageDomain<>( basePageParam.getCurrentPage(),basePageParam.getNumPerPage(),count);
+			pageListDomain.setTlist(listMap);
+			result.setResultObj(pageListDomain);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("模块功能信息出现系统异常：" + e.getMessage());
+			result.setResultCode(ResultCode.RESULT_FAILED);
+			result.setResultMsg("数据集合查询失败");
+		}
+		return result;
+	}
 	
 	
 

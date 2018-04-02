@@ -1,6 +1,7 @@
 package cn.service.impl.tds;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsCompanyMapper;
-import cn.dao.tds.TdsRoleMapper;
 import cn.dao.tds.TdsUserMapper;
 import cn.entity.tds.TdsCompany;
 import cn.entity.tds.TdsUser;
@@ -40,9 +40,6 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 
 	@Autowired
 	private TdsCompanyMapper tdsCompanyMapper;
-	
-	@Autowired
-	private TdsRoleMapper tdsRoleMapper;
 	
 	@Autowired
 	private CreUserService creUserService;
@@ -163,6 +160,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 		return BackResult.ok();
 	}
 
+	
 	@Transactional
 	@Override
 	public BackResult<TdsUserDomain> login(TdsUserDomain tdsUserDomain) {
@@ -187,7 +185,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			BeanUtils.copyProperties(isUser, tdsUserDomain);
 			
 			//根据用户id获取角色名称
-			String roelName=tdsRoleMapper.getRoleNameByUsreId(tdsUserDomain.getId());
+			Map<String,Object> mapRole=tdsUserRoleService.getRoleNameByUsreId(tdsUserDomain.getId());
 			
 			// 登录结果返回基本信息
 			TdsUserDomain user = new TdsUserDomain();
@@ -196,7 +194,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			user.setName(tdsUserDomain.getName());
 			user.setPhone(tdsUserDomain.getPhone());
 			user.setHedehref(tdsUserDomain.getHedehref());
-			user.setRoleName(roelName);
+			user.setRoleMap(mapRole);
 			result.setResultObj(user);
 
 		} catch (BeansException e) {
@@ -250,7 +248,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			logger.error("根据用户修改密码功能异常：" + e.getMessage());
 			return BackResult.error("用户修改密码功能失败");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	@Override
@@ -265,7 +263,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			logger.error("个人编辑功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error("个人编辑功能信息失败");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	
@@ -301,7 +299,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error("编辑公司信息失败");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	
@@ -314,7 +312,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			logger.error("头像编辑功能信息出现系统异常：" + e.getMessage());
 			BackResult.error("头像编辑功能信息失败");
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 

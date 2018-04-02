@@ -135,7 +135,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("编辑修改功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	
@@ -146,13 +146,15 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 		PageDomain<TdsCustomerViewDomain> pageListDomain = null;
 		List<TdsCustomerViewDomain> listDomain = new ArrayList<TdsCustomerViewDomain>();
 		TdsCustomerView tdsCusView=new TdsCustomerView();
+		
 		try {
-
+			
 			if (null != domain.getStatTime() && !"".equals(domain.getStatTime())) {
 				Date endTime = DateUtils.addDay(domain.getStatTime(), 1);
 				domain.setStatTime(domain.getStatTime()); // 开始时间
 				domain.setEndTime(DateUtils.formatDate(endTime)); // 结束时间
 			}
+			
 			Integer cur = domain.getCurrentPage() <= 0 ? 1 : domain.getCurrentPage();
 			domain.setPageNumber((cur - 1) * domain.getNumPerPage());
 			
@@ -209,7 +211,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	@Transactional
@@ -225,16 +227,17 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			// 新增用户的时候判断公司名字和地址是否存在，存在则修改，否则更新信息
 			TdsCompany isTdsCom = tdsCompanyMapper.getComUrlAndComName(domain.getComUrl(), domain.getComName());
 			TdsCompany tdsCom = new TdsCompany();
-			tdsCom.setComUrl(domain.getComUrl());
-			tdsCom.setComName(domain.getComName());
 			
 			if (null == isTdsCom) {
 				// 保存
+				tdsCom.setComUrl(domain.getComUrl());
+				tdsCom.setComName(domain.getComName());
 				tdsCom.setCreateTime(new Date());
 				tdsCom.setCreater(loginUserId);
 				tdsCompanyMapper.save(tdsCom);
 			} else {
 				// 更新
+				tdsCom.setId(isTdsCom.getId());
 				tdsCom.setUpdateTime(new Date());
 				tdsCom.setUpdater(loginUserId);
 				tdsCompanyMapper.update(tdsCom);
@@ -302,8 +305,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("新增功能信息出现系统异常：" + e.getMessage());
 			BackResult.error("新增客户信息失败");
 		}
-
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	@Override
@@ -336,7 +338,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("update功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	@Override
@@ -384,7 +386,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		return BackResult.ok(true);
+		return BackResult.ok(1);
 	}
 
 	@Override
@@ -396,7 +398,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("用户ID:" + id + "delete功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		 return BackResult.ok(true);
+		 return BackResult.ok(1);
 	}
 	
 	
@@ -442,7 +444,7 @@ public class TdsCustomerServiceImpl extends BaseTransactService implements TdsCu
 			logger.error("客户审核操作功能错误：" + e.getMessage());
 			return BackResult.error();
 		}
-		   return BackResult.ok(true);
+		   return BackResult.ok(1);
 	}
 
 }

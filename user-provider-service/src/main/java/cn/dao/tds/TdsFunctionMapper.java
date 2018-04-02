@@ -64,6 +64,21 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	List<Map<String,Object>> pageByFunction(@Param("name")String name,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage);
    	
 	
+
+	/**
+	 * 查询模块列表<分页>
+	 * @param name  模块名称
+	 * @return
+	 */
+	List<Map<String,Object>> pageByModular(@Param("name")String name,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage);
+	
+	
+	/**
+	 * 获取总数
+	 * @return
+	 */
+	Integer queryCountViewMo(@Param("name")String name);
+	
 	
 	/**
 	 * 根据用户加载角色对应权限

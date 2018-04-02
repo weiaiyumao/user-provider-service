@@ -197,9 +197,8 @@
 		app,tds_account_bank b,tds_enum enum,tds_user u
 		where user_id in (
 		select id from tds_user
-		where
-		parent_user_id=#{parentUserId}
-		AND is_deleted='0'
+		where  is_deleted='0'
+		<!-- and parent_user_id=#{parentUserId} -->
 		)and app.bank_id=b.id and u.id=user_id
 		and enum.id=app.pname_id
 		and app.is_deleted='0'		
@@ -232,13 +231,9 @@
 		where
 		user_id in (
 		select id from tds_user
-		where
-		parent_user_id=#{parentUserId}
-		AND
-		is_deleted='0'
-		)and app.bank_id=b.id
-		 and app.is_deleted='0'
-	<!-- 	<if test="approvalType != null">AND app.approval_type = #{approvalType}</if> -->
+		where is_deleted='0'
+		<!-- parent_user_id=#{parentUserId} -->
+		)and app.bank_id=b.id  and app.is_deleted='0'
 		<if test="approvalStatus != null and approvalStatus!=''">AND approval_status = #{approvalStatus}</if>
 		<if test="startOrderTime != null and startOrderTime!=''">AND app.create_time &gt;= #{startOrderTime}</if>
 		<if test="endOrderTime != null and endOrderTime!=''">AND app.create_time &lt;= #{endOrderTime}</if>

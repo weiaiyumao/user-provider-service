@@ -181,4 +181,27 @@
 		)and is_deleted='0'
 	</select>
 
+
+
+    <select id="pageByModular" resultType="java.util.HashMap"
+		parameterType="HashMap">
+		SELECT * FROM view_modular
+		where is_deleted='0'
+		<if test="name!=null and name!=''">
+			and name like concat(concat('%',#{name}),'%')
+		</if>
+		ORDER BY parentName='第一级' desc,id
+		LIMIT #{pageNumber},#{numPerPage}
+	</select>
+	
+	
+	
+	<select id="queryCountViewMo" resultType="java.lang.Integer"
+		parameterType="HashMap">
+		SELECT COUNT(1) FROM view_modular
+		where is_deleted='0'
+		<if test="name!=null and name!=''">
+			and name like concat(concat('%',#{name}),'%')
+		</if>
+	</select>
 </mapper>
