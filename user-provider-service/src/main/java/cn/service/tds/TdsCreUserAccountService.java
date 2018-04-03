@@ -1,7 +1,5 @@
 package cn.service.tds;
 
-import cn.entity.CreUserAccount;
-import main.java.cn.common.BackResult;
 
 /**
  * CRE 
@@ -10,24 +8,6 @@ import main.java.cn.common.BackResult;
  */
 public interface TdsCreUserAccountService {
 
-	
-	/**
-	 * 产品条数递增
-	 * @param creUserAccount
-	 * @return
-	 * @throws Exception 
-	 */
-    BackResult<Integer> addByUserId(CreUserAccount creUserAccount) throws Exception;
-	
-    
-    
-    /**
-	 * 产品条数递减
-	 * @param creUserAccount
-	 * @return
-     * @throws Exception 
-	 */
-    BackResult<Integer> subByUserId(CreUserAccount creUserAccount) throws Exception;
     
     /**
      *  * 根据cre 用户id更改数量

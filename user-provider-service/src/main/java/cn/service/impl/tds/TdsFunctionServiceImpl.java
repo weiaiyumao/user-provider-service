@@ -14,14 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.dao.tds.TdsFunctionMapper;
 import cn.entity.tds.TdsFunction;
-import cn.entity.tds.view.TdsFunMoView;
 import cn.service.tds.TdsFunctionService;
 import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
 import main.java.cn.domain.page.BasePageParam;
 import main.java.cn.domain.page.PageDomain;
-import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
 @Service
@@ -33,22 +31,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	private TdsFunctionMapper tdsFunctionMapper;
 
 
-	@Override
-	public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id) {
-		BackResult<TdsFunMoViewDomain> result = new BackResult<TdsFunMoViewDomain>();
-		try {
-			TdsFunMoViewDomain domain = new TdsFunMoViewDomain();
-			TdsFunMoView entity = tdsFunctionMapper.loadByIdView(id);
-			BeanUtils.copyProperties(entity, domain);
-			result.setResultObj(domain);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("功能ID：" + id + "查询功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据查询失败");
-		}
-		return result;
-	}
 
 	
 	@Override
@@ -62,10 +44,10 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 			if(null!=fun && fun.getName().indexOf("第一级")!=-1){
 				tds.setParentId(0);  //标记为父类
 			}					
-			//如果不选，则默认为父级模块
-			if(null==domain.getId() || "".equals(domain.getId())){
-				tds.setParentId(0);  //标记为父类
-			}
+//			//如果不选，则默认为父级模块
+//			if(null==domain.getId() || "".equals(domain.getId())){
+//				tds.setParentId(0);  //标记为父类
+//			}
 			tds.setName(domain.getName());
 			tds.setUrl(domain.getUrl());
 			tds.setCreateTime(new Date());
@@ -118,69 +100,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		return result;
 	}
 
-//	@Override
-//	public BackResult<PageDomain<TdsFunMoViewDomain>> pageTdsFunction(TdsFunMoViewDomain domain) {
-//		BackResult<PageDomain<TdsFunMoViewDomain>> result = new BackResult<PageDomain<TdsFunMoViewDomain>>();
-//		PageDomain<TdsFunMoViewDomain> pageListDomain = null;
-//		List<TdsFunMoViewDomain> listDomain = new ArrayList<TdsFunMoViewDomain>();
-//		TdsFunMoView tdsFun = new TdsFunMoView();
-//		try {
-//			BeanUtils.copyProperties(domain, tdsFun);
-//			Integer cur = tdsFun.getCurrentPage() <= 0 ? 1 : tdsFun.getCurrentPage();
-//			tdsFun.setPageNumber((cur - 1) * tdsFun.getNumPerPage());
-//			Integer count = tdsFunctionMapper.queryCount(tdsFun.getFunName());
-//			List<TdsFunMoView> list = tdsFunctionMapper.pageTdsFunction(tdsFun);
-//			if (list.size() > 0 && list != null) {
-//
-//				// 定义对象用于转换
-//				TdsFunMoViewDomain tdsDomain = null;
-//				for (TdsFunMoView obj : list) {
-//					tdsDomain = new TdsFunMoViewDomain();
-//					BeanUtils.copyProperties(obj, tdsDomain);
-//					listDomain.add(tdsDomain);
-//				}
-//				// 构造计算分页参数
-//				pageListDomain = new PageDomain<TdsFunMoViewDomain>(domain.getCurrentPage(), domain.getNumPerPage(),
-//						count);
-//				pageListDomain.setTlist(listDomain);
-//				result.setResultObj(pageListDomain);
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			logger.error("查询功能信息出现系统异常：" + e.getMessage());
-//			result.setResultCode(ResultCode.RESULT_FAILED);
-//			result.setResultMsg("数据集合查询失败");
-//		}
-//		return result;
-//	}
-
-	/*@Override
-	public BackResult<List<TdsModularDomain>> moduleLoadingByUsreId(Integer userId) {
-		BackResult<List<TdsModularDomain>> result = new BackResult<List<TdsModularDomain>>();
-		try {
-			List<TdsModularDomain> listDomain = new ArrayList<TdsModularDomain>();
-			List<TdsModular> list = tdsModularMapper.moduleLoadingByUsreId(userId);
-			if (CommonUtils.isNotEmpty(list)) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "用户id没有模块加载列表");
-			}
-			TdsModularDomain tdsDomain = null;
-			for (TdsModular obj : list) {
-				tdsDomain = new TdsModularDomain();
-				BeanUtils.copyProperties(obj, tdsDomain);
-				listDomain.add(tdsDomain);
-			}
-			result.setResultObj(listDomain);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("模块加载系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("模块查询失败");
-		}
-
-		return result;
-	}*/
-
 	@Override
 	public BackResult<List<TdsFunctionDomain>> queryFunction() {
 		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
@@ -195,7 +114,6 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 				BeanUtils.copyProperties(item, obj);
 				domain.add(obj);
 			}
-
 			// 根据一级菜单id查询所有的菜单
 			List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
 
@@ -249,13 +167,13 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 	}
 
 	@Override
-	public BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, BasePageParam basePageParam) {
+	public BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, BasePageParam basePageParam,String url) {
 		BackResult<PageDomain<Map<String, Object>>> result =new  BackResult<PageDomain<Map<String, Object>>>();
 		PageDomain<Map<String, Object>> pageListDomain = null;
 		try {
-			Integer count=tdsFunctionMapper.queryCount(name);
+			Integer count=tdsFunctionMapper.queryCount(name,url);
 			Integer cur = basePageParam.getCurrentPage() <= 0 ? 1 : basePageParam.getCurrentPage();
-			List<Map<String,Object>> listMap = tdsFunctionMapper.pageByFunction(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage());
+			List<Map<String,Object>> listMap = tdsFunctionMapper.pageByFunction(name, (cur - 1) *basePageParam.getNumPerPage(), basePageParam.getNumPerPage(),url);
 			// 构造计算分页参数
 			pageListDomain = new PageDomain<>( basePageParam.getCurrentPage(),basePageParam.getNumPerPage(),count);
 			pageListDomain.setTlist(listMap);
@@ -396,7 +314,7 @@ public class TdsFunctionServiceImpl implements TdsFunctionService {
 		} catch (Exception e) {
 			return BackResult.error("模块修改失败");
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 		
 	}
 

@@ -2,6 +2,7 @@ package cn.service.tds;
 
 
 
+
 import java.util.Map;
 
 import cn.entity.tds.TdsRole;
@@ -21,6 +22,8 @@ public interface TdsRoleService extends TdsRoleBusService{
 	
  	
 	BackResult<Integer> deleteById(Integer id);
+	
+	BackResult<Map<String,Object>> selectBydRoleId(Integer roleId);
 	
 	
 }

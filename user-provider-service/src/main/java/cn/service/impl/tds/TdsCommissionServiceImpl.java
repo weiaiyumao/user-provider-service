@@ -42,7 +42,7 @@ public class TdsCommissionServiceImpl implements TdsCommissionService {
 			logger.error("佣金save功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error("佣金保存失败");
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 
 
@@ -60,7 +60,7 @@ public class TdsCommissionServiceImpl implements TdsCommissionService {
 			 logger.error("佣金更改状态功能信息出现系统异常：" + e.getMessage());
 			 return BackResult.error("佣金更改失败");
 		 }
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 	
 	

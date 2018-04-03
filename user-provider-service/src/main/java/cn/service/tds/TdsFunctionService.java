@@ -27,7 +27,7 @@ public interface TdsFunctionService extends TdsFunctionBusService {
 	 *            模块名称
 	 * @return
 	 */
-	BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, BasePageParam basePageParam);
+	BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, BasePageParam basePageParam,String url);
 	
 	
 	/**

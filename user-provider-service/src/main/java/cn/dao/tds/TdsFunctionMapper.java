@@ -38,16 +38,7 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	
 	
 	
-	Integer queryCount(@Param("funName")String funName);
-	
-	
-	/**
-	 * 根据id获取对象
-	 * @param id
-	 * @return
-	 */
-	TdsFunMoView loadByIdView(@Param("id")Integer id);
-	
+	Integer queryCount(@Param("funName")String funName,@Param("url") String url);
 	
 	
 	/**
@@ -61,7 +52,7 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	 * @param name  模块名称
 	 * @return
 	 */
-	List<Map<String,Object>> pageByFunction(@Param("name")String name,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage);
+	List<Map<String,Object>> pageByFunction(@Param("name")String name,@Param("pageNumber")Integer pageNumber,@Param("numPerPage")Integer numPerPage,@Param("url") String url);
    	
 	
 
@@ -97,6 +88,9 @@ public interface TdsFunctionMapper extends IBaseDao<TdsFunction, Integer>{
 	List<TdsFunction> loadingBydRoleId(@Param("roleId") Integer roleId);
 	
 	
+	
+	
 	List<TdsFunction> selectAll(TdsFunction fun);
+	
 	
 }

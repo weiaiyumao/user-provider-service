@@ -24,8 +24,6 @@ import main.java.cn.common.ResultCode;
 import main.java.cn.domain.CreUserDomain;
 import main.java.cn.domain.tds.TdsCompanyDomain;
 import main.java.cn.domain.tds.TdsUserDomain;
-import main.java.cn.domain.tds.TdsUserRoleDomain;
-import main.java.cn.enums.TdsEnum.ROLETYPE;
 import main.java.cn.enums.TdsEnum.USERSTATUS;
 import main.java.cn.hhtp.util.MD5Util;
 
@@ -67,9 +65,8 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 	}
 
 	/**
-	 * 新增用户注册
+	 * 用户注册
 	 */
-	@Transactional
 	@Override
 	public BackResult<Integer> save(TdsUserDomain domain) {
 		
@@ -99,16 +96,9 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			BeanUtils.copyProperties(domain,tdsUser);
 			tdsUserMapper.save(tdsUser);
 						
-			//新用户默认为业务员角色
-			TdsUserRoleDomain userRole=new TdsUserRoleDomain();
-			userRole.setUserId(tdsUser.getId());
-			userRole.setRoleId(ROLETYPE.SALESMAN.getCode()); //业务员角色
-			tdsUserRoleService.saveTdsUserRole(userRole);
-
 			this.commit(status);
 			result.setResultObj(tdsUser.getId());
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status);
 			logger.error("save功能信息出现系统异常：" + e.getMessage());
 			return new BackResult<Integer>(ResultCode.RESULT_FAILED, "新增用户失败");
@@ -157,7 +147,7 @@ public class TdsUserServiceimpl extends BaseTransactService implements TdsUserSe
 			logger.error("用户ID:" + id + "delete功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error();
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 
 	

@@ -22,16 +22,17 @@ import cn.dao.tds.TdsFunctionRoleMapper;
 import cn.dao.tds.TdsRoleMapper;
 import cn.dao.tds.TdsUserDepartmentMapper;
 import cn.dao.tds.TdsUserMapper;
-import cn.dao.tds.TdsUserRoleMapper;
 import cn.entity.tds.TdsDepartment;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsFunctionRole;
 import cn.entity.tds.TdsRole;
 import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserDepartment;
-import cn.entity.tds.TdsUserRole;
 import cn.entity.tds.view.UserRoleDepartmentView;
 import cn.service.tds.TdsDepartmentService;
+import cn.service.tds.TdsRoleService;
+import cn.service.tds.TdsUserRoleService;
+import cn.service.tds.TdsUserService;
 import cn.utils.DateUtils;
 import main.java.cn.common.BackResult;
 import main.java.cn.common.ResultCode;
@@ -39,9 +40,13 @@ import main.java.cn.common.StatusType;
 import main.java.cn.domain.page.PageDomain;
 import main.java.cn.domain.tds.TdsDepartmentDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
+import main.java.cn.domain.tds.TdsRoleDomain;
+import main.java.cn.domain.tds.TdsUserDomain;
+import main.java.cn.domain.tds.TdsUserRoleDomain;
 import main.java.cn.domain.tds.UserRoleDepartmentViewDomain;
-import main.java.cn.hhtp.util.MD5Util;
 
+
+@SuppressWarnings("unchecked")
 @Service
 public class TdsDeparTmentServiceImpl extends BaseTransactService implements TdsDepartmentService {
 
@@ -52,21 +57,28 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 	@Autowired
 	private TdsUserMapper tdsUserMapper;
+	
+	@Autowired
+	private TdsUserService tdsUserService;
 
 	@Autowired
 	private TdsUserDepartmentMapper tdsUserDepartmentMapper;
 
-	@Autowired
-	private TdsUserRoleMapper tdsUserRoleMapper;
 
 	@Autowired
 	private TdsRoleMapper tdsRoleMapper;
+	
+	@Autowired
+	private TdsRoleService tdsRoleService;
 
 	@Autowired
 	private TdsFunctionMapper tdsFunctionMapper;
 
 	@Autowired
 	private TdsFunctionRoleMapper tdsFunctionRoleMapper;
+	
+	@Autowired
+	private TdsUserRoleService tdsUserRoleService;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -185,60 +197,51 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 	public BackResult<Integer> addUserConfig(String name, String passWord, String phone, Integer departmentId,
 			Integer positionId, Integer comId, Integer[] arrRoles, Integer loginUserId) {
 		TransactionStatus status = this.begin();
-		BackResult<Integer> result = new BackResult<Integer>();
-		TdsUser tds = new TdsUser();
+		
+		TdsUserDomain  userDomain = new TdsUserDomain();
+		
 		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
 		if (null != isUserPhone && phone.equals(isUserPhone.getPhone())) {
 			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "账号已存在");
 		}
-		
-//		if (null != isUserPhone && name.equals(isUserPhone.getName())) {
-//			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "输入的用户名已经存在");
-//		}
-
 		try {
-			tds.setCreateTime(new Date());
-			tds.setComId(comId);
-			tds.setCreater(loginUserId); 
-			tds.setPassword(MD5Util.getInstance().getMD5Code(passWord));
-			tds.setSource(StatusType.ADD_ADMIN);
-			tds.setName(name);
-			tds.setPhone(phone);
-			tdsUserMapper.addBackAdminiUser(tds); // 用户信息保存
-
+			userDomain.setCreateTime(new Date());
+			userDomain.setComId(comId);
+			userDomain.setCreater(loginUserId); 
+			userDomain.setPassword(passWord);
+			userDomain.setSource(StatusType.ADD_ADMIN);
+			userDomain.setName(name);
+			userDomain.setPhone(phone);
+			userDomain.setLoginIp("");
+			tdsUserService.save(userDomain);
+			
 			// 部门信息保存
 			TdsUserDepartment tdsUserDepartment = new TdsUserDepartment();
-			tdsUserDepartment.setUserId(tds.getId());
+			tdsUserDepartment.setUserId(userDomain.getId());
 			tdsUserDepartment.setCreateTime(new Date());
 			tdsUserDepartment.setDepartId(departmentId);
 			tdsUserDepartment.setCreater(loginUserId);
-			tdsUserDepartment.setPositionId(positionId);
 			tdsUserDepartmentMapper.save(tdsUserDepartment);
-
-			// 角色信息保存
-			List<TdsUserRole> list = new ArrayList<>();
-			for (Integer item : arrRoles) {
-				TdsUserRole tdsUserRole = new TdsUserRole();
-				tdsUserRole.setUserId(tds.getId());
-				tdsUserRole.setCreater(loginUserId);
-				tdsUserRole.setCreateTime(new Date());
-				tdsUserRole.setRoleId(item);
-				list.add(tdsUserRole);
-			}
-
-			tdsUserRoleMapper.saveRoleByUser(list);
-			result.setResultObj(1);
+            
+			//保存用户角色关联表
+			TdsUserRoleDomain tdsUserRole = new TdsUserRoleDomain();
+			tdsUserRole.setUserId(userDomain.getId());
+			tdsUserRole.setCreater(loginUserId);
+			tdsUserRole.setRoleId(arrRoles[0]);
+			tdsUserRoleService.saveTdsUserRole(tdsUserRole);
+			
 			this.commit(status);// 事务提交
+			
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status); // 回滚
 			logger.error("添加账号查功能出现系统异常" + e.getMessage());
-			return new BackResult<>(ResultCode.RESULT_FAILED, "数据落地异常");
+			return BackResult.error();
 
 		}
-		return result;
+		return BackResult.ok(1);
 	}
 
+	
 	@Transactional
 	@Override
 	public BackResult<Integer> addCustomPermissions(String soleName, Integer loginUserId, Integer[] arrfuns) {
@@ -246,28 +249,18 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		TransactionStatus status = this.begin();
 		try {
 			TdsRole trole = new TdsRole();
-			trole.setCreater(loginUserId);
-			trole.setUpdater(loginUserId);
-			trole.setCreateTime(new Date());
-			trole.setUpdateTime(new Date());
-			trole.setIsDefault(StatusType.CUSTOM_ROLES);
 			trole.setRoleName(soleName);
 			tdsRoleMapper.save(trole);
 
 			List<TdsFunctionRole> listFunRole = new ArrayList<TdsFunctionRole>();
 			// 子级数组是否存入id，直接从子级赋值
-			if (arrfuns.length > 0 || null != arrfuns) {
-				for (Integer item : arrfuns) {
-					// 保存至Liat<>
-					listFunRole.add(new TdsFunctionRole(item, trole.getId(), new Date(), loginUserId));
-				}
-
-			}
+			for (Integer item : arrfuns) {
+					listFunRole.add(new TdsFunctionRole(item, trole.getId()));
+		     }
 			tdsFunctionRoleMapper.addArrByfunId(listFunRole);
 			result.setResultObj(1);
 			this.commit(status);
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.rollback(status);
 			logger.error("自定义角色添加功能出现系统异常" + e.getMessage());
 			return new BackResult<>(ResultCode.RESULT_FAILED, "数据落地异常");
@@ -277,24 +270,42 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 	}
 
 	
+	@Override
+	@Transactional
+	public BackResult<Integer> upArrByRoleId(Integer roleId, String soleName, Integer[] arrfuns) {
+		 try {
+			 TdsRoleDomain trole = new TdsRoleDomain();
+			 trole.setId(roleId);
+			 trole.setRoleName(soleName);
+			 tdsRoleService.updateTdsRole(trole);
+			 Integer i=tdsFunctionRoleMapper.upArrByRoleId(roleId);
+			 if(i<1)throw new Exception(); 
+			 List<TdsFunctionRole> listFunRole = new ArrayList<TdsFunctionRole>();
+			 for (Integer item : arrfuns) {
+			   listFunRole.add(new TdsFunctionRole(item,roleId));
+		     }
+			 tdsFunctionRoleMapper.addArrByfunId(listFunRole);
+		} catch (Exception e) {
+			logger.error("角色编辑出现系统异常" + e.getMessage());
+			return BackResult.error("角色编辑失败");
+		}
+		return BackResult.ok(1);
+	}
 	
 	@Override
+	@Transactional
 	public BackResult<Integer> addFun(TdsFunctionDomain domain) {
-		BackResult<Integer> result = new BackResult<Integer>();
 		TdsFunction tds = new TdsFunction();
 		domain.setCreateTime(new Date());
 		domain.setUpdateTime(new Date());
 		try {
 			BeanUtils.copyProperties(domain, tds);
 			tdsFunctionMapper.save(tds);
-			result.setResultObj(1);
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("自定义权限功能信息出现系统异常：" + e.getMessage());
-			result.setResultCode(ResultCode.RESULT_FAILED);
-			result.setResultMsg("数据保存失败");
+			logger.error("角色功能保存信息出现系统异常：" + e.getMessage());
+			return BackResult.error("角色功能保存失败");
 		}
-		return result;
+		return BackResult.ok(1);
 	}
 
 	
@@ -302,5 +313,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 	public String selectDepartmentRoleByUserId(Integer userId) {
 		return tdsDepartmentMapper.selectDepartmentRoleByUserId(userId);
 	}
+
+	
 
 }

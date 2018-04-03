@@ -97,7 +97,7 @@
 			<if test="updater != null"> UPDATER = #{updater}, </if>
 			<if test="isDeleted != null"> IS_DEFAULT = #{isDefault},</if>
 		</trim>
-		WHERE ID=#{id} AND IS_DELETED='0'
+		WHERE ID=#{id}
 	</update>
 	
 	
@@ -120,5 +120,15 @@
 		</if>
 	</select>
 	
+	
+	<select id="selectBydRoleId" parameterType="HashMap" resultType="java.lang.Integer">
+		select id from tds_function
+		where id in(
+		select fun_id from
+		tds_function_role
+		where role_id=#{roleId}
+		and is_deleted='0'
+		)and is_deleted='0'
+	</select> 
 	
 </mapper>

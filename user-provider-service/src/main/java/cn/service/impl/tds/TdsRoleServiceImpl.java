@@ -2,7 +2,9 @@ package cn.service.impl.tds;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,6 +234,22 @@ public class TdsRoleServiceImpl implements TdsRoleService {
 			result.setResultMsg("数据集合查询失败");
 		}
 		return result;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public BackResult<Map<String,Object>> selectBydRoleId(Integer roleId) {
+		   Map<String,Object>  map=new HashMap<>();
+		try {
+		    List<Integer> list=tdsRoleMapper.selectBydRoleId(roleId);
+			TdsRole tdsRole=tdsRoleMapper.loadById(roleId);
+			map.put("id", list);
+			map.put("roleName", tdsRole.getRoleName());
+		} catch (Exception e) {
+			BackResult.error();
+		}
+		return BackResult.ok(map);
 	}
 
 	

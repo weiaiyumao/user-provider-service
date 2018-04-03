@@ -45,12 +45,13 @@ public class TdsSerualServiceImpl implements TdsSerualService {
 			// 流水类型：1佣金;2提现，3退款，4充值，5进账 6出账 : serial_type
 			tdsSerual.setSerialType(type);// 下单进账类型
 			tdsSerual.setSerialMoney(money);// 金额
-			tdsSerualInfoMapper.save(tdsSerual);
+			Integer is=tdsSerualInfoMapper.save(tdsSerual);
+			if(is<1)throw new Exception("流水保存失败"); 
 		} catch (Exception e) {
 			logger.error("流水明细保存功能信息出现系统异常：" + e.getMessage());
 			return BackResult.error("流水保存失败");
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,12 +67,12 @@ public class TdsSerualServiceImpl implements TdsSerualService {
 				// 流水状态 1处理中 2已处理 3被驳回 :
 				tdsSerual.setSerialStatus(status);
 			    Integer is=tdsSerualInfoMapper.upSerialByStatus(tdsSerual);
-			    if(is<1)throw new Exception(); 
+			    if(is<1)throw new Exception("流水更新失败"); 
 			} catch (Exception e) {
-				logger.error("流水更新状态功能信息出现系统异常;");
-				return BackResult.error("流水更新失败");
+				logger.error("流水更新状态功能信息出现系统异常;"+e.getMessage());
+				return BackResult.error();
 			}
-			return BackResult.ok();
+			return BackResult.ok(1);
 	}
 	
 }

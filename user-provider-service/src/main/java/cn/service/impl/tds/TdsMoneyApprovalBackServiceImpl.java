@@ -117,6 +117,8 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 		String serial = OrderNo.getSerial16();
 		// 获取下单号
 		try {
+			//TODO 每个用户只能退一次，审核通过则可继续退款
+		//	tdsMoneyApprovalBackMapper.selectAll(entity);
 
 			TdsUserCustomer tdsUserCustomer = tdsUserCustomerMapper.loadByUserId(domain.getUserId());
 			// 剩余佣金
@@ -128,11 +130,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 			domain.setApprovalStatus(StatusType.APPROVAL_STATUS_0); // 待审核
 
 			// 根据产品和用户id获取该用户最近下订单审核通过并且已到账记录
-			List<TdsMoneyApproval> list = tdsMoneyApprovalGoMapper.queryByOrderByUser(domain.getUserId(),
-					domain.getPnameId());
+			List<TdsMoneyApproval> list = tdsMoneyApprovalGoMapper.queryByOrderByUser(domain.getUserId(),domain.getPnameId());
 
 			if (list.size() == 0 || null == list) {
-				throw new Exception("没有查到对应的产品下单记录"); 
+				throw new Exception("没有查到对应的产品下单记录,不可退款"); 
 			}
 
 			Double backMoney = 0.0;// 退款下单涉及佣金
@@ -255,10 +256,10 @@ public class TdsMoneyApprovalBackServiceImpl extends BaseTransactService impleme
 
 		} catch (Exception e) {
 			this.rollback(statusTran);
-			logger.error("退款功能操作功能信息出现系统异常：" + e.getMessage());
+			logger.error("退款功能操作出现系统异常：" + e.getMessage());
 			return BackResult.error("退款审核功能操作失败");
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 
 }

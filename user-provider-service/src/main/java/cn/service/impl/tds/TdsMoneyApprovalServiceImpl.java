@@ -526,7 +526,7 @@ public class TdsMoneyApprovalServiceImpl extends BaseTransactService implements 
 			this.rollback(statusTran);
 			return BackResult.error();
 		}
-		return BackResult.ok();
+		return BackResult.ok(1);
 	}
 
 }

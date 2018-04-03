@@ -16,7 +16,6 @@ import cn.utils.BeanHelper;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.BasePageParam;
 import main.java.cn.domain.page.PageDomain;
-import main.java.cn.domain.tds.TdsFunMoViewDomain;
 import main.java.cn.domain.tds.TdsFunctionDomain;
 
 @RestController
@@ -52,19 +51,6 @@ public class TdsFunctionController {
 		return result;
 	}
 	
-	
-	/**
-	 * 根据id查询
-	 * 
-	 * @param id
-	 * @return obj
-	 */
-	@RequestMapping(value = "/loadByIdView", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<TdsFunMoViewDomain> loadByIdView(Integer id) {
-		BackResult<TdsFunMoViewDomain> result = tdsFunctionService.loadByIdView(id);
-		return result;
-	}
-
 	/**
 	 * 保存
 	 * 
@@ -117,12 +103,12 @@ public class TdsFunctionController {
 	}
 
 	@RequestMapping(value = "/pageByFunction", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, @RequestBody BasePageParam basePageParam)
+	public BackResult<PageDomain<Map<String, Object>>> pageByFunction(String name, @RequestBody BasePageParam basePageParam,String url)
 			throws Exception {
 		 BeanHelper.beanHelperTrim(name);
 		 if(null==basePageParam.getCurrentPage())basePageParam.setCurrentPage(1);
 		 if(null==basePageParam.getNumPerPage())basePageParam.setNumPerPage(10);
-		return tdsFunctionService.pageByFunction(name, basePageParam);
+		return tdsFunctionService.pageByFunction(name, basePageParam,url);
 	}
 	
 	

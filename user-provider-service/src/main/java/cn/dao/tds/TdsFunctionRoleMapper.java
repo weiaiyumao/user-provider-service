@@ -21,5 +21,13 @@ public interface TdsFunctionRoleMapper extends IBaseDao<TdsFunctionRole, Integer
 	    * @return
 	    */
 	   Integer addArrByfunId(@Param("arr") List<TdsFunctionRole> arr);
+	   
+	   
+	   /**
+	    * 修改编辑
+	    * @param roleId
+	    * @return
+	    */
+	   Integer upArrByRoleId(@Param("roleId") Integer roleId);
 	
 }

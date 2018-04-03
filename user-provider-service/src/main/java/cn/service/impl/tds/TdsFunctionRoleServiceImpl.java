@@ -2,7 +2,6 @@ package cn.service.impl.tds;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,8 +50,6 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 	public BackResult<TdsFunctionRoleDomain> saveTdsFunctionRole(TdsFunctionRoleDomain domain) {
 		   BackResult<TdsFunctionRoleDomain> result=new BackResult<TdsFunctionRoleDomain >();
 		   TdsFunctionRole  tds=new TdsFunctionRole();
-		   domain.setCreateTime(new Date());
-		   domain.setUpdateTime(new Date());
 		try {
 			BeanUtils.copyProperties(domain,tds);
 			tdsFunctionRoleMapper.save(tds);
@@ -87,7 +84,6 @@ public class TdsFunctionRoleServiceImpl implements  TdsFunctionRoleService {
 	@Override
 	public BackResult<TdsFunctionRoleDomain> updateFunctionRole(TdsFunctionRoleDomain domain) {
 		BackResult<TdsFunctionRoleDomain> result=new BackResult<TdsFunctionRoleDomain>();
-		domain.setUpdateTime(new Date());
 		TdsFunctionRole  tds=new TdsFunctionRole();
 		try {
 			BeanUtils.copyProperties(domain,tds);

@@ -1,5 +1,6 @@
 package cn.controller.tds;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.entity.tds.TdsRole;
+import cn.service.tds.TdsDepartmentService;
 import cn.service.tds.TdsRoleService;
 import main.java.cn.common.BackResult;
 import main.java.cn.domain.page.BasePageParam;
@@ -24,6 +26,9 @@ public class TdsRoleController {
 
 	@Autowired
 	private TdsRoleService tdsRoleService;
+	
+	@Autowired
+	private TdsDepartmentService tdsDepartmentService;
 
 	/**
 	 * 根据id查询
@@ -103,6 +108,17 @@ public class TdsRoleController {
 	@RequestMapping(value = "/pageByRole", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<PageDomain<TdsRoleDomain>> pageByRole(String roleName,@RequestBody BasePageParam basePageParam){
 		return tdsRoleService.pageByRole(roleName, basePageParam);
+	}
+	
+	@RequestMapping(value = "/upArrByRoleId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Integer> upArrByRoleId(Integer roleId, String soleName, Integer[] arrfuns){
+		return tdsDepartmentService.upArrByRoleId(roleId, soleName, arrfuns);
+	}
+	
+	
+	@RequestMapping(value = "/selectBydRoleId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public BackResult<Map<String,Object>> selectBydRoleId(Integer roleId){
+		return tdsRoleService.selectBydRoleId(roleId);
 	}
 	
 }

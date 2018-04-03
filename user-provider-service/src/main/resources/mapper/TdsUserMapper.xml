@@ -281,7 +281,7 @@
 			<if test="createTime != null"> CREATE_TIME , </if>
 			<if test="hedehref != null"> HEDEHREF , </if>
 			<if test="source != null"> SOURCE , </if>
-			 <if test="creUserId != null">cre_user_id,</if>
+			<if test="creUserId != null">cre_user_id,</if>
 			STATUS,
 			IS_DELETED
 		</trim>

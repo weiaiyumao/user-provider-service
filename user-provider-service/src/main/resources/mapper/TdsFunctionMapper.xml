@@ -110,24 +110,15 @@
 	</select>
 
 
-
-	<select id="loadByIdView" parameterType="HashMap"
-		resultType="cn.entity.tds.view.TdsFunMoView">
-		SELECT f.id as funId,f.name as funName,f.url,f.parent_id
-		moId,m.name as moName
-		FROM tds_function f,tds_modular m
-		where f.parent_id=m.id
-		and f.is_deleted='0' and m.is_deleted='0'
-		and f.id=#{id}
-	</select>
-
-
 	<select id="pageByFunction" resultType="java.util.HashMap"
 		parameterType="HashMap">
 		SELECT * FROM view_function
 		where is_deleted='0'
 		<if test="name!=null and name!=''">
 			and name like concat(concat('%',#{name}),'%')
+		</if>
+		<if test="url!=null and url!=''">
+			 and url like concat(concat('%',#{url}),'%')
 		</if>
 		ORDER BY parentName='第一级' desc,id
 		LIMIT #{pageNumber},#{numPerPage}
@@ -137,7 +128,10 @@
 		SELECT count(1) FROM view_function
 		where is_deleted='0'
 		<if test="funName!=null and funName!=''">
-			and f.name=#{funName}
+			and name like concat(concat('%',#{funName}),'%')
+		</if>
+		<if test="url!=null and url!=''">
+		    and url like concat(concat('%',#{url}),'%')
 		</if>
 	</select>
 
@@ -160,7 +154,7 @@
 	    select fun_id from
 		tds_function_role
 		where role_id  in
-       (
+        (
 		select role_id from tds_user_role
 		where is_deleted='0' and user_id=#{userId}
 		and is_deleted='0'
@@ -204,4 +198,8 @@
 			and name like concat(concat('%',#{name}),'%')
 		</if>
 	</select>
+	
+	
+	
+	
 </mapper>
