@@ -51,11 +51,11 @@ public class TdsDeparTmentController {
 	 * 
 	 * @param usreId
 	 * @return
-	 */
+	 *//*
 	@RequestMapping(value = "/funByUserId", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public BackResult<List<TdsFunctionDomain>> funByuserId(Integer usreId) {
 		return tdsDepartmentService.funByuserId(usreId);
-	}
+	}*/
 
 	/**
 	 * 查询所有部门列表

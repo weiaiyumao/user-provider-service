@@ -26,7 +26,6 @@ import cn.entity.tds.TdsDepartment;
 import cn.entity.tds.TdsFunction;
 import cn.entity.tds.TdsFunctionRole;
 import cn.entity.tds.TdsRole;
-import cn.entity.tds.TdsUser;
 import cn.entity.tds.TdsUserDepartment;
 import cn.entity.tds.view.UserRoleDepartmentView;
 import cn.service.tds.TdsDepartmentService;
@@ -55,8 +54,6 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 	@Autowired
 	private TdsDepartmentMapper tdsDepartmentMapper;
 
-	@Autowired
-	private TdsUserMapper tdsUserMapper;
 	
 	@Autowired
 	private TdsUserService tdsUserService;
@@ -166,7 +163,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 
 	
 	
-	@Override
+	/*@Override
 	public BackResult<List<TdsFunctionDomain>> funByuserId(Integer usreId) {
 		BackResult<List<TdsFunctionDomain>> result = new BackResult<List<TdsFunctionDomain>>();
 		List<TdsFunctionDomain> listDomain = new ArrayList<TdsFunctionDomain>();
@@ -174,7 +171,7 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			List<TdsFunction> list = tdsDepartmentMapper.funByuserId(usreId);
 
 			if (list.size() <= 0) {
-				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有权限信息");
+				return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "目前还没有匹配信息");
 			}
 			TdsFunctionDomain tdsDomain = null;
 			for (TdsFunction obj : list) {
@@ -190,21 +187,16 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 		}
 
 		return result;
-	}
+	}*/
 
 	@Transactional
 	@Override
 	public BackResult<Integer> addUserConfig(String name, String passWord, String phone, Integer departmentId,
 			Integer positionId, Integer comId, Integer[] arrRoles, Integer loginUserId) {
 		TransactionStatus status = this.begin();
-		
-		TdsUserDomain  userDomain = new TdsUserDomain();
-		
-		TdsUser isUserPhone = tdsUserMapper.loadByPhone(phone);
-		if (null != isUserPhone && phone.equals(isUserPhone.getPhone())) {
-			return new BackResult<>(ResultCode.RESULT_DATA_EXCEPTIONS, "账号已存在");
-		}
 		try {
+			//保存用户信息
+			TdsUserDomain  userDomain = new TdsUserDomain();
 			userDomain.setCreateTime(new Date());
 			userDomain.setComId(comId);
 			userDomain.setCreater(loginUserId); 
@@ -213,11 +205,11 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
 			userDomain.setName(name);
 			userDomain.setPhone(phone);
 			userDomain.setLoginIp("");
-			tdsUserService.save(userDomain);
+			BackResult<Integer> reUserId=tdsUserService.save(userDomain);
 			
 			// 部门信息保存
 			TdsUserDepartment tdsUserDepartment = new TdsUserDepartment();
-			tdsUserDepartment.setUserId(userDomain.getId());
+			tdsUserDepartment.setUserId(reUserId.getResultObj());
 			tdsUserDepartment.setCreateTime(new Date());
 			tdsUserDepartment.setDepartId(departmentId);
 			tdsUserDepartment.setCreater(loginUserId);
@@ -225,13 +217,12 @@ public class TdsDeparTmentServiceImpl extends BaseTransactService implements Tds
             
 			//保存用户角色关联表
 			TdsUserRoleDomain tdsUserRole = new TdsUserRoleDomain();
-			tdsUserRole.setUserId(userDomain.getId());
+			tdsUserRole.setUserId(reUserId.getResultObj());
 			tdsUserRole.setCreater(loginUserId);
 			tdsUserRole.setRoleId(arrRoles[0]);
 			tdsUserRoleService.saveTdsUserRole(tdsUserRole);
 			
 			this.commit(status);// 事务提交
-			
 		} catch (Exception e) {
 			this.rollback(status); // 回滚
 			logger.error("添加账号查功能出现系统异常" + e.getMessage());

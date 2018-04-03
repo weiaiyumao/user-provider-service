@@ -167,7 +167,7 @@
 	</select>
 
 
-	<select id="funByuserId" parameterType="java.lang.Integer"
+<!-- 	<select id="funByuserId" parameterType="java.lang.Integer"
 		resultType="cn.entity.tds.TdsFunction">
 		SELECT * FROM tds_function
 		WHERE id IN (
@@ -183,7 +183,7 @@
 
 		) AND is_deleted = '0';
 	</select>
-
+ -->
 
 	<select id="selectDepartmentRoleByUserId" resultType="java.lang.String"
 		parameterType="Hashmap">

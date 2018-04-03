@@ -28,14 +28,14 @@ public interface TdsDepartmentMapper extends IBaseDao<TdsDepartment, Integer>{
 	 */
 	Integer queryCount(UserRoleDepartmentView pageDto);
 	
-	
-	/**
+/*	
+	*//**
 	 * 根据userId 加载权限
 	 * @param userid
 	 * @return
-	 */
+	 *//*
 	List<TdsFunction> funByuserId(Integer userId);
-	
+	*/
 	
 	/**
 	 * 根据用户id获取对应部门
